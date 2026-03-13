@@ -71,58 +71,59 @@ export function App() {
           <Route element={<AppLayout />}>
             {/* Home — Tool-Übersicht */}
             <Route path="/" element={<ToolsHomePage />} />
+            <Route path="/app" element={<ToolsHomePage />} />
 
             {/* ═══ TOOLS ═══ */}
 
             {/* Standards & Compliance */}
-            <Route path="/tools/sea/*" element={<StoreExcellenceAuditRoutes />} />
-            <Route path="/tools/checklisten/*" element={<ChecklistenRoutes />} />
-            <Route path="/tools/sop/*" element={<SopBibliothekRoutes />} />
-            <Route path="/tools/vm-compliance/*" element={<VmComplianceRoutes />} />
-            <Route path="/tools/store-standards/*" element={<StoreStandardsRoutes />} />
+            <Route path="/app/tools/sea/*" element={<StoreExcellenceAuditRoutes />} />
+            <Route path="/app/tools/checklisten/*" element={<ChecklistenRoutes />} />
+            <Route path="/app/tools/sop/*" element={<SopBibliothekRoutes />} />
+            <Route path="/app/tools/vm-compliance/*" element={<VmComplianceRoutes />} />
+            <Route path="/app/tools/store-standards/*" element={<StoreStandardsRoutes />} />
 
             {/* Performance & Sichtbarkeit */}
-            <Route path="/tools/kpi/*" element={<KpiDashboardRoutes />} />
-            <Route path="/tools/budget/*" element={<BudgetTrackerRoutes />} />
-            <Route path="/tools/forecast/*" element={<ForecastRoutes />} />
-            <Route path="/tools/loss-prevention/*" element={<LossPreventionRoutes />} />
-            <Route path="/tools/inventory/*" element={<InventoryRoutes />} />
+            <Route path="/app/tools/kpi/*" element={<KpiDashboardRoutes />} />
+            <Route path="/app/tools/budget/*" element={<BudgetTrackerRoutes />} />
+            <Route path="/app/tools/forecast/*" element={<ForecastRoutes />} />
+            <Route path="/app/tools/loss-prevention/*" element={<LossPreventionRoutes />} />
+            <Route path="/app/tools/inventory/*" element={<InventoryRoutes />} />
 
             {/* Floor in Echtzeit */}
-            <Route path="/tools/live-floor/*" element={<LiveFloorRoutes />} />
-            <Route path="/tools/fr-tracking/*" element={<FrTrackingRoutes />} />
-            <Route path="/tools/vm-guidelines/*" element={<VmGuidelinesRoutes />} />
-            <Route path="/tools/maintenance/*" element={<MaintenanceRoutes />} />
+            <Route path="/app/tools/live-floor/*" element={<LiveFloorRoutes />} />
+            <Route path="/app/tools/fr-tracking/*" element={<FrTrackingRoutes />} />
+            <Route path="/app/tools/vm-guidelines/*" element={<VmGuidelinesRoutes />} />
+            <Route path="/app/tools/maintenance/*" element={<MaintenanceRoutes />} />
 
             {/* Training & Entwicklung */}
-            <Route path="/tools/training-hub/*" element={<TrainingHubRoutes />} />
-            <Route path="/tools/training-hours/*" element={<TrainingHoursRoutes />} />
-            <Route path="/tools/challenges/*" element={<ChallengesRoutes />} />
-            <Route path="/tools/onboarding/*" element={<OnboardingRoutes />} />
+            <Route path="/app/tools/training-hub/*" element={<TrainingHubRoutes />} />
+            <Route path="/app/tools/training-hours/*" element={<TrainingHoursRoutes />} />
+            <Route path="/app/tools/challenges/*" element={<ChallengesRoutes />} />
+            <Route path="/app/tools/onboarding/*" element={<OnboardingRoutes />} />
 
             {/* Coaching & People */}
-            <Route path="/tools/coaching/*" element={<CoachingRoutes />} />
-            <Route path="/tools/pdp-pip/*" element={<PdpPipRoutes />} />
-            <Route path="/tools/appraisals/*" element={<AppraisalsRoutes />} />
-            <Route path="/tools/shift-planning/*" element={<ShiftPlanningRoutes />} />
-            <Route path="/tools/pulse-survey/*" element={<PulseSurveyRoutes />} />
-            <Route path="/tools/wellbeing/*" element={<WellbeingRoutes />} />
+            <Route path="/app/tools/coaching/*" element={<CoachingRoutes />} />
+            <Route path="/app/tools/pdp-pip/*" element={<PdpPipRoutes />} />
+            <Route path="/app/tools/appraisals/*" element={<AppraisalsRoutes />} />
+            <Route path="/app/tools/shift-planning/*" element={<ShiftPlanningRoutes />} />
+            <Route path="/app/tools/pulse-survey/*" element={<PulseSurveyRoutes />} />
+            <Route path="/app/tools/wellbeing/*" element={<WellbeingRoutes />} />
 
             {/* Kommunikation & Signal */}
-            <Route path="/tools/briefings/*" element={<BriefingsRoutes />} />
-            <Route path="/tools/handover/*" element={<HandoverRoutes />} />
-            <Route path="/tools/team-push/*" element={<TeamPushRoutes />} />
-            <Route path="/tools/newsletter/*" element={<NewsletterRoutes />} />
+            <Route path="/app/tools/briefings/*" element={<BriefingsRoutes />} />
+            <Route path="/app/tools/handover/*" element={<HandoverRoutes />} />
+            <Route path="/app/tools/team-push/*" element={<TeamPushRoutes />} />
+            <Route path="/app/tools/newsletter/*" element={<NewsletterRoutes />} />
 
             {/* Customer, Clienteling & Stock */}
-            <Route path="/tools/fr-conversion/*" element={<FrConversionRoutes />} />
-            <Route path="/tools/clienteling/*" element={<ClientelingRoutes />} />
-            <Route path="/tools/stock-callouts/*" element={<StockCalloutsRoutes />} />
-            <Route path="/tools/track-trace/*" element={<TrackTraceRoutes />} />
+            <Route path="/app/tools/fr-conversion/*" element={<FrConversionRoutes />} />
+            <Route path="/app/tools/clienteling/*" element={<ClientelingRoutes />} />
+            <Route path="/app/tools/stock-callouts/*" element={<StockCalloutsRoutes />} />
+            <Route path="/app/tools/track-trace/*" element={<TrackTraceRoutes />} />
 
             {/* Regional Insights */}
-            <Route path="/tools/multi-store/*" element={<MultiStoreRoutes />} />
-            <Route path="/tools/rm-dashboard/*" element={<RmDashboardRoutes />} />
+            <Route path="/app/tools/multi-store/*" element={<MultiStoreRoutes />} />
+            <Route path="/app/tools/rm-dashboard/*" element={<RmDashboardRoutes />} />
 
             {/* ═══ ADMIN ═══ */}
 
