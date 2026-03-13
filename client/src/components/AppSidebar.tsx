@@ -6,6 +6,7 @@ import {
   Clock, Trophy, UserPlus, MessageSquare, Compass, Star, CalendarDays,
   Heart, Smile, FileText, ArrowLeftRight, Bell, Mail, Navigation,
   Map, LayoutDashboard, PackageSearch, Shield, type LucideIcon,
+  Users, Store, Settings, ShieldCheck, BarChart, Building2,
 } from 'lucide-react';
 import { useAuthStore } from '../stores/authStore';
 import { useMyTools } from '../hooks/useMyTools';
@@ -47,6 +48,20 @@ const categoryOrder = [
   'CUSTOMER_STOCK',
   'REGIONAL_INSIGHTS',
 ];
+
+// Rollen-Hierarchie (höherer Index = mehr Rechte)
+const ROLE_LEVELS: Record<string, number> = {
+  learner: 0,
+  store_manager: 1,
+  multisite_manager: 2,
+  regional_manager: 3,
+  tenant_admin: 4,
+  kore_admin: 5,
+};
+
+function hasMinRole(userRole: string, minRole: string): boolean {
+  return (ROLE_LEVELS[userRole] ?? 0) >= (ROLE_LEVELS[minRole] ?? 99);
+}
 
 interface AppSidebarProps {
   open: boolean;
@@ -163,6 +178,57 @@ export function AppSidebar({ open, onClose }: AppSidebarProps) {
                 ))}
               </div>
             ))}
+
+          {/* ═══ Admin-Bereich (rollenbasiert) ═══ */}
+          {user && hasMinRole(user.role, 'store_manager') && (
+            <div>
+              <p className="font-body text-[0.6rem] text-kore-brass/60 uppercase tracking-[0.16em] px-md mt-xl mb-xs">
+                Administration
+              </p>
+
+              <NavLink to="/admin" end onClick={onClose} className={linkClasses}>
+                <LayoutDashboard size={18} />
+                <span className="font-body text-small font-normal">Dashboard</span>
+              </NavLink>
+
+              <NavLink to="/admin/users" onClick={onClose} className={linkClasses}>
+                <Users size={18} />
+                <span className="font-body text-small font-normal">Benutzer</span>
+              </NavLink>
+
+              <NavLink to="/admin/stores" onClick={onClose} className={linkClasses}>
+                <Store size={18} />
+                <span className="font-body text-small font-normal">Stores</span>
+              </NavLink>
+
+              {hasMinRole(user.role, 'regional_manager') && (
+                <NavLink to="/admin/tools" onClick={onClose} className={linkClasses}>
+                  <Settings size={18} />
+                  <span className="font-body text-small font-normal">Tools</span>
+                </NavLink>
+              )}
+
+              {hasMinRole(user.role, 'tenant_admin') && (
+                <>
+                  <NavLink to="/admin/gdpr" onClick={onClose} className={linkClasses}>
+                    <ShieldCheck size={18} />
+                    <span className="font-body text-small font-normal">DSGVO</span>
+                  </NavLink>
+                  <NavLink to="/admin/reporting" onClick={onClose} className={linkClasses}>
+                    <BarChart size={18} />
+                    <span className="font-body text-small font-normal">Reporting</span>
+                  </NavLink>
+                </>
+              )}
+
+              {hasMinRole(user.role, 'kore_admin') && (
+                <NavLink to="/admin/tenants" onClick={onClose} className={linkClasses}>
+                  <Building2 size={18} />
+                  <span className="font-body text-small font-normal">Kunden</span>
+                </NavLink>
+              )}
+            </div>
+          )}
         </nav>
 
         {/* User Info + Logout */}
