@@ -1,0 +1,246 @@
+{
+  "app": {
+    "title": "KORE"
+  },
+  "nav": {
+    "consulting": "Consulting",
+    "training": "Training",
+    "suite": "Suite",
+    "about": "Über KORE",
+    "contact": "Kontakt",
+    "cta": "Audit anfragen",
+    "dashboard": "Dashboard",
+    "tenants": "Kunden",
+    "users": "Benutzer",
+    "tools": "Tools",
+    "stores": "Stores",
+    "gdpr": "DSGVO",
+    "audit": "Store Audit",
+    "logout": "Abmelden"
+  },
+  "hero": {
+    "title": "KORE",
+    "subtitle": "Retail Intelligence",
+    "lead": "Wir analysieren operative Painpoints im Einzelhandel, entwickeln individuelle Strategien und bauen maßgeschneiderte digitale Tools, die Ihre Umsatz- und Entwicklungsziele messbar vorantreiben.",
+    "cta_primary": "Audit anfragen",
+    "cta_secondary": "Services ansehen",
+    "stat_experience": "Jahre im Premium Retail",
+    "stat_streams": "Leistungsbereiche",
+    "stat_streams_sub": "Consulting · Training · Custom Tools",
+    "stat_region": "Deutschland · Österreich · Schweiz"
+  },
+  "services": {
+    "heading": "Unternehmensberatung Einzelhandel",
+    "consulting": {
+      "title": "Analyse & Strategie",
+      "description": "Operative Painpoint-Analyse und maßgeschneiderte Strategieentwicklung für den stationären Einzelhandel — basierend auf echten Daten und Filialprozessen, nicht auf Annahmen."
+    },
+    "training": {
+      "title": "Verkaufstraining & Personalentwicklung",
+      "description": "Praxisnahe Verkaufstrainings, digitale Lernpfade und Führungskräfteentwicklung — von Onboarding bis Service Excellence, direkt auf der Fläche wirksam."
+    },
+    "suite": {
+      "title": "Custom Tools & KPI-Monitoring",
+      "description": "Individuelle digitale Lösungen für den Einzelhandel — KPI-Dashboards, Schichtplanung, Trainingsplattformen und Store Audits — exakt zugeschnitten auf Ihre operativen Anforderungen."
+    }
+  },
+  "why": {
+    "heading": "Warum KORE",
+    "quote": "Analyse. Strategie. Eigene Tools.",
+    "text_1": "Die meisten Retail-Berater liefern eine PowerPoint und gehen. KORE bleibt. Wir analysieren gemeinsam mit Ihnen die echten Painpoints, entwickeln eine klare Strategie zur Umsatzsteigerung — und bauen dann die digitalen Tools, mit denen Sie Kennzahlen, Conversion und Performance dauerhaft tracken und steuern können.",
+    "text_2": "Ob KPI-Dashboard, individuelle Trainingsplattform oder Schichtplanungstool: Jede Lösung wird speziell für Ihre Anforderungen entwickelt. Kein Standard-SaaS, das nicht zu Ihrem Betrieb passt — sondern maßgeschneiderte Werkzeuge, die Ihre Umsatzstrategie im stationären Handel konkret unterstützen."
+  },
+  "caseStudies": {
+    "heading": "Ergebnisse",
+    "cases": [
+      {
+        "client": "Leading Premium Retailer, DACH",
+        "result": "+23% Conversion nach operativem Audit",
+        "description": "Gemeinsame Painpoint-Analyse, maßgeschneiderte Strategie und ein Custom-Tracking-System zur laufenden Erfolgskontrolle."
+      },
+      {
+        "client": "Lifestyle Brand, Deutschland",
+        "result": "+18% ATV durch gezieltes Upselling-Training",
+        "description": "Individuelle Trainingsplattform für 45 Mitarbeiter mit integriertem Performance-Monitoring. Messbare Ergebnisse nach 4 Wochen."
+      },
+      {
+        "client": "Fashion Retailer, Österreich",
+        "result": "Reduktion der Personalkosten um 12%",
+        "description": "Custom Budget-Tool mit Revenue-Forecast-Integration — entwickelt auf Basis der gemeinsamen Analyse der operativen Abläufe."
+      }
+    ]
+  },
+  "suiteTeaser": {
+    "heading": "Modulare Lösungen",
+    "lead": "Kein Standard-SaaS — sondern modulare, maßgeschneiderte Tools für den Einzelhandel. KPI-Dashboards, Schichtplanung, Trainingsplattformen und Store Audits. Und wenn es für ein Problem noch keine Lösung gibt, bauen wir sie.",
+    "cta": "Alle Module ansehen"
+  },
+  "contactCta": {
+    "heading": "Lassen Sie uns Ihre Painpoints analysieren",
+    "lead": "In einem Audit identifizieren wir gemeinsam, wo Ihr größtes Potenzial liegt — und wie individuelle Tools Ihre Strategie unterstützen können.",
+    "cta": "Audit anfragen"
+  },
+  "footer": {
+    "tagline": "Analyse. Strategie. Custom Tools für Retail.",
+    "links": {
+      "consulting": "Consulting",
+      "training": "Training",
+      "suite": "KORE Suite",
+      "about": "Über KORE",
+      "contact": "Kontakt"
+    },
+    "legal": {
+      "imprint": "Impressum",
+      "privacy": "Datenschutz"
+    },
+    "copyright": "planyvo GmbH. Alle Rechte vorbehalten."
+  },
+  "login": {
+    "title": "Anmelden",
+    "subtitle": "Anmelden um fortzufahren",
+    "email": "E-Mail",
+    "password": "Passwort",
+    "submit": "Anmelden",
+    "error": "Ungültige Anmeldedaten."
+  },
+  "dashboard": {
+    "title": "Dashboard",
+    "totalTenants": "Kunden gesamt",
+    "activeTenants": "Aktive Kunden",
+    "totalStores": "Stores gesamt",
+    "activeStores": "Aktive Stores",
+    "totalToolBookings": "Tool-Buchungen",
+    "mrr": "MRR",
+    "recentTenants": "Zuletzt hinzugefügt"
+  },
+  "tenants": {
+    "title": "Kunden",
+    "new": "Neuer Kunde",
+    "search": "Suche nach Name, Slug oder E-Mail...",
+    "empty": "Noch keine Kunden vorhanden.",
+    "name": "Name",
+    "slug": "Slug",
+    "status": "Status",
+    "stores": "Stores",
+    "users": "Benutzer",
+    "contact": "Kontakt",
+    "created": "Erstellt",
+    "actions": "Aktionen",
+    "edit": "Bearbeiten",
+    "save": "Speichern",
+    "cancel": "Abbrechen",
+    "delete": "Deaktivieren",
+    "deleteConfirm": "Möchten Sie diesen Kunden wirklich deaktivieren?",
+    "createTitle": "Neuen Kunden anlegen",
+    "editTitle": "Kunde bearbeiten",
+    "contactEmail": "Kontakt E-Mail",
+    "contactName": "Kontaktperson",
+    "contactPhone": "Telefon",
+    "maxUsers": "Max. Benutzer"
+  },
+  "tools": {
+    "title": "Tools",
+    "totalTools": "Tools gesamt",
+    "totalAssignments": "Aktive Buchungen",
+    "mrr": "MRR",
+    "assign": "Buchen",
+    "unassign": "Entfernen",
+    "pricePerMonth": "pro Store / Monat"
+  },
+  "stores": {
+    "title": "Stores",
+    "new": "Neuer Store",
+    "empty": "Noch keine Stores vorhanden.",
+    "name": "Name",
+    "city": "Stadt",
+    "address": "Adresse",
+    "tenant": "Kunde",
+    "tools": "Tools",
+    "created": "Erstellt",
+    "detail": "Store-Detail",
+    "assignedTools": "Gebuchte Tools",
+    "availableTools": "Verfügbare Tools"
+  },
+  "status": {
+    "ACTIVE": "Aktiv",
+    "PAST_DUE": "Überfällig",
+    "CANCELED": "Gekündigt",
+    "TRIALING": "Testphase"
+  },
+  "users": {
+    "title": "Benutzer",
+    "create": "Benutzer anlegen",
+    "edit": "Benutzer bearbeiten",
+    "name": "Name",
+    "email": "E-Mail",
+    "role": "Rolle",
+    "stores": "Stores",
+    "status": "Status",
+    "lastLogin": "Letzter Login",
+    "empty": "Keine Benutzer gefunden.",
+    "deleteConfirm": "Benutzer wirklich deaktivieren?"
+  },
+  "impersonation": {
+    "banner": "Angemeldet als",
+    "back": "Zurück zum Admin",
+    "button": "Als Benutzer anmelden"
+  },
+  "roles": {
+    "kore_admin": "Super Admin",
+    "tenant_admin": "Kunden-Admin",
+    "regional_manager": "Regional Manager",
+    "multisite_manager": "Multisite Manager",
+    "store_manager": "Store Manager",
+    "learner": "Mitarbeiter"
+  },
+  "audit": {
+    "heading": "Audit anfragen",
+    "lead": "Wir analysieren gemeinsam Ihre operativen Painpoints im Einzelhandel und zeigen, wie individuelle Strategien und maßgeschneiderte Tools Ihren Umsatz messbar steigern können.",
+    "form": {
+      "name": "Ihr Name",
+      "company": "Unternehmen",
+      "storeCount": "Anzahl Stores",
+      "challenge": "Ihre größte Herausforderung",
+      "email": "E-Mail-Adresse",
+      "submit": "Audit anfragen",
+      "success": "Vielen Dank! Wir melden uns innerhalb von 24 Stunden bei Ihnen."
+    },
+    "title": "Store Excellence Audit",
+    "overview": "Übersicht",
+    "sessions": "Audit-Historie",
+    "newSession": "Neues Audit",
+    "templates": "Templates",
+    "avgScore": "Durchschnitt",
+    "passRate": "Pass-Rate",
+    "totalAudits": "Durchgeführte Audits",
+    "trend": {
+      "up": "Aufwärtstrend",
+      "down": "Abwärtstrend",
+      "stable": "Stabil"
+    },
+    "status": {
+      "DRAFT": "Entwurf",
+      "IN_PROGRESS": "In Arbeit",
+      "COMPLETED": "Abgeschlossen",
+      "CANCELLED": "Abgebrochen"
+    }
+  },
+  "contact": {
+    "heading": "Kontakt",
+    "lead": "Haben Sie Fragen oder möchten Sie mehr erfahren? Schreiben Sie uns.",
+    "form": {
+      "name": "Ihr Name",
+      "email": "E-Mail-Adresse",
+      "company": "Unternehmen (optional)",
+      "message": "Ihre Nachricht",
+      "submit": "Nachricht senden",
+      "success": "Vielen Dank für Ihre Nachricht! Wir melden uns in Kürze."
+    }
+  },
+  "common": {
+    "loading": "Laden...",
+    "error": "Ein Fehler ist aufgetreten.",
+    "back": "Zurück",
+    "allStatuses": "Alle Status"
+  }
+}

@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630">
+  <rect width="1200" height="630" fill="#F7F4EF"/>
+  <rect x="0" y="0" width="1200" height="4" fill="#9E8460"/>
+  <text x="100" y="260" font-family="Georgia, serif" font-size="96" font-weight="300" fill="#1C1A17" letter-spacing="8">KORE</text>
+  <text x="100" y="340" font-family="Arial, sans-serif" font-size="28" fill="#524E46">Retail Intelligence</text>
+  <rect x="100" y="370" width="64" height="3" fill="#9E8460"/>
+  <text x="100" y="430" font-family="Arial, sans-serif" font-size="22" fill="#9E8460">Analyse. Strategie. Custom Tools.</text>
+  <text x="100" y="470" font-family="Arial, sans-serif" font-size="18" fill="#524E46">Premium Retail Consulting für DACH</text>
+  <text x="100" y="570" font-family="Arial, sans-serif" font-size="14" fill="#9E8460">kore-retail.de</text>
+</svg>

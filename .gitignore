@@ -1,0 +1,27 @@
+node_modules/
+dist/
+.env
+.env.local
+.env.*.local
+*.log
+*.tsbuildinfo
+.DS_Store
+
+# Database
+data/*.db
+data/*.db-journal
+data/*.db-wal
+
+# Prisma generated
+prisma/generated/
+
+# Uploads (user content)
+uploads/*
+!uploads/.gitkeep
+
+# IDE
+.vscode/
+.idea/
+
+# Claude Code
+.claude/worktrees/
