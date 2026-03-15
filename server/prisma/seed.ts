@@ -710,6 +710,1276 @@ Alle Mitarbeiter, Koordination durch Store Manager
   } else {
     console.log('✓ Store Standards Default-Daten bereits vorhanden');
   }
+
+  // ============================================================
+  // VM Foto-Compliance — Default-Guidelines für Modehouse Müller
+  // ============================================================
+
+  const existingVmGuideline = await prisma.vmGuideline.findFirst({
+    where: { tenantId: tenant1.id, name: 'Schaufenster Haupteingang' },
+  });
+
+  if (!existingVmGuideline) {
+    const vmGuidelines = [
+      { name: 'Schaufenster Haupteingang', description: 'Aktuelle Kampagne im Hauptschaufenster korrekt umgesetzt', category: 'Schaufenster', sortOrder: 0 },
+      { name: 'Schaufenster Seite', description: 'Seitliches Schaufenster mit saisonaler Dekoration', category: 'Schaufenster', sortOrder: 1 },
+      { name: 'Eingangsbereich', description: 'Welcome-Table und Saison-Highlights am Eingang', category: 'Eingang', sortOrder: 2 },
+      { name: 'Kassenzone', description: 'Impulskauf-Artikel und Kampagnen-Material an der Kasse', category: 'Kasse', sortOrder: 3 },
+      { name: 'Warenträger A-Zone', description: 'Hauptverkaufsfläche: Premium-Warenträger nach VM-Plan', category: 'Verkaufsfläche', sortOrder: 4 },
+      { name: 'Umkleide-Bereich', description: 'Sauberkeit und Spiegel-Qualität im Umkleidebereich', category: 'Umkleide', sortOrder: 5 },
+    ];
+
+    for (const g of vmGuidelines) {
+      await prisma.vmGuideline.create({
+        data: { ...g, tenantId: tenant1.id, createdBy: admin.id },
+      });
+    }
+    console.log('✓ VM Foto-Compliance: 6 Default-Guidelines erstellt');
+  } else {
+    console.log('✓ VM Foto-Compliance Default-Guidelines bereits vorhanden');
+  }
+
+  // ============================================================
+  // VM Guidelines — Default-Dokumente für Modehouse Müller
+  // ============================================================
+
+  const existingVmDoc = await prisma.vmGuidelineDoc.findFirst({
+    where: { tenantId: tenant1.id, title: 'Frühjahr/Sommer Kampagne' },
+  });
+
+  if (!existingVmDoc) {
+    await prisma.vmGuidelineDoc.create({
+      data: {
+        tenantId: tenant1.id,
+        title: 'Frühjahr/Sommer Kampagne',
+        category: 'Kampagnen',
+        content: `# Frühjahr/Sommer Kampagne — VM Guideline
+
+## Kampagnen-Zeitraum
+März bis August
+
+## Schaufenster
+- Helle, frische Farben verwenden
+- Maximal 3 Outfits pro Schaufenster
+- Accessoires auf Podest-Ebene platzieren
+- Beleuchtung: warmweiß, 3000K
+
+## Eingangsbereich
+- Welcome-Table mit Kampagnen-Highlight
+- Max. 2 Outfits auf Torso-Mannequins
+- Frische Blumen oder Grünpflanzen
+
+## A-Zone (Hauptverkaufsfläche)
+- Farb-Blockung: hell nach dunkel von vorne nach hinten
+- Neue Kollektion immer auf Augenhöhe
+- Cross-Merchandising mit Accessoires
+
+## Warenträger
+- Maximal 20 Teile pro Ständer
+- Größen-Sortierung: S-M-L-XL
+- Bügel einheitlich ausgerichtet`,
+        version: 1,
+        status: 'PUBLISHED',
+        publishedAt: new Date(),
+        createdBy: admin.id,
+      },
+    });
+
+    await prisma.vmGuidelineDoc.create({
+      data: {
+        tenantId: tenant1.id,
+        title: 'Mannequin-Styling Guide',
+        category: 'Mannequins',
+        content: `# Mannequin-Styling Guide
+
+## Grundregeln
+- Immer komplette Outfits (Ober- + Unterteil + Schuhe)
+- Accessoires: max. 2 pro Mannequin
+- Wöchentlich neue Outfits
+
+## Positionierung
+- Gruppen von 2-3 Mannequins bilden
+- Verschiedene Posen innerhalb einer Gruppe
+- Blickrichtung zum Kundenfluss
+
+## Preisauszeichnung
+- Preisschilder NICHT am Mannequin
+- Preisliste auf separatem Aufsteller daneben`,
+        version: 1,
+        status: 'PUBLISHED',
+        publishedAt: new Date(),
+        createdBy: admin.id,
+      },
+    });
+    console.log('✓ VM Guidelines: 2 Default-Dokumente erstellt');
+  } else {
+    console.log('✓ VM Guidelines Default-Dokumente bereits vorhanden');
+  }
+
+  // ============================================================
+  // Live Floor — Default-Zonen für Modehouse Müller Stores
+  // ============================================================
+
+  const existingFloorZone = await prisma.floorZone.findFirst({
+    where: { tenantId: tenant1.id, name: 'Eingang & Welcome' },
+  });
+
+  if (!existingFloorZone) {
+    const zoneNames = [
+      { name: 'Eingang & Welcome', description: 'Eingangsbereich und Begrüßungszone' },
+      { name: 'Damen Oberbekleidung', description: 'Damen Tops, Blusen, Jacken' },
+      { name: 'Damen Unterbekleidung', description: 'Damen Hosen, Röcke, Kleider' },
+      { name: 'Herren', description: 'Herren-Abteilung komplett' },
+      { name: 'Accessoires', description: 'Taschen, Schmuck, Schals' },
+      { name: 'Kasse', description: 'Kassenbereich und Verpackung' },
+      { name: 'Umkleide', description: 'Umkleidekabinen-Bereich' },
+      { name: 'Lager', description: 'Lager und Warenannahme' },
+    ];
+
+    for (const store of storeRecords.filter((s) => s.tenantId === tenant1.id)) {
+      for (let i = 0; i < zoneNames.length; i++) {
+        await prisma.floorZone.create({
+          data: {
+            tenantId: tenant1.id,
+            storeId: store.id,
+            name: zoneNames[i].name,
+            description: zoneNames[i].description,
+            sortOrder: i,
+          },
+        });
+      }
+    }
+    console.log('✓ Live Floor: Floor-Zonen für alle Müller-Stores erstellt');
+  } else {
+    console.log('✓ Live Floor Default-Zonen bereits vorhanden');
+  }
+
+  // ============================================================
+  // Training Hub / LMS — Default-Kurse für Modehouse Müller
+  // ============================================================
+
+  const existingCourse = await prisma.course.findFirst({
+    where: { tenantId: tenant1.id, title: 'Willkommen bei Modehouse' },
+  });
+
+  if (!existingCourse) {
+    const course1 = await prisma.course.create({
+      data: {
+        tenantId: tenant1.id,
+        title: 'Willkommen bei Modehouse',
+        description: 'Einführungskurs für neue Mitarbeiter — Markenphilosophie, Standards und erste Schritte.',
+        category: 'Onboarding',
+        durationMinutes: 120,
+        isRequired: true,
+        status: 'PUBLISHED',
+        createdBy: admin.id,
+        modules: {
+          create: [
+            { title: 'Unsere Geschichte', content: '# Unsere Geschichte\n\nModehouse Müller wurde 1975 gegründet und steht seit fast 50 Jahren für Premium-Mode in NRW.\n\n## Unsere Werte\n- Qualität vor Quantität\n- Persönliche Beratung\n- Nachhaltigkeit\n- Teamgeist', sortOrder: 0, durationMinutes: 15 },
+            { title: 'Dresscode & Auftreten', content: '# Dresscode & Auftreten\n\n## Allgemeine Regeln\n- Business Casual (schwarz/dunkelblau)\n- Namensschild immer sichtbar tragen\n- Gepflegtes Erscheinungsbild\n- Dezenter Schmuck\n\n## Was vermeiden\n- Sportschuhe\n- Jeans (außer Premium-Denim)\n- Auffällige Logos anderer Marken', sortOrder: 1, durationMinutes: 10 },
+            { title: 'Kundenservice-Standards', content: '# Kundenservice-Standards\n\n## Die 4-Schritte-Methode\n1. **Begrüßen** — Innerhalb von 30 Sekunden\n2. **Beraten** — Bedarfsanalyse durchführen\n3. **Begeistern** — Cross-Selling anbieten\n4. **Bedanken** — Freundliche Verabschiedung\n\n## Umgang mit Reklamationen\n- Immer zuhören\n- Verständnis zeigen\n- Lösung anbieten\n- Bei Unsicherheit: Store Manager hinzuziehen', sortOrder: 2, durationMinutes: 25 },
+            { title: 'Kassensystem Grundlagen', content: '# Kassensystem Grundlagen\n\n## Tägliche Aufgaben\n- Kasse öffnen und Wechselgeld prüfen\n- Transaktionen korrekt abwickeln\n- Kassenabschluss durchführen\n\n## Zahlungsarten\n- Bar, EC-Karte, Kreditkarte\n- Apple Pay / Google Pay\n- Gutscheine und Rabattcodes', sortOrder: 3, durationMinutes: 30 },
+            { title: 'Visual Merchandising Basics', content: '# Visual Merchandising Basics\n\n## Warenträger\n- Max. 20 Teile pro Ständer\n- Größen sortiert: S → XL\n- Bügel einheitlich ausgerichtet\n\n## Farbsortierung\n- Hell nach dunkel (vorne nach hinten)\n- Farbgruppen bilden\n- Akzentfarben als Eye-Catcher', sortOrder: 4, durationMinutes: 20 },
+            { title: 'Sicherheit & Notfälle', content: '# Sicherheit & Notfälle\n\n## Notausgänge\n- Standorte kennen und freihalten\n- Sammelplatz: siehe Aushang\n\n## Bei Diebstahl\n- NICHT verfolgen\n- Beschreibung merken\n- Store Manager informieren\n\n## Erste Hilfe\n- Verbandskasten: Lager (rechts)\n- Ersthelfer: siehe Aushang\n- Notruf: 112', sortOrder: 5, durationMinutes: 20 },
+          ],
+        },
+      },
+    });
+
+    const course2 = await prisma.course.create({
+      data: {
+        tenantId: tenant1.id,
+        title: 'Produktwissen: Premium-Stoffe',
+        description: 'Lerne die wichtigsten Stoffe und Materialien kennen — für kompetente Beratung.',
+        category: 'Produktwissen',
+        durationMinutes: 60,
+        isRequired: false,
+        status: 'PUBLISHED',
+        createdBy: admin.id,
+        modules: {
+          create: [
+            { title: 'Naturfasern', content: '# Naturfasern\n\n## Baumwolle\n- Weich, atmungsaktiv, pflegeleicht\n- Bio-Baumwolle: GOTS-zertifiziert\n\n## Wolle\n- Merinowolle: fein, nicht kratzend\n- Kaschmir: Premium-Segment\n\n## Seide\n- Empfindlich, Handwäsche\n- Glanz und Tragekomfort', sortOrder: 0, durationMinutes: 20 },
+            { title: 'Kunstfasern & Mischgewebe', content: '# Kunstfasern & Mischgewebe\n\n## Polyester\n- Knitterfrei, schnelltrocknend\n- Recyceltes Polyester (rPET)\n\n## Elasthan/Lycra\n- Stretch-Anteil für Komfort\n- Meist 2-5% Beimischung\n\n## Tencel/Lyocell\n- Nachhaltig aus Holzfasern\n- Weich wie Seide, robust wie Baumwolle', sortOrder: 1, durationMinutes: 20 },
+            { title: 'Pflegehinweise beraten', content: '# Pflegehinweise\n\n## Waschsymbole erklären\n- Temperatur, Schleudern, Trockner\n- Bügeltemperatur\n\n## Häufige Kundenfragen\n- "Läuft das ein?" — Vorwäsche empfehlen\n- "Kann ich das bügeln?" — Pflegeetikett prüfen\n- "Ist das nachhaltig?" — Zertifikate kennen (GOTS, OEKO-TEX, BCI)', sortOrder: 2, durationMinutes: 20 },
+          ],
+        },
+      },
+    });
+
+    const course3 = await prisma.course.create({
+      data: {
+        tenantId: tenant1.id,
+        title: 'Verkaufstechniken für Profis',
+        description: 'Fortgeschrittene Verkaufstechniken: Cross-Selling, Upselling und Kundenbindung.',
+        category: 'Verkauf',
+        durationMinutes: 90,
+        isRequired: false,
+        status: 'PUBLISHED',
+        createdBy: admin.id,
+        modules: {
+          create: [
+            { title: 'Bedarfsanalyse meistern', content: '# Bedarfsanalyse meistern\n\n## Offene Fragen stellen\n- "Für welchen Anlass suchen Sie etwas?"\n- "Welche Farben tragen Sie am liebsten?"\n- "Haben Sie bereits etwas Bestimmtes im Sinn?"\n\n## Aktives Zuhören\n- Nicken und Blickkontakt\n- Zusammenfassen: "Wenn ich richtig verstehe..."', sortOrder: 0, durationMinutes: 30 },
+            { title: 'Cross-Selling Strategien', content: '# Cross-Selling Strategien\n\n## Passende Ergänzungen\n- Blazer → Bluse, Tuch, Tasche\n- Kleid → Schuhe, Schmuck, Jacke\n- Hose → Gürtel, Top, Sneaker\n\n## Der richtige Zeitpunkt\n- Nach der Hauptentscheidung\n- "Dazu passt übrigens perfekt..."', sortOrder: 1, durationMinutes: 30 },
+            { title: 'Kundenbindung', content: '# Kundenbindung\n\n## Stammkunden erkennen\n- Namen merken und verwenden\n- Präferenzen notieren (CRM)\n- Exklusive Vorschauen anbieten\n\n## Follow-Up\n- Dankes-Nachricht nach großem Kauf\n- Info über neue Kollektion\n- Geburtstagsgruß', sortOrder: 2, durationMinutes: 30 },
+          ],
+        },
+      },
+    });
+
+    console.log(`✓ Training Hub: 3 Default-Kurse erstellt (${course1.title}, ${course2.title}, ${course3.title})`);
+  } else {
+    console.log('✓ Training Hub Default-Kurse bereits vorhanden');
+  }
+
+  // ============================================================
+  // Onboarding — Default-Template für Modehouse Müller
+  // ============================================================
+
+  const existingOnboarding = await prisma.onboardingTemplate.findFirst({
+    where: { tenantId: tenant1.id, name: 'Verkaufsberater Onboarding' },
+  });
+
+  if (!existingOnboarding) {
+    await prisma.onboardingTemplate.create({
+      data: {
+        tenantId: tenant1.id,
+        name: 'Verkaufsberater Onboarding',
+        role: 'learner',
+        durationDays: 30,
+        isDefault: true,
+        steps: {
+          create: [
+            // Woche 1
+            { title: 'Team-Vorstellung', description: 'Alle Teammitglieder und den Store Manager kennenlernen', category: 'Tag 1', dayNumber: 1, sortOrder: 0 },
+            { title: 'Store-Rundgang', description: 'Alle Bereiche, Notausgänge und Lager kennenlernen', category: 'Tag 1', dayNumber: 1, sortOrder: 1 },
+            { title: 'IT-Einrichtung', description: 'Login-Daten, KORE-App, E-Mail-Zugang einrichten', category: 'Tag 1', dayNumber: 1, sortOrder: 2 },
+            { title: 'Dresscode besprechen', description: 'Kleiderordnung und Erscheinungsbild klären', category: 'Tag 1', dayNumber: 1, sortOrder: 3 },
+            { title: 'Kurs: Willkommen bei Modehouse', description: 'Einführungskurs in der KORE Training Hub absolvieren', category: 'Woche 1', dayNumber: 2, sortOrder: 4 },
+            { title: 'Kassensystem-Schulung', description: 'Praxis-Einführung am Kassensystem', category: 'Woche 1', dayNumber: 3, sortOrder: 5 },
+            { title: 'VM-Grundlagen-Einweisung', description: 'Visual Merchandising Basics vor Ort lernen', category: 'Woche 1', dayNumber: 4, sortOrder: 6 },
+            { title: 'Erster Kundenkontakt (begleitet)', description: 'Ersten Kunden unter Anleitung beraten', category: 'Woche 1', dayNumber: 5, sortOrder: 7 },
+            // Woche 2
+            { title: 'Produktwissen: Stoffe & Materialien', description: 'Kurs in Training Hub absolvieren', category: 'Woche 2', dayNumber: 8, sortOrder: 8 },
+            { title: 'Wareneingang bearbeiten', description: 'Wareneingangs-Prozess lernen und durchführen', category: 'Woche 2', dayNumber: 9, sortOrder: 9 },
+            { title: 'SOPs lesen und bestätigen', description: 'Alle relevanten SOPs in der KORE-App durchlesen', category: 'Woche 2', dayNumber: 10, sortOrder: 10 },
+            // Woche 3-4
+            { title: 'Eigenständige Kundenberatung', description: '5 eigenständige Beratungsgespräche führen', category: 'Woche 3', dayNumber: 15, sortOrder: 11 },
+            { title: 'Cross-Selling üben', description: 'Mindestens 3 erfolgreiche Cross-Selling-Versuche', category: 'Woche 3', dayNumber: 18, sortOrder: 12 },
+            { title: '1:1 Feedback-Gespräch', description: 'Erstes formelles Feedback mit dem Mentor', category: 'Woche 4', dayNumber: 22, sortOrder: 13 },
+            { title: 'Abschluss-Gespräch', description: 'Onboarding-Abschluss mit Store Manager', category: 'Woche 4', dayNumber: 30, sortOrder: 14, isRequired: true },
+          ],
+        },
+      },
+    });
+
+    await prisma.onboardingTemplate.create({
+      data: {
+        tenantId: tenant1.id,
+        name: 'Store Manager Onboarding',
+        role: 'store_manager',
+        durationDays: 60,
+        isDefault: true,
+        steps: {
+          create: [
+            { title: 'Regional Manager Einführungsgespräch', description: 'Ziele, Erwartungen und KPIs besprechen', category: 'Tag 1', dayNumber: 1, sortOrder: 0 },
+            { title: 'Team kennenlernen', description: 'Einzelgespräche mit jedem Teammitglied', category: 'Woche 1', dayNumber: 2, sortOrder: 1 },
+            { title: 'Store-Prozesse verstehen', description: 'Alle operativen Prozesse durchgehen', category: 'Woche 1', dayNumber: 3, sortOrder: 2 },
+            { title: 'KORE-Plattform Einführung', description: 'Alle relevanten Tools und Dashboards kennenlernen', category: 'Woche 1', dayNumber: 4, sortOrder: 3 },
+            { title: 'Budget & KPIs Review', description: 'Aktuelle Zahlen, Budgets und Ziele analysieren', category: 'Woche 2', dayNumber: 8, sortOrder: 4 },
+            { title: 'Schichtplanung übernehmen', description: 'Erste eigene Schichtplanung erstellen', category: 'Woche 2', dayNumber: 10, sortOrder: 5 },
+            { title: 'VM-Audit durchführen', description: 'Ersten Store Excellence Audit eigenständig durchführen', category: 'Woche 3', dayNumber: 15, sortOrder: 6 },
+            { title: 'Coaching-Sessions starten', description: 'Erste 1:1 Coaching-Sessions mit dem Team', category: 'Woche 4', dayNumber: 22, sortOrder: 7 },
+            { title: '30-Tage Review', description: 'Halbzeit-Review mit Regional Manager', category: 'Monat 1', dayNumber: 30, sortOrder: 8 },
+            { title: '60-Tage Abschluss', description: 'Finales Assessment und Zielvereinbarung', category: 'Monat 2', dayNumber: 60, sortOrder: 9, isRequired: true },
+          ],
+        },
+      },
+    });
+    console.log('✓ Onboarding: 2 Default-Templates erstellt (Verkaufsberater + Store Manager)');
+  } else {
+    console.log('✓ Onboarding Default-Templates bereits vorhanden');
+  }
+
+  // ============================================================
+  // Shift Planning — Default-Templates für Modehouse Müller Stores
+  // ============================================================
+
+  const existingShiftTemplate = await prisma.shiftTemplate.findFirst({
+    where: { storeId: muellerStoreIds[0], name: 'Frühschicht' },
+  });
+
+  if (!existingShiftTemplate) {
+    const shiftTemplates = [
+      { name: 'Frühschicht', startTime: '09:00', endTime: '14:00', minStaff: 2, role: 'Verkauf' },
+      { name: 'Mittelschicht', startTime: '11:00', endTime: '17:00', minStaff: 2, role: 'Verkauf' },
+      { name: 'Spätschicht', startTime: '14:00', endTime: '20:00', minStaff: 2, role: 'Verkauf' },
+      { name: 'Kasse Früh', startTime: '09:30', endTime: '14:30', minStaff: 1, role: 'Kasse' },
+      { name: 'Kasse Spät', startTime: '14:30', endTime: '20:00', minStaff: 1, role: 'Kasse' },
+      { name: 'Store Manager', startTime: '09:00', endTime: '18:00', minStaff: 1, role: 'Management' },
+    ];
+
+    for (const storeId of muellerStoreIds) {
+      for (let dayOfWeek = 1; dayOfWeek <= 6; dayOfWeek++) { // Mo-Sa
+        for (const tmpl of shiftTemplates) {
+          await prisma.shiftTemplate.create({
+            data: { storeId, dayOfWeek, ...tmpl },
+          });
+        }
+      }
+    }
+    console.log('✓ Shift Planning: Default-Schicht-Templates für Müller-Stores erstellt');
+  } else {
+    console.log('✓ Shift Planning Default-Templates bereits vorhanden');
+  }
+
+  // ============================================================
+  // Pulse Survey — Default-Umfrage-Template für Modehouse Müller
+  // ============================================================
+
+  const existingSurvey = await prisma.pulseSurvey.findFirst({
+    where: { tenantId: tenant1.id, title: 'Monatliche Mitarbeiterbefragung' },
+  });
+
+  if (!existingSurvey) {
+    await prisma.pulseSurvey.create({
+      data: {
+        tenantId: tenant1.id,
+        title: 'Monatliche Mitarbeiterbefragung',
+        status: 'ACTIVE',
+        startDate: new Date(),
+        endDate: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000),
+        isAnonymous: true,
+        createdBy: admin.id,
+        questions: {
+          create: [
+            { text: 'Wie zufrieden bist du aktuell mit deiner Arbeit?', type: 'RATING', sortOrder: 0 },
+            { text: 'Fühlst du dich von deinem Team unterstützt?', type: 'RATING', sortOrder: 1 },
+            { text: 'Wie gut kommuniziert dein Store Manager?', type: 'RATING', sortOrder: 2 },
+            { text: 'Hast du das Gefühl, dass du dich weiterentwickeln kannst?', type: 'RATING', sortOrder: 3 },
+            { text: 'Wie bewertst du die Work-Life-Balance?', type: 'RATING', sortOrder: 4 },
+            { text: 'Was läuft gut in deinem Store?', type: 'TEXT', sortOrder: 5 },
+            { text: 'Was könnte verbessert werden?', type: 'TEXT', sortOrder: 6 },
+            { text: 'Wie wahrscheinlich würdest du Modehouse als Arbeitgeber empfehlen? (1-10)', type: 'RATING', sortOrder: 7 },
+          ],
+        },
+      },
+    });
+    console.log('✓ Pulse Survey: Default-Umfrage mit 8 Fragen erstellt');
+  } else {
+    console.log('✓ Pulse Survey Default-Daten bereits vorhanden');
+  }
+
+  // ============================================================
+  // Wellbeing — Default-Ressourcen für Modehouse Müller
+  // ============================================================
+
+  const existingWellbeing = await prisma.wellbeingResource.findFirst({
+    where: { tenantId: tenant1.id, title: 'Stressbewältigung im Retail' },
+  });
+
+  if (!existingWellbeing) {
+    const resources = [
+      { title: 'Stressbewältigung im Retail', category: 'Mental Health', description: '5 bewährte Techniken gegen Stress im Einzelhandel: Atemübungen, Micro-Breaks, Priorisierung, Kommunikation und Grenzen setzen.' },
+      { title: 'Ergonomie am Arbeitsplatz', category: 'Körperliche Gesundheit', description: 'Tipps für richtiges Stehen, Heben und Bewegen — speziell für den stationären Handel.' },
+      { title: 'Konfliktlösung im Team', category: 'Teamkultur', description: 'Wie du Konflikte konstruktiv ansprichst und gemeinsam Lösungen findest.' },
+      { title: 'Mitarbeiter-Hotline', category: 'Unterstützung', description: 'Vertrauliche Beratung bei persönlichen oder beruflichen Herausforderungen. 24/7 erreichbar.', url: 'tel:+4980012345678' },
+      { title: 'Achtsamkeits-Übungen (5 Min)', category: 'Mental Health', description: 'Kurze Achtsamkeitsübungen für die Pause — ideal für zwischendurch.' },
+    ];
+
+    for (const r of resources) {
+      await prisma.wellbeingResource.create({
+        data: { ...r, tenantId: tenant1.id },
+      });
+    }
+    console.log('✓ Wellbeing: 5 Default-Ressourcen erstellt');
+  } else {
+    console.log('✓ Wellbeing Default-Ressourcen bereits vorhanden');
+  }
+
+  // ============================================================
+  // Appraisals — Default-Zyklus für Modehouse Müller
+  // ============================================================
+
+  const existingCycle = await prisma.appraisalCycle.findFirst({
+    where: { tenantId: tenant1.id, name: 'H1 2026 Performance Review' },
+  });
+
+  if (!existingCycle) {
+    await prisma.appraisalCycle.create({
+      data: {
+        tenantId: tenant1.id,
+        name: 'H1 2026 Performance Review',
+        period: 'H1 2026',
+        startDate: new Date('2026-01-01'),
+        endDate: new Date('2026-06-30'),
+        status: 'ACTIVE',
+      },
+    });
+    console.log('✓ Appraisals: Default-Zyklus "H1 2026 Performance Review" erstellt');
+  } else {
+    console.log('✓ Appraisals Default-Zyklus bereits vorhanden');
+  }
+
+  // ============================================================
+  // Challenges — Default-Challenge für Modehouse Müller
+  // ============================================================
+
+  const existingChallenge = await prisma.challenge.findFirst({
+    where: { tenantId: tenant1.id, title: 'Cross-Selling Meister' },
+  });
+
+  if (!existingChallenge) {
+    const taUser = await prisma.user.findUnique({ where: { email: 'ta@modehouse.de' } });
+
+    if (taUser) {
+      await prisma.challenge.create({
+        data: {
+          tenantId: tenant1.id,
+          title: 'Cross-Selling Meister',
+          description: 'Wer schafft die meisten Cross-Selling-Abschlüsse in diesem Monat? Mindestens 2 Artikel pro Kauf zählen als Cross-Selling.',
+          type: 'INDIVIDUAL',
+          metric: 'cross_selling_count',
+          targetValue: 50,
+          startDate: new Date().toISOString().split('T')[0],
+          endDate: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
+          reward: '50€ Gutschein + Ehrenplatz im Team-Newsletter',
+          status: 'ACTIVE',
+          createdBy: taUser.id,
+        },
+      });
+
+      await prisma.challenge.create({
+        data: {
+          tenantId: tenant1.id,
+          title: 'Store-Sauberkeits-Challenge',
+          description: 'Welcher Store erreicht den höchsten Sauberkeits-Score bei den nächsten 4 Checklist-Besuchen?',
+          type: 'STORE',
+          metric: 'cleanliness_score',
+          targetValue: 95,
+          startDate: new Date().toISOString().split('T')[0],
+          endDate: new Date(Date.now() + 60 * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
+          reward: 'Team-Frühstück für den Gewinner-Store',
+          status: 'ACTIVE',
+          createdBy: taUser.id,
+        },
+      });
+    }
+    console.log('✓ Challenges: 2 Default-Challenges erstellt');
+  } else {
+    console.log('✓ Challenges Default-Daten bereits vorhanden');
+  }
+
+  // ============================================================
+  // FR Conversion — Default-Conversion-Goals für Modehouse Müller Stores
+  // ============================================================
+
+  const existingGoal = await prisma.conversionGoal.findFirst({
+    where: { storeId: muellerStoreIds[0] },
+  });
+
+  if (!existingGoal) {
+    const currentMonth = new Date().toISOString().slice(0, 7); // "2026-03"
+    for (const storeId of muellerStoreIds) {
+      await prisma.conversionGoal.create({
+        data: {
+          storeId,
+          period: currentMonth,
+          targetConversion: 28.0,
+          targetAvgBasket: 85.0,
+        },
+      });
+    }
+    console.log('✓ FR Conversion: Default-Goals für Müller-Stores erstellt');
+  } else {
+    console.log('✓ FR Conversion Default-Goals bereits vorhanden');
+  }
+
+  // ============================================================
+  // KPI Dashboard — Demo-KPI-Daten (letzte 14 Tage)
+  // ============================================================
+
+  const existingKpi = await prisma.kpiEntry.findFirst({
+    where: { tenantId: tenant1.id },
+  });
+
+  if (!existingKpi) {
+    const smUser = await prisma.user.findUnique({ where: { email: 'sm@modehouse.de' } });
+    if (smUser) {
+      const now = new Date();
+      for (let dayOffset = 13; dayOffset >= 0; dayOffset--) {
+        const date = new Date(now);
+        date.setDate(date.getDate() - dayOffset);
+        const dateStr = date.toISOString().split('T')[0];
+        const dayOfWeek = date.getDay();
+        if (dayOfWeek === 0) continue; // Sonntag überspringen
+
+        for (const storeId of muellerStoreIds) {
+          const baseRevenue = dayOfWeek === 6 ? 8500 : 5500; // Samstag höher
+          const variance = Math.random() * 2000 - 1000;
+          const revenue = Math.round((baseRevenue + variance) * 100) / 100;
+          const transactions = Math.round(revenue / 75 + Math.random() * 10);
+          const footfall = Math.round(transactions * (3 + Math.random()));
+          const unitsSold = Math.round(transactions * (1.5 + Math.random()));
+          const staffHours = dayOfWeek === 6 ? 48 : 32;
+
+          await prisma.kpiEntry.upsert({
+            where: { storeId_date: { storeId, date: dateStr } },
+            update: {},
+            create: {
+              tenantId: tenant1.id,
+              storeId,
+              date: dateStr,
+              revenue,
+              transactions,
+              footfall,
+              unitsSold,
+              staffHours,
+              enteredBy: smUser.id,
+            },
+          });
+        }
+      }
+    }
+    console.log('✓ KPI Dashboard: 14 Tage Demo-KPI-Daten erstellt');
+  } else {
+    console.log('✓ KPI Dashboard Demo-Daten bereits vorhanden');
+  }
+
+  // ============================================================
+  // Budget Tracker — Demo-Budget für aktuellen Monat
+  // ============================================================
+
+  const existingBudget = await prisma.budgetPeriod.findFirst({
+    where: { tenantId: tenant1.id },
+  });
+
+  if (!existingBudget) {
+    const smUser = await prisma.user.findUnique({ where: { email: 'sm@modehouse.de' } });
+    if (smUser) {
+      const currentMonth = new Date().toISOString().slice(0, 7);
+      for (const storeId of muellerStoreIds) {
+        await prisma.budgetPeriod.create({
+          data: {
+            tenantId: tenant1.id,
+            storeId,
+            period: currentMonth,
+            budgetType: 'MONTHLY',
+            revenue: 165000,
+            cogs: 66000,
+            labor: 33000,
+            rent: 12000,
+            marketing: 5000,
+            other: 8000,
+            createdBy: smUser.id,
+          },
+        });
+      }
+    }
+    console.log('✓ Budget Tracker: Demo-Budgets für aktuellen Monat erstellt');
+  } else {
+    console.log('✓ Budget Tracker Demo-Daten bereits vorhanden');
+  }
+
+  // ============================================================
+  // Forecast — Demo-Forecasts für kommende Monate
+  // ============================================================
+
+  const existingForecast = await prisma.forecast.findFirst({
+    where: { tenantId: tenant1.id },
+  });
+
+  if (!existingForecast) {
+    const taUser = await prisma.user.findUnique({ where: { email: 'ta@modehouse.de' } });
+    if (taUser) {
+      const now = new Date();
+      for (let monthOffset = 0; monthOffset < 3; monthOffset++) {
+        const date = new Date(now.getFullYear(), now.getMonth() + monthOffset, 1);
+        const period = date.toISOString().slice(0, 7);
+        const growthFactor = 1 + monthOffset * 0.05;
+
+        for (const storeId of muellerStoreIds) {
+          await prisma.forecast.upsert({
+            where: { storeId_period_forecastType: { storeId, period, forecastType: 'REVENUE' } },
+            update: {},
+            create: {
+              tenantId: tenant1.id,
+              storeId,
+              period,
+              forecastType: 'REVENUE',
+              forecastValue: Math.round(165000 * growthFactor),
+              confidence: 75 - monthOffset * 10,
+              method: 'TREND',
+              createdBy: taUser.id,
+            },
+          });
+          await prisma.forecast.upsert({
+            where: { storeId_period_forecastType: { storeId, period, forecastType: 'FOOTFALL' } },
+            update: {},
+            create: {
+              tenantId: tenant1.id,
+              storeId,
+              period,
+              forecastType: 'FOOTFALL',
+              forecastValue: Math.round(4500 * growthFactor),
+              confidence: 70 - monthOffset * 10,
+              method: 'TREND',
+              createdBy: taUser.id,
+            },
+          });
+        }
+      }
+    }
+    console.log('✓ Forecast: Demo-Forecasts für 3 Monate erstellt');
+  } else {
+    console.log('✓ Forecast Demo-Daten bereits vorhanden');
+  }
+
+  // ============================================================
+  // FR Tracking — Demo-Footfall-Daten (letzte 7 Tage)
+  // ============================================================
+
+  const existingFootfall = await prisma.footfallEntry.findFirst({
+    where: { tenantId: tenant1.id },
+  });
+
+  if (!existingFootfall) {
+    const now = new Date();
+    for (let dayOffset = 6; dayOffset >= 0; dayOffset--) {
+      const date = new Date(now);
+      date.setDate(date.getDate() - dayOffset);
+      const dateStr = date.toISOString().split('T')[0];
+      const dayOfWeek = date.getDay();
+      if (dayOfWeek === 0) continue;
+
+      for (const storeId of muellerStoreIds) {
+        // Aggregated daily entry (hour=0 used as daily aggregate)
+        const baseFootfall = dayOfWeek === 6 ? 320 : 180;
+        const footfall = baseFootfall + Math.round(Math.random() * 60 - 30);
+        const transactions = Math.round(footfall * (0.25 + Math.random() * 0.1));
+        const revenue = Math.round(transactions * (70 + Math.random() * 30) * 100) / 100;
+        const conversionRate = Math.round((transactions / footfall) * 10000) / 100;
+
+        const existing = await prisma.footfallEntry.findFirst({
+          where: { storeId, date: dateStr, hour: null },
+        });
+        if (!existing) {
+          await prisma.footfallEntry.create({
+            data: {
+              tenantId: tenant1.id,
+              storeId,
+              date: dateStr,
+              footfall,
+              revenue,
+              transactions,
+              conversionRate,
+              enteredBy: admin.id,
+            },
+          });
+        }
+      }
+    }
+    console.log('✓ FR Tracking: 7 Tage Demo-Footfall-Daten erstellt');
+  } else {
+    console.log('✓ FR Tracking Demo-Daten bereits vorhanden');
+  }
+
+  // ============================================================
+  // Maintenance — Demo-Wartungsanfragen
+  // ============================================================
+
+  const existingMaintenance = await prisma.maintenanceRequest.findFirst({
+    where: { tenantId: tenant1.id },
+  });
+
+  if (!existingMaintenance) {
+    const smUser = await prisma.user.findUnique({ where: { email: 'sm@modehouse.de' } });
+    if (smUser) {
+      const maintenanceItems = [
+        { title: 'Beleuchtung Schaufenster defekt', description: 'Zwei LED-Spots im Hauptschaufenster ausgefallen. Ersatz benötigt.', category: 'ELECTRICAL', priority: 'HIGH', status: 'OPEN' },
+        { title: 'Klimaanlage macht Geräusche', description: 'Seit gestern rattert die Klimaanlage auf der Verkaufsfläche.', category: 'HVAC', priority: 'MEDIUM', status: 'IN_PROGRESS' },
+        { title: 'Umkleide-Tür klemmt', description: 'Tür von Kabine 3 lässt sich schwer öffnen/schließen.', category: 'FIXTURE', priority: 'LOW', status: 'WAITING_PARTS' },
+        { title: 'Kassenterminal Neustart', description: 'Terminal 2 hängt sich regelmäßig auf, braucht täglichen Neustart.', category: 'IT', priority: 'MEDIUM', status: 'OPEN' },
+      ];
+
+      for (const item of maintenanceItems) {
+        await prisma.maintenanceRequest.create({
+          data: {
+            ...item,
+            tenantId: tenant1.id,
+            storeId: muellerStoreIds[0],
+            reportedBy: smUser.id,
+          },
+        });
+      }
+    }
+    console.log('✓ Maintenance: 4 Demo-Wartungsanfragen erstellt');
+  } else {
+    console.log('✓ Maintenance Demo-Daten bereits vorhanden');
+  }
+
+  // ============================================================
+  // Loss Prevention — Demo-Vorfälle
+  // ============================================================
+
+  const existingLoss = await prisma.lossIncident.findFirst({
+    where: { tenantId: tenant1.id },
+  });
+
+  if (!existingLoss) {
+    const smUser = await prisma.user.findUnique({ where: { email: 'sm@modehouse.de' } });
+    if (smUser) {
+      const lossItems = [
+        { incidentDate: new Date(Date.now() - 5 * 86400000).toISOString().split('T')[0], category: 'THEFT', amount: 189.90, description: 'Diebstahl einer Handtasche (Marke XY). Verdächtige Person von Kamera erfasst.', severity: 'HIGH', status: 'INVESTIGATING' },
+        { incidentDate: new Date(Date.now() - 12 * 86400000).toISOString().split('T')[0], category: 'DAMAGE', amount: 45.00, description: 'Kunde hat Rotwein auf weißes Kleid verschüttet. Artikel nicht mehr verkaufbar.', severity: 'LOW', status: 'RESOLVED', resolution: 'Artikel abgeschrieben, Versicherung informiert.' },
+        { incidentDate: new Date(Date.now() - 2 * 86400000).toISOString().split('T')[0], category: 'ADMIN_ERROR', amount: 120.00, description: 'Doppelte Gutschrift auf Kundenkarte — Fehler bei Retoure.', severity: 'MEDIUM', status: 'OPEN' },
+      ];
+
+      for (const item of lossItems) {
+        await prisma.lossIncident.create({
+          data: {
+            ...item,
+            tenantId: tenant1.id,
+            storeId: muellerStoreIds[0],
+            reportedBy: smUser.id,
+          },
+        });
+      }
+    }
+    console.log('✓ Loss Prevention: 3 Demo-Vorfälle erstellt');
+  } else {
+    console.log('✓ Loss Prevention Demo-Daten bereits vorhanden');
+  }
+
+  // ============================================================
+  // Briefings — Demo-Briefings
+  // ============================================================
+
+  const existingBriefing = await prisma.briefing.findFirst({
+    where: { storeId: muellerStoreIds[0] },
+  });
+
+  if (!existingBriefing) {
+    const smUser = await prisma.user.findUnique({ where: { email: 'sm@modehouse.de' } });
+    if (smUser) {
+      const today = new Date().toISOString().split('T')[0];
+      const yesterday = new Date(Date.now() - 86400000).toISOString().split('T')[0];
+
+      await prisma.briefing.create({
+        data: {
+          storeId: muellerStoreIds[0],
+          title: 'Morgen-Briefing',
+          content: `## Guten Morgen Team! 🌟
+
+### Tageszielen
+- Umsatzziel: **€5.800**
+- Conversion-Ziel: **28%**
+- UPT-Ziel: **1.8**
+
+### Wichtige Infos
+- Neue Kollektion "Summer Breeze" ist eingetroffen → bitte heute einräumen
+- Kampagnen-Poster im Eingangsbereich austauschen
+- Mystery Shopper ist diese Woche angekündigt!
+
+### Team heute
+- Sarah (Früh), Marco (Mittel), Lisa (Spät)
+- Kasse: Lisa (vormittags), Marco (nachmittags)
+
+### Fokus des Tages
+Cross-Selling! Jede Beratung sollte mindestens ein Accessoire beinhalten.`,
+          date: today,
+          type: 'MORNING',
+          createdBy: smUser.id,
+          publishedAt: new Date(),
+        },
+      });
+
+      await prisma.briefing.create({
+        data: {
+          storeId: muellerStoreIds[0],
+          title: 'Abend-Briefing',
+          content: `## Tagesrückblick
+
+### Ergebnisse
+- Umsatz: **€6.120** ✅ (Ziel: €5.800)
+- Conversion: **26.5%** ⚠️ (Ziel: 28%)
+- UPT: **2.1** ✅ (Ziel: 1.8)
+
+### Vorfälle
+- Keine besonderen Vorkommnisse
+
+### Morgen beachten
+- Wareneingang erwartet (2 Kartons)
+- Umkleide-Tür reparieren lassen`,
+          date: yesterday,
+          type: 'EVENING',
+          createdBy: smUser.id,
+          publishedAt: new Date(),
+        },
+      });
+    }
+    console.log('✓ Briefings: 2 Demo-Briefings erstellt');
+  } else {
+    console.log('✓ Briefings Demo-Daten bereits vorhanden');
+  }
+
+  // ============================================================
+  // Handover — Demo-Übergabe
+  // ============================================================
+
+  const existingHandover = await prisma.handover.findFirst({
+    where: { storeId: muellerStoreIds[0] },
+  });
+
+  if (!existingHandover) {
+    const smUser = await prisma.user.findUnique({ where: { email: 'sm@modehouse.de' } });
+    const learnerUser = await prisma.user.findUnique({ where: { email: 'learner@modehouse.de' } });
+    if (smUser && learnerUser) {
+      await prisma.handover.create({
+        data: {
+          storeId: muellerStoreIds[0],
+          fromUserId: smUser.id,
+          toUserId: learnerUser.id,
+          shiftDate: new Date().toISOString().split('T')[0],
+          shiftType: 'EARLY_TO_LATE',
+          status: 'SUBMITTED',
+          salesUpdate: 'Guter Vormittag. €3.200 bisher. 3 größere Beratungen laufen.',
+          openTasks: '- Wareneingang noch nicht komplett eingeräumt (2 von 5 Kartons)\n- Preisschilder für Sale-Artikel drucken',
+          incidents: 'Keine Vorfälle.',
+          customerNotes: 'Frau Weber kommt um 16 Uhr für Blazer-Anpassung (liegt im Lager, Haken 3).',
+          stockNotes: 'Größe 38 in "Summer Breeze Kleid" ist ausverkauft → Nachbestellung läuft.',
+          generalNotes: 'Samstag-Team ist komplett bestätigt.',
+        },
+      });
+    }
+    console.log('✓ Handover: 1 Demo-Übergabe erstellt');
+  } else {
+    console.log('✓ Handover Demo-Daten bereits vorhanden');
+  }
+
+  // ============================================================
+  // Clienteling / CRM — Demo-Kundenprofile
+  // ============================================================
+
+  const existingClient = await prisma.clientProfile.findFirst({
+    where: { storeId: muellerStoreIds[0] },
+  });
+
+  if (!existingClient) {
+    const smUser = await prisma.user.findUnique({ where: { email: 'sm@modehouse.de' } });
+    if (smUser) {
+      const clients = [
+        { firstName: 'Dr. Christina', lastName: 'Hoffman', email: 'c.hoffman@example.com', phone: '+49 171 1234567', preferences: 'Bevorzugt klassische Schnitte. Farben: Schwarz, Navy, Creme. Größe 38.', vipLevel: 'GOLD', totalPurchases: 4580.50 },
+        { firstName: 'Michael', lastName: 'Brandt', email: 'm.brandt@example.com', phone: '+49 172 9876543', preferences: 'Sucht regelmäßig Business-Hemden (Größe 41). Lieblingsmarke: Hugo Boss.', vipLevel: 'SILVER', totalPurchases: 2150.00 },
+        { firstName: 'Sophia', lastName: 'König', email: null, phone: '+49 176 5551234', preferences: 'Junge Mode. Größe 36. Interessiert an nachhaltigen Marken.', vipLevel: null, totalPurchases: 890.00 },
+      ];
+
+      for (const c of clients) {
+        await prisma.clientProfile.create({
+          data: {
+            ...c,
+            storeId: muellerStoreIds[0],
+            createdBy: smUser.id,
+            lastVisit: new Date(Date.now() - Math.random() * 14 * 86400000),
+          },
+        });
+      }
+    }
+    console.log('✓ Clienteling: 3 Demo-Kundenprofile erstellt');
+  } else {
+    console.log('✓ Clienteling Demo-Daten bereits vorhanden');
+  }
+
+  // ============================================================
+  // Stock Callouts — Demo-Bestandsmeldungen
+  // ============================================================
+
+  const existingCallout = await prisma.stockCallout.findFirst({
+    where: { storeId: muellerStoreIds[0] },
+  });
+
+  if (!existingCallout) {
+    const smUser = await prisma.user.findUnique({ where: { email: 'sm@modehouse.de' } });
+    if (smUser) {
+      const callouts = [
+        { sku: 'SB-KL-001-38', productName: 'Summer Breeze Kleid Gr. 38', currentStock: 0, reorderPoint: 3, requestedQty: 5, urgency: 'HIGH', status: 'OPEN' },
+        { sku: 'HB-BL-003-M', productName: 'Hugo Boss Slim-Fit Hemd M', currentStock: 1, reorderPoint: 3, requestedQty: 4, urgency: 'NORMAL', status: 'OPEN' },
+        { sku: 'ACC-SCHAL-07', productName: 'Kaschmir-Schal Creme', currentStock: 2, reorderPoint: 5, requestedQty: 5, urgency: 'LOW', status: 'ORDERED' },
+      ];
+
+      for (const c of callouts) {
+        await prisma.stockCallout.create({
+          data: { ...c, storeId: muellerStoreIds[0], reportedBy: smUser.id },
+        });
+      }
+    }
+    console.log('✓ Stock Callouts: 3 Demo-Bestandsmeldungen erstellt');
+  } else {
+    console.log('✓ Stock Callouts Demo-Daten bereits vorhanden');
+  }
+
+  // ============================================================
+  // Track & Trace — Demo-Kundenbestellungen
+  // ============================================================
+
+  const existingOrder = await prisma.customerOrder.findFirst({
+    where: { storeId: muellerStoreIds[0] },
+  });
+
+  if (!existingOrder) {
+    const smUser = await prisma.user.findUnique({ where: { email: 'sm@modehouse.de' } });
+    if (smUser) {
+      const order1 = await prisma.customerOrder.create({
+        data: {
+          storeId: muellerStoreIds[0],
+          orderNumber: 'MH-2026-001',
+          customerName: 'Dr. Christina Hoffman',
+          customerEmail: 'c.hoffman@example.com',
+          status: 'SHIPPED',
+          trackingNumber: 'DHL-12345678',
+          carrier: 'DHL',
+          estimatedDelivery: new Date(Date.now() + 2 * 86400000),
+          createdBy: smUser.id,
+          statusUpdates: {
+            create: [
+              { status: 'ORDERED', updatedBy: smUser.id, notes: 'Blazer-Sonderbestellung aufgegeben' },
+              { status: 'CONFIRMED', updatedBy: smUser.id, notes: 'Lieferant hat bestätigt' },
+              { status: 'SHIPPED', updatedBy: smUser.id, notes: 'Paket unterwegs' },
+            ],
+          },
+        },
+      });
+
+      await prisma.customerOrder.create({
+        data: {
+          storeId: muellerStoreIds[0],
+          orderNumber: 'MH-2026-002',
+          customerName: 'Michael Brandt',
+          customerEmail: 'm.brandt@example.com',
+          status: 'ORDERED',
+          createdBy: smUser.id,
+          statusUpdates: {
+            create: [
+              { status: 'ORDERED', updatedBy: smUser.id, notes: 'Hemden-Nachbestellung Gr. 41' },
+            ],
+          },
+        },
+      });
+    }
+    console.log('✓ Track & Trace: 2 Demo-Bestellungen erstellt');
+  } else {
+    console.log('✓ Track & Trace Demo-Daten bereits vorhanden');
+  }
+
+  // ============================================================
+  // Zusätzliche Checklisten-Templates
+  // ============================================================
+
+  const existingOpening = await prisma.checklistTemplate.findFirst({
+    where: { isDefault: true, name: 'Store-Öffnung Checkliste' },
+  });
+
+  if (!existingOpening) {
+    await prisma.checklistTemplate.create({
+      data: {
+        name: 'Store-Öffnung Checkliste',
+        description: 'Tägliche Checkliste für die Filialöffnung — vor Türöffnung abzuarbeiten.',
+        tenantId: null,
+        isDefault: true,
+        createdBy: admin.id,
+        sections: {
+          create: [
+            {
+              name: 'Sicherheit',
+              sortOrder: 0,
+              items: {
+                create: [
+                  { text: 'Alarm deaktiviert', type: 'BOOLEAN', isRequired: true, sortOrder: 0 },
+                  { text: 'Rundgang gemacht — keine Auffälligkeiten', type: 'BOOLEAN', isRequired: true, sortOrder: 1 },
+                  { text: 'Notausgänge frei', type: 'BOOLEAN', isRequired: true, sortOrder: 2 },
+                ],
+              },
+            },
+            {
+              name: 'Technik',
+              sortOrder: 1,
+              items: {
+                create: [
+                  { text: 'Beleuchtung eingeschaltet', type: 'BOOLEAN', isRequired: true, sortOrder: 0 },
+                  { text: 'Klimaanlage/Heizung läuft', type: 'BOOLEAN', isRequired: true, sortOrder: 1 },
+                  { text: 'Kassensystem hochgefahren', type: 'BOOLEAN', isRequired: true, sortOrder: 2 },
+                  { text: 'Musik/Soundsystem an', type: 'BOOLEAN', isRequired: false, sortOrder: 3 },
+                ],
+              },
+            },
+            {
+              name: 'Verkaufsfläche',
+              sortOrder: 2,
+              items: {
+                create: [
+                  { text: 'Boden gesaugt/gewischt', type: 'BOOLEAN', isRequired: true, sortOrder: 0 },
+                  { text: 'Schaufenster geprüft', type: 'BOOLEAN', isRequired: true, sortOrder: 1 },
+                  { text: 'Warenträger aufgefüllt', type: 'BOOLEAN', isRequired: true, sortOrder: 2 },
+                  { text: 'Preisauszeichnung aktuell', type: 'BOOLEAN', isRequired: true, sortOrder: 3 },
+                  { text: 'Umkleidekabinen leer und sauber', type: 'BOOLEAN', isRequired: true, sortOrder: 4 },
+                ],
+              },
+            },
+          ],
+        },
+      },
+    });
+
+    await prisma.checklistTemplate.create({
+      data: {
+        name: 'Store-Schließung Checkliste',
+        description: 'Tägliche Checkliste für die Filialschließung — vor Verlassen abzuarbeiten.',
+        tenantId: null,
+        isDefault: true,
+        createdBy: admin.id,
+        sections: {
+          create: [
+            {
+              name: 'Kassenabschluss',
+              sortOrder: 0,
+              items: {
+                create: [
+                  { text: 'Kassenabschluss gedruckt', type: 'BOOLEAN', isRequired: true, sortOrder: 0 },
+                  { text: 'Bargeld gezählt und dokumentiert', type: 'BOOLEAN', isRequired: true, sortOrder: 1 },
+                  { text: 'Tageseinnahmen im Tresor', type: 'BOOLEAN', isRequired: true, sortOrder: 2 },
+                  { text: 'Kassenlade offen lassen', type: 'BOOLEAN', isRequired: true, sortOrder: 3 },
+                ],
+              },
+            },
+            {
+              name: 'Fläche & Sicherheit',
+              sortOrder: 1,
+              items: {
+                create: [
+                  { text: 'Verkaufsfläche aufgeräumt', type: 'BOOLEAN', isRequired: true, sortOrder: 0 },
+                  { text: 'Umkleidekabinen leer', type: 'BOOLEAN', isRequired: true, sortOrder: 1 },
+                  { text: 'Alle Fenster geschlossen', type: 'BOOLEAN', isRequired: true, sortOrder: 2 },
+                  { text: 'Beleuchtung aus (außer Notbeleuchtung)', type: 'BOOLEAN', isRequired: true, sortOrder: 3 },
+                  { text: 'Alarm aktiviert', type: 'BOOLEAN', isRequired: true, sortOrder: 4 },
+                  { text: 'Tür abgeschlossen', type: 'BOOLEAN', isRequired: true, sortOrder: 5 },
+                ],
+              },
+            },
+          ],
+        },
+      },
+    });
+
+    await prisma.checklistTemplate.create({
+      data: {
+        name: 'Wareneingang Checkliste',
+        description: 'Checkliste für die Prüfung und Bearbeitung von Wareneingängen.',
+        tenantId: null,
+        isDefault: true,
+        createdBy: admin.id,
+        sections: {
+          create: [
+            {
+              name: 'Lieferung prüfen',
+              sortOrder: 0,
+              items: {
+                create: [
+                  { text: 'Lieferschein vorhanden', type: 'BOOLEAN', isRequired: true, sortOrder: 0 },
+                  { text: 'Anzahl Kartons stimmt', type: 'BOOLEAN', isRequired: true, sortOrder: 1 },
+                  { text: 'Äußere Beschädigungen geprüft', type: 'BOOLEAN', isRequired: true, sortOrder: 2 },
+                  { text: 'Abweichungen dokumentiert', type: 'TEXT', isRequired: false, sortOrder: 3 },
+                ],
+              },
+            },
+            {
+              name: 'Ware einräumen',
+              sortOrder: 1,
+              items: {
+                create: [
+                  { text: 'Ware ausgepackt und kontrolliert', type: 'BOOLEAN', isRequired: true, sortOrder: 0 },
+                  { text: 'Sicherungsetiketten angebracht', type: 'BOOLEAN', isRequired: true, sortOrder: 1 },
+                  { text: 'Preise korrekt ausgezeichnet', type: 'BOOLEAN', isRequired: true, sortOrder: 2 },
+                  { text: 'Auf Verkaufsfläche einsortiert', type: 'BOOLEAN', isRequired: true, sortOrder: 3 },
+                  { text: 'Verpackungsmaterial entsorgt', type: 'BOOLEAN', isRequired: false, sortOrder: 4 },
+                ],
+              },
+            },
+          ],
+        },
+      },
+    });
+    console.log('✓ Checklisten: 3 weitere Default-Templates erstellt (Öffnung, Schließung, Wareneingang)');
+  } else {
+    console.log('✓ Checklisten zusätzliche Templates bereits vorhanden');
+  }
+
+  // ============================================================
+  // Newsletter — Demo-Newsletter
+  // ============================================================
+
+  const existingNewsletter = await prisma.newsletter.findFirst({
+    where: { tenantId: tenant1.id },
+  });
+
+  if (!existingNewsletter) {
+    const taUser = await prisma.user.findUnique({ where: { email: 'ta@modehouse.de' } });
+    if (taUser) {
+      await prisma.newsletter.create({
+        data: {
+          tenantId: tenant1.id,
+          title: 'Modehouse Team-News — März 2026',
+          content: 'Willkommen zur März-Ausgabe unserer Team-News!',
+          status: 'PUBLISHED',
+          publishedAt: new Date(),
+          createdBy: taUser.id,
+          sections: {
+            create: [
+              { title: 'Highlight des Monats', content: 'Unsere neue "Summer Breeze" Kollektion ist eingetroffen! Alle Stores haben die neuen Teile ab sofort auf der Fläche. Bitte macht euch mit den Materialien und Schnitten vertraut — die Produktschulung findet ihr in der Training Hub.', sortOrder: 0 },
+              { title: 'Top-Performer', content: 'Herzlichen Glückwunsch an Lisa Becker (Düsseldorf Kö) — sie hat diesen Monat die höchste Conversion-Rate (34%) erreicht! Als Anerkennung erhält sie einen €50 Gutschein.', sortOrder: 1 },
+              { title: 'Neues im Team', content: 'Wir begrüßen zwei neue Kolleginnen: Anna (Köln Schildergasse) und Julia (Essen Limbecker). Bitte heißt sie herzlich willkommen!', sortOrder: 2 },
+              { title: 'Termine', content: '- 15.03.: VM-Update für Frühjahr (alle Stores)\n- 22.03.: Quartals-Meeting (Regional Manager)\n- 31.03.: Monatsabschluss', sortOrder: 3 },
+            ],
+          },
+        },
+      });
+    }
+    console.log('✓ Newsletter: 1 Demo-Newsletter erstellt');
+  } else {
+    console.log('✓ Newsletter Demo-Daten bereits vorhanden');
+  }
+
+  // ============================================================
+  // Team Push — Demo-Nachrichten
+  // ============================================================
+
+  const existingMessage = await prisma.teamMessage.findFirst({
+    where: { tenantId: tenant1.id },
+  });
+
+  if (!existingMessage) {
+    const taUser = await prisma.user.findUnique({ where: { email: 'ta@modehouse.de' } });
+    if (taUser) {
+      await prisma.teamMessage.create({
+        data: {
+          tenantId: tenant1.id,
+          title: '🎯 Cross-Selling Challenge startet heute!',
+          body: 'Ab heute läuft unsere Cross-Selling Challenge. Ziel: Jede Beratung soll mindestens ein Accessoire beinhalten. Der/die Beste gewinnt einen €50 Gutschein. Viel Erfolg!',
+          priority: 'HIGH',
+          targetType: 'ALL',
+          sentBy: taUser.id,
+        },
+      });
+
+      await prisma.teamMessage.create({
+        data: {
+          tenantId: tenant1.id,
+          title: 'Neue Kollektion: Summer Breeze eingetroffen',
+          body: 'Die Summer Breeze Kollektion ist in allen Stores angekommen. Bitte bis morgen Abend eingeräumt haben. VM-Guideline beachten!',
+          priority: 'NORMAL',
+          targetType: 'ALL',
+          sentBy: taUser.id,
+        },
+      });
+    }
+    console.log('✓ Team Push: 2 Demo-Nachrichten erstellt');
+  } else {
+    console.log('✓ Team Push Demo-Daten bereits vorhanden');
+  }
+
+  // ============================================================
+  // Zusätzliche SOP-Dokumente
+  // ============================================================
+
+  const existingVmSop = await prisma.sop.findFirst({
+    where: { tenantId: null, title: 'Schaufenster-Wechsel' },
+  });
+
+  if (!existingVmSop) {
+    const catAblaeufe = await prisma.sopCategory.findFirst({ where: { tenantId: null, name: 'Abläufe' } });
+    if (catAblaeufe) {
+      await prisma.sop.create({
+        data: {
+          title: 'Schaufenster-Wechsel',
+          categoryId: catAblaeufe.id,
+          tenantId: null,
+          status: 'PUBLISHED',
+          publishedAt: new Date(),
+          createdBy: admin.id,
+          content: `# Schaufenster-Wechsel — SOP
+
+## Frequenz
+Alle 2 Wochen oder bei Kampagnenwechsel
+
+## Verantwortlich
+Store Manager + VM-Beauftragter
+
+## Ablauf
+
+### Vorbereitung
+- VM-Guideline für aktuelle Kampagne lesen
+- Outfits im Lager zusammenstellen
+- Accessoires vorbereiten
+
+### Durchführung
+- Nach Ladenschluss oder vor Öffnung
+- Alte Dekoration entfernen
+- Mannequins neu ankleiden
+- Beleuchtung ausrichten
+- Foto machen und in VM-Compliance hochladen
+
+### Qualitätssicherung
+- Schaufenster von außen betrachten
+- Preisschilder korrekt platziert?
+- Beleuchtung optimal?
+- VM-Guideline-Foto als Vergleich nutzen`,
+        },
+      });
+
+      await prisma.sop.create({
+        data: {
+          title: 'Wareneingang bearbeiten',
+          categoryId: catAblaeufe.id,
+          tenantId: null,
+          status: 'PUBLISHED',
+          publishedAt: new Date(),
+          createdBy: admin.id,
+          content: `# Wareneingang — SOP
+
+## Verantwortlich
+Lager-Mitarbeiter / Schichtleiter
+
+## Ablauf
+
+### Lieferung annehmen
+- Lieferschein prüfen und unterschreiben
+- Karton-Anzahl zählen
+- Äußere Beschädigungen dokumentieren
+
+### Ware prüfen
+- Artikelnummern mit Lieferschein abgleichen
+- Qualität stichprobenartig prüfen
+- Abweichungen sofort melden
+
+### Sicherung & Auszeichnung
+- Sicherungsetiketten anbringen
+- Preise im System prüfen
+- Preisschilder drucken und anbringen
+
+### Einräumen
+- Nach VM-Plan auf die Fläche bringen
+- Regal-Bestände auffüllen
+- Überschuss ins Lager sortieren
+- Verpackung fachgerecht entsorgen`,
+        },
+      });
+    }
+    console.log('✓ SOP Bibliothek: 2 weitere Default-SOPs erstellt');
+  } else {
+    console.log('✓ SOP Bibliothek zusätzliche SOPs bereits vorhanden');
+  }
+
+  console.log('\n═══════════════════════════════════════');
+  console.log('  ✓ Seed abgeschlossen — alle Tools mit Templates und Demo-Daten');
+  console.log('═══════════════════════════════════════');
 }
 
 main()
