@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { Users, Plus, Search, Star } from 'lucide-react';
-import { useClients, useCreateClient, useClientelingSummary } from '../../../hooks/useClienteling';
+import { Users, Plus, Search, Star, Calendar, MessageSquare, ChevronLeft, ChevronRight } from 'lucide-react';
+import { useCustomers, useClientelingStores } from '../../../hooks/useClienteling';
 
 const VIP_COLORS: Record<string, string> = {
   GOLD: 'bg-amber-100 text-amber-700',
@@ -12,141 +12,164 @@ const VIP_COLORS: Record<string, string> = {
 export function OverviewPage() {
   const [search, setSearch] = useState('');
   const [vipFilter, setVipFilter] = useState('');
-  const { data, isLoading } = useClients({ search: search || undefined, vipLevel: vipFilter || undefined });
-  const { data: summary } = useClientelingSummary();
-  const create = useCreateClient();
-  const [showForm, setShowForm] = useState(false);
-  const [form, setForm] = useState({ firstName: '', lastName: '', email: '', phone: '', vipLevel: '', preferences: '' });
+  const [storeId, setStoreId] = useState('');
+  const [page, setPage] = useState(1);
 
-  const clients = data?.data ?? [];
+  const { data: stores } = useClientelingStores();
+  const { data, isLoading } = useCustomers({
+    search: search || undefined,
+    vipLevel: vipFilter || undefined,
+    storeId: storeId || undefined,
+    page,
+    pageSize: 20,
+  });
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    create.mutate(
-      { ...form, vipLevel: form.vipLevel || undefined, preferences: form.preferences || undefined },
-      { onSuccess: () => { setShowForm(false); setForm({ firstName: '', lastName: '', email: '', phone: '', vipLevel: '', preferences: '' }); } },
-    );
-  };
+  const customers = data?.data ?? [];
+  const total = data?.total ?? 0;
+  const totalPages = Math.ceil(total / 20);
 
   return (
-    <div className="p-xl max-w-5xl">
+    <div className="p-xl max-w-6xl">
+      {/* Header */}
       <div className="flex items-center justify-between mb-2xl">
         <div>
-          <h1 className="font-display text-h1 text-kore-ink flex items-center gap-sm"><Users size={24} /> Clienteling / CRM</h1>
-          <p className="text-body text-kore-mid mt-xs">Kundenpflege, Interaktionen und VIP-Management.</p>
+          <h1 className="font-display text-h1 text-kore-ink">Clienteling</h1>
+          <p className="text-body text-kore-mid mt-xs">Kundenpflege, Kommunikation und Terminverwaltung</p>
         </div>
-        <button onClick={() => setShowForm(!showForm)} className="flex items-center gap-xs px-md py-sm bg-kore-ink text-kore-white text-small hover:opacity-90">
-          <Plus size={16} /> Neuer Kunde
-        </button>
+        <div className="flex items-center gap-sm">
+          <Link to="/tools/clienteling/appointments" className="flex items-center gap-xs px-lg py-md-sm bg-kore-white border border-kore-border text-kore-ink text-small font-medium uppercase tracking-widest hover:border-kore-ink transition-colors">
+            <Calendar size={16} /> Termine
+          </Link>
+          <Link to="/tools/clienteling/customers/create" className="flex items-center gap-xs px-lg py-md-sm bg-kore-ink text-kore-white text-small font-medium uppercase tracking-widest hover:bg-kore-brass transition-colors">
+            <Plus size={16} /> Neuer Kunde
+          </Link>
+        </div>
       </div>
 
-      {/* Summary Cards */}
-      {summary && (
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-md mb-xl">
-          {[
-            { label: 'Kunden gesamt', value: summary.totalClients },
-            { label: 'VIP-Kunden', value: summary.vipClients },
-            { label: 'Ø Purchases', value: `${summary.avgPurchases?.toFixed(0)}` },
-            { label: 'Interaktionen', value: summary.totalInteractions },
-          ].map((s, i) => (
-            <div key={i} className="bg-kore-white border border-kore-border p-lg text-center">
-              <span className="block text-small text-kore-mid mb-xs">{s.label}</span>
-              <span className="font-display text-h2 text-kore-ink">{s.value}</span>
-            </div>
-          ))}
+      {/* KPI Cards */}
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-xl mb-2xl">
+        <div className="bg-kore-white border border-kore-border p-xl">
+          <span className="text-caption text-kore-mid uppercase tracking-widest">Kunden gesamt</span>
+          <div className="font-display text-h1 text-kore-ink mt-sm">{total}</div>
         </div>
-      )}
-
-      {showForm && (
-        <form onSubmit={handleSubmit} className="bg-kore-white border border-kore-border p-lg mb-xl space-y-md">
-          <div className="grid grid-cols-2 gap-md">
-            <div>
-              <label className="block text-small text-kore-mid mb-xs">Vorname</label>
-              <input value={form.firstName} onChange={e => setForm({ ...form, firstName: e.target.value })} className="w-full border border-kore-border px-md py-sm text-body" required />
-            </div>
-            <div>
-              <label className="block text-small text-kore-mid mb-xs">Nachname</label>
-              <input value={form.lastName} onChange={e => setForm({ ...form, lastName: e.target.value })} className="w-full border border-kore-border px-md py-sm text-body" required />
-            </div>
-            <div>
-              <label className="block text-small text-kore-mid mb-xs">E-Mail</label>
-              <input type="email" value={form.email} onChange={e => setForm({ ...form, email: e.target.value })} className="w-full border border-kore-border px-md py-sm text-body" />
-            </div>
-            <div>
-              <label className="block text-small text-kore-mid mb-xs">Telefon</label>
-              <input value={form.phone} onChange={e => setForm({ ...form, phone: e.target.value })} className="w-full border border-kore-border px-md py-sm text-body" />
-            </div>
-            <div>
-              <label className="block text-small text-kore-mid mb-xs">VIP-Level</label>
-              <select value={form.vipLevel} onChange={e => setForm({ ...form, vipLevel: e.target.value })} className="w-full border border-kore-border px-md py-sm text-body">
-                <option value="">— Kein VIP —</option>
-                <option value="BRONZE">Bronze</option>
-                <option value="SILVER">Silver</option>
-                <option value="GOLD">Gold</option>
-              </select>
-            </div>
-            <div>
-              <label className="block text-small text-kore-mid mb-xs">Präferenzen</label>
-              <input value={form.preferences} onChange={e => setForm({ ...form, preferences: e.target.value })} className="w-full border border-kore-border px-md py-sm text-body" placeholder="z.B. Sneaker, Premium" />
-            </div>
+        <div className="bg-kore-white border border-kore-border p-xl">
+          <span className="text-caption text-kore-mid uppercase tracking-widest">VIP-Kunden</span>
+          <div className="font-display text-h1 text-kore-ink mt-sm">
+            {customers.filter((c: any) => c.vipLevel).length}
           </div>
-          <button type="submit" disabled={create.isPending} className="px-md py-sm bg-kore-ink text-kore-white text-small hover:opacity-90 disabled:opacity-50">
-            {create.isPending ? 'Speichern...' : 'Kunde anlegen'}
-          </button>
-        </form>
-      )}
+        </div>
+        <div className="bg-kore-white border border-kore-border p-xl">
+          <span className="text-caption text-kore-mid uppercase tracking-widest">Interaktionen</span>
+          <div className="font-display text-h1 text-kore-ink mt-sm">
+            {customers.reduce((s: number, c: any) => s + (c._count?.interactions ?? 0), 0)}
+          </div>
+        </div>
+        <div className="bg-kore-white border border-kore-border p-xl">
+          <span className="text-caption text-kore-mid uppercase tracking-widest">Termine</span>
+          <div className="font-display text-h1 text-kore-ink mt-sm">
+            {customers.reduce((s: number, c: any) => s + (c._count?.appointments ?? 0), 0)}
+          </div>
+        </div>
+      </div>
 
       {/* Filters */}
-      <div className="flex gap-md mb-lg">
-        <div className="relative flex-1">
+      <div className="flex flex-wrap gap-md mb-lg">
+        <div className="relative flex-1 min-w-[200px]">
           <Search size={16} className="absolute left-md top-1/2 -translate-y-1/2 text-kore-mid" />
           <input
             value={search}
-            onChange={e => setSearch(e.target.value)}
+            onChange={e => { setSearch(e.target.value); setPage(1); }}
             placeholder="Suche nach Name, E-Mail, Telefon..."
             className="w-full border border-kore-border pl-2xl pr-md py-sm text-body"
           />
         </div>
-        <select value={vipFilter} onChange={e => setVipFilter(e.target.value)} className="border border-kore-border px-md py-sm text-body">
+        {stores && stores.length > 1 && (
+          <select value={storeId} onChange={e => { setStoreId(e.target.value); setPage(1); }} className="border border-kore-border px-md py-sm text-body">
+            <option value="">Alle Stores</option>
+            {stores.map((s: any) => <option key={s.id} value={s.id}>{s.name}</option>)}
+          </select>
+        )}
+        <select value={vipFilter} onChange={e => { setVipFilter(e.target.value); setPage(1); }} className="border border-kore-border px-md py-sm text-body">
           <option value="">Alle Kunden</option>
           <option value="BRONZE">Bronze</option>
-          <option value="SILVER">Silver</option>
+          <option value="SILVER">Silber</option>
           <option value="GOLD">Gold</option>
         </select>
       </div>
 
-      {/* Client List */}
+      {/* Customer List */}
       {isLoading ? (
         <div className="text-body text-kore-mid">Lade Kunden...</div>
-      ) : !clients.length ? (
-        <div className="bg-kore-white border border-kore-border p-2xl text-center text-body text-kore-mid">Keine Kunden gefunden.</div>
-      ) : (
-        <div className="space-y-sm">
-          {clients.map((c: any) => (
-            <Link key={c.id} to={`/tools/clienteling/clients/${c.id}`} className="block bg-kore-white border border-kore-border p-md hover:border-kore-ink transition-colors">
-              <div className="flex items-center justify-between">
-                <div className="flex items-center gap-md">
-                  <div className="w-10 h-10 bg-kore-bg flex items-center justify-center text-kore-mid font-medium">
-                    {c.firstName?.[0]}{c.lastName?.[0]}
-                  </div>
-                  <div>
-                    <span className="font-medium text-kore-ink">{c.firstName} {c.lastName}</span>
-                    <div className="text-small text-kore-mid">{c.email || c.phone || '—'}</div>
-                  </div>
-                </div>
-                <div className="flex items-center gap-sm">
-                  {c.vipLevel && (
-                    <span className={`flex items-center gap-xs px-sm py-xs text-small ${VIP_COLORS[c.vipLevel] ?? 'bg-kore-bg text-kore-mid'}`}>
-                      <Star size={12} /> {c.vipLevel}
-                    </span>
-                  )}
-                  <span className="text-small text-kore-mid">{c._count?.interactions ?? 0} Interaktionen</span>
-                  <span className="text-small text-kore-mid">{c.totalPurchases} Käufe</span>
-                </div>
-              </div>
-            </Link>
-          ))}
+      ) : !customers.length ? (
+        <div className="bg-kore-white border border-kore-border p-3xl flex flex-col items-center text-center">
+          <Users size={48} className="text-kore-faint mb-lg" />
+          <h2 className="font-display text-h2 text-kore-ink mb-md">Noch keine Kunden</h2>
+          <p className="text-body text-kore-mid max-w-md mb-xl">Legen Sie Ihren ersten Kunden an, um mit dem Clienteling zu beginnen.</p>
+          <Link to="/tools/clienteling/customers/create" className="flex items-center gap-sm bg-kore-ink text-kore-white px-xl py-md-sm text-small font-medium uppercase tracking-widest hover:bg-kore-brass transition-colors">
+            <Plus size={16} /> Kunden anlegen
+          </Link>
         </div>
+      ) : (
+        <>
+          <div className="space-y-sm">
+            {customers.map((c: any) => (
+              <Link
+                key={c.id}
+                to={`/tools/clienteling/customers/${c.id}`}
+                className="block bg-kore-white border border-kore-border p-lg hover:border-kore-ink transition-colors"
+              >
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-md">
+                    <div className="w-10 h-10 bg-kore-bg flex items-center justify-center text-kore-mid font-medium text-small">
+                      {c.firstName?.[0]}{c.lastName?.[0]}
+                    </div>
+                    <div>
+                      <span className="font-medium text-kore-ink">{c.firstName} {c.lastName}</span>
+                      <div className="text-small text-kore-mid">
+                        {c.email || c.phone || '--'} {c.store?.name ? `· ${c.store.name}` : ''}
+                      </div>
+                    </div>
+                  </div>
+                  <div className="flex items-center gap-md">
+                    {c.vipLevel && (
+                      <span className={`flex items-center gap-xs px-sm py-xs text-small ${VIP_COLORS[c.vipLevel] ?? 'bg-kore-bg text-kore-mid'}`}>
+                        <Star size={12} /> {c.vipLevel}
+                      </span>
+                    )}
+                    {c.loyaltyPoints > 0 && (
+                      <span className="text-small text-kore-brass font-medium">{c.loyaltyPoints} Pkt.</span>
+                    )}
+                    <span className="text-small text-kore-mid flex items-center gap-xs">
+                      <MessageSquare size={12} /> {c._count?.interactions ?? 0}
+                    </span>
+                    <span className="text-small text-kore-mid flex items-center gap-xs">
+                      <Calendar size={12} /> {c._count?.appointments ?? 0}
+                    </span>
+                    {c.totalSpent > 0 && (
+                      <span className="text-small font-medium text-emerald-700">{c.totalSpent.toFixed(0)} EUR</span>
+                    )}
+                  </div>
+                </div>
+              </Link>
+            ))}
+          </div>
+
+          {/* Pagination */}
+          {totalPages > 1 && (
+            <div className="flex items-center justify-between mt-xl">
+              <span className="text-small text-kore-mid">{total} Kunden insgesamt</span>
+              <div className="flex items-center gap-sm">
+                <button onClick={() => setPage(p => Math.max(1, p - 1))} disabled={page <= 1} className="p-sm border border-kore-border hover:border-kore-ink disabled:opacity-30 transition-colors">
+                  <ChevronLeft size={16} />
+                </button>
+                <span className="text-small text-kore-mid">Seite {page} von {totalPages}</span>
+                <button onClick={() => setPage(p => Math.min(totalPages, p + 1))} disabled={page >= totalPages} className="p-sm border border-kore-border hover:border-kore-ink disabled:opacity-30 transition-colors">
+                  <ChevronRight size={16} />
+                </button>
+              </div>
+            </div>
+          )}
+        </>
       )}
     </div>
   );

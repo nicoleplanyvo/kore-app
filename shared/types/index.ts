@@ -605,41 +605,88 @@ export interface KpiSummary {
 }
 
 // ============================================================
-// Budget Tracker — Types
+// Budget Tracker — Umsatz-Ziel-Tracking Types
 // ============================================================
 
-export type BudgetType = 'MONTHLY' | 'QUARTERLY' | 'YEARLY';
-export type BudgetCategory = 'REVENUE' | 'COGS' | 'LABOR' | 'RENT' | 'MARKETING' | 'OTHER';
+export type RevenuePeriodType = 'YEARLY' | 'QUARTERLY' | 'MONTHLY';
+export type RevenueEntryTag = 'NORMAL' | 'AKTION' | 'EVENT';
+export type RevenueEntrySource = 'MANUAL' | 'CSV';
+export type RevenueChangeStatus = 'PENDING' | 'APPROVED' | 'REJECTED';
 
-export interface BudgetPeriod {
+export interface RevenueConfig {
+  id: string;
+  tenantId: string;
+  currency: string;
+  locale: string;
+  comparisonYoy: boolean;
+  comparisonRank: boolean;
+  retentionMonths: number;
+  weekdayWeights: Record<string, number>;
+}
+
+export interface RevenuePeriod {
   id: string;
   tenantId: string;
   storeId: string;
-  period: string;
-  budgetType: BudgetType;
-  revenue: number;
-  cogs: number;
-  labor: number;
-  rent: number;
-  marketing: number;
-  other: number;
+  periodType: RevenuePeriodType;
+  periodKey: string;
+  parentId: string | null;
+  startDate: string;
+  endDate: string;
+  targetAmount: number;
+  status: string;
   notes: string | null;
   createdBy: string;
   createdAt: string;
   updatedAt: string;
   store?: { id: string; name: string; city: string | null };
-  actuals?: BudgetActual[];
+  entries?: RevenueEntry[];
+  children?: RevenuePeriod[];
+  dayOverrides?: RevenueDayOverride[];
+  changeRequests?: RevenueChangeRequest[];
+  // Computed fields (returned by API)
+  totalRevenue?: number;
+  achievementPct?: number;
+  remainingAmount?: number;
+  daysLeft?: number;
+  dailyNeeded?: number;
+  forecast?: number;
 }
 
-export interface BudgetActual {
+export interface RevenueDayOverride {
   id: string;
-  budgetPeriodId: string;
-  category: BudgetCategory;
-  actualAmount: number;
+  periodId: string;
   date: string;
-  description: string | null;
+  target: number;
+}
+
+export interface RevenueEntry {
+  id: string;
+  periodId: string;
+  amount: number;
+  date: string;
+  time: string | null;
+  comment: string | null;
+  tag: string | null;
+  source: string;
   enteredBy: string;
   createdAt: string;
+}
+
+export interface RevenueChangeRequest {
+  id: string;
+  periodId: string;
+  oldTarget: number;
+  newTarget: number;
+  reason: string | null;
+  status: RevenueChangeStatus;
+  requestedBy: string;
+  reviewedBy: string | null;
+  reviewNote: string | null;
+  createdAt: string;
+  reviewedAt: string | null;
+  requester?: { id: string; name: string };
+  reviewer?: { id: string; name: string };
 }
 
 // ============================================================
@@ -940,41 +987,92 @@ export interface TrainingLog {
 }
 
 // ============================================================
-// Challenges — Types
+// Challenges — Gamification & Wettbewerbe Types
 // ============================================================
 
-export type ChallengeType = 'INDIVIDUAL' | 'TEAM' | 'STORE';
-export type ChallengeStatus = 'DRAFT' | 'ACTIVE' | 'COMPLETED' | 'CANCELLED';
+export type ChallengeScope = 'INDIVIDUAL' | 'TEAM';
+export type ChallengeScoringType = 'ABSOLUTE' | 'RELATIVE' | 'POINTS';
+export type ChallengeStatus = 'DRAFT' | 'PLANNED' | 'ACTIVE' | 'EVALUATION' | 'PUBLISHED' | 'ARCHIVED';
+export type ChallengeVisibility = 'PUBLIC' | 'PRIVATE' | 'TOP_N';
+export type ChallengeParticipationType = 'AUTO' | 'INVITE' | 'OPTIN';
 
-export interface Challenge {
+export interface ChallengeTemplate {
   id: string;
   tenantId: string;
   title: string;
   description: string | null;
-  type: ChallengeType;
+  scope: ChallengeScope;
+  scoringType: ChallengeScoringType;
   metric: string | null;
   targetValue: number | null;
+  rules: string | null;
+  fairnessNote: string | null;
+  tags: string | null;
+  durationDays: number | null;
+  reward: string | null;
+  badgeName: string | null;
+  createdAt: string;
+}
+
+export interface Challenge {
+  id: string;
+  tenantId: string;
+  templateId: string | null;
+  title: string;
+  description: string | null;
+  scope: ChallengeScope;
+  scoringType: ChallengeScoringType;
+  metric: string | null;
+  targetValue: number | null;
+  rules: string | null;
+  fairnessNote: string | null;
+  tags: string | null;
   startDate: string;
   endDate: string;
   reward: string | null;
+  badgeName: string | null;
   status: ChallengeStatus;
+  visibility: ChallengeVisibility;
+  visibleTopN: number | null;
+  participationType: ChallengeParticipationType;
+  storeIds: string | null;
+  regionId: string | null;
+  isRecurring: boolean;
   createdBy: string;
   createdAt: string;
   updatedAt: string;
   participants?: ChallengeParticipant[];
-  _count?: { participants: number };
+  entries?: ChallengeEntry[];
+  _count?: { participants: number; entries: number };
+  // Computed
+  daysLeft?: number;
+  totalParticipants?: number;
 }
 
 export interface ChallengeParticipant {
   id: string;
   challengeId: string;
-  userId: string;
+  userId: string | null;
   storeId: string | null;
+  teamName: string | null;
   currentValue: number;
+  handicap: number;
   rank: number | null;
+  accepted: boolean;
   completedAt: string | null;
   user?: { id: string; name: string };
   store?: { id: string; name: string } | null;
+  entries?: ChallengeEntry[];
+}
+
+export interface ChallengeEntry {
+  id: string;
+  challengeId: string;
+  participantId: string;
+  value: number;
+  note: string | null;
+  enteredBy: string;
+  createdAt: string;
 }
 
 // ============================================================
@@ -1043,8 +1141,11 @@ export interface OnboardingProgress {
 // Coaching — 1:1 Coaching — Types
 // ============================================================
 
-export type CoachingSessionType = 'REGULAR' | 'AD_HOC' | 'FOLLOW_UP';
-export type CoachingSessionStatus = 'SCHEDULED' | 'COMPLETED' | 'CANCELLED';
+export type CoachingSessionType = 'ONE_ON_ONE' | 'FLOOR' | 'GROUP';
+export type CoachingSessionStatus = 'PLANNED' | 'SELF_ASSESSMENT' | 'PREPARATION' | 'IN_PROGRESS' | 'DOCUMENTATION' | 'CONFIRMATION' | 'COMPLETED' | 'ARCHIVED' | 'CANCELLED' | 'NO_SHOW';
+export type CoachingActionItemStatus = 'OPEN' | 'IN_PROGRESS' | 'COMPLETED' | 'CANCELLED';
+export type CoachingActionItemPriority = 'LOW' | 'MEDIUM' | 'HIGH';
+export type CoachingTemplateSectionType = 'RATING' | 'TEXT' | 'CHECKBOX' | 'COMPETENCY';
 
 export interface CoachingSession {
   id: string;
@@ -1052,19 +1153,120 @@ export interface CoachingSession {
   storeId: string;
   coachId: string;
   coacheeId: string;
+  templateId: string | null;
   scheduledAt: string;
+  completedAt: string | null;
   duration: number;
   type: CoachingSessionType;
   status: CoachingSessionStatus;
+  title: string | null;
+  location: string | null;
   notes: string | null;
-  actionItems: string | null;
+  privateNotes: string | null;
+  selfAssessmentNotes: string | null;
+  managerSummary: string | null;
+  coacheeConfirmation: boolean;
+  coacheeComment: string | null;
   mood: number | null;
+  overallRating: number | null;
   followUpDate: string | null;
+  cancelCount: number;
+  escalated: boolean;
   createdAt: string;
   updatedAt: string;
   store?: { id: string; name: string };
   coach?: { id: string; name: string };
   coachee?: { id: string; name: string };
+  template?: CoachingTemplate;
+  sections?: CoachingSessionSection[];
+  actionItems?: CoachingActionItem[];
+  feedback?: CoachingFeedback[];
+}
+
+export interface CoachingTemplate {
+  id: string;
+  tenantId: string;
+  name: string;
+  description: string | null;
+  type: CoachingSessionType;
+  isDefault: boolean;
+  isActive: boolean;
+  ratingScale: number;
+  ratingLabels: string | null;
+  defaultDuration: number;
+  defaultGoals: string | null;
+  sortOrder: number;
+  createdAt: string;
+  updatedAt: string;
+  sections?: CoachingTemplateSection[];
+}
+
+export interface CoachingTemplateSection {
+  id: string;
+  templateId: string;
+  title: string;
+  description: string | null;
+  type: CoachingTemplateSectionType;
+  competencies: string | null;
+  weight: number;
+  sortOrder: number;
+  isRequired: boolean;
+  createdAt: string;
+}
+
+export interface CoachingSessionSection {
+  id: string;
+  sessionId: string;
+  templateSectionId: string | null;
+  title: string;
+  type: string;
+  managerRating: number | null;
+  selfRating: number | null;
+  managerComment: string | null;
+  selfComment: string | null;
+  checkboxValue: boolean | null;
+  textValue: string | null;
+  sortOrder: number;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface CoachingActionItem {
+  id: string;
+  sessionId: string;
+  tenantId: string;
+  title: string;
+  description: string | null;
+  assigneeId: string;
+  status: CoachingActionItemStatus;
+  priority: CoachingActionItemPriority;
+  dueDate: string | null;
+  completedAt: string | null;
+  linkedPlanId: string | null;
+  linkedCourseId: string | null;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface CoachingFeedback {
+  id: string;
+  sessionId: string;
+  rating: number;
+  comment: string | null;
+  isAnonymous: boolean;
+  createdAt: string;
+}
+
+export interface CoachingSettings {
+  id: string;
+  tenantId: string;
+  ratingScale: number;
+  ratingLabels: string | null;
+  defaultFrequencyDays: number;
+  escalationThreshold: number;
+  reminderDaysBefore: number;
+  createdAt: string;
+  updatedAt: string;
 }
 
 // ============================================================
@@ -1120,19 +1322,65 @@ export interface DevelopmentReview {
 // ============================================================
 
 export type AppraisalCycleStatus = 'DRAFT' | 'ACTIVE' | 'COMPLETED';
-export type AppraisalStatus = 'PENDING' | 'SELF_REVIEW' | 'MANAGER_REVIEW' | 'COMPLETED';
+export type AppraisalStatus = 'OPEN' | 'SELF_ASSESSMENT' | 'MANAGER_REVIEW' | 'RELEASED' | 'CONFIRMED' | 'ARCHIVED';
+export type AppraisalGoalStatus = 'OPEN' | 'IN_PROGRESS' | 'ACHIEVED' | 'MISSED';
+
+export interface AppraisalTemplate {
+  id: string;
+  tenantId: string;
+  name: string;
+  description: string | null;
+  ratingScale: number;
+  ratingLabels: string | null; // JSON string array
+  isActive: boolean;
+  createdAt: string;
+  updatedAt: string;
+  categories?: AppraisalTemplateCategory[];
+  defaultGoals?: AppraisalTemplateGoal[];
+  _count?: { cycles: number };
+}
+
+export interface AppraisalTemplateCategory {
+  id: string;
+  templateId: string;
+  name: string;
+  description: string | null;
+  weight: number;
+  sortOrder: number;
+}
+
+export interface AppraisalTemplateGoal {
+  id: string;
+  templateId: string;
+  title: string;
+  description: string | null;
+  sortOrder: number;
+}
 
 export interface AppraisalCycle {
   id: string;
   tenantId: string;
+  templateId: string | null;
   name: string;
   period: string | null;
   startDate: string;
   endDate: string;
   status: AppraisalCycleStatus;
+  retentionMonths: number;
   createdAt: string;
   updatedAt: string;
+  template?: { id: string; name: string } | null;
+  categories?: AppraisalCycleCategory[];
   _count?: { appraisals: number };
+}
+
+export interface AppraisalCycleCategory {
+  id: string;
+  cycleId: string;
+  name: string;
+  description: string | null;
+  weight: number;
+  sortOrder: number;
 }
 
 export interface Appraisal {
@@ -1142,13 +1390,15 @@ export interface Appraisal {
   employeeId: string;
   managerId: string;
   status: AppraisalStatus;
-  selfRating: number | null;
-  managerRating: number | null;
-  overallRating: number | null;
+  weightedScore: number | null;
   strengths: string | null;
   improvements: string | null;
-  goals: string | null;
   meetingNotes: string | null;
+  employeeComment: string | null;
+  managerSummary: string | null;
+  releasedAt: string | null;
+  confirmedAt: string | null;
+  archivedAt: string | null;
   completedAt: string | null;
   createdAt: string;
   updatedAt: string;
@@ -1156,6 +1406,41 @@ export interface Appraisal {
   store?: { id: string; name: string } | null;
   employee?: { id: string; name: string };
   manager?: { id: string; name: string };
+  ratings?: AppraisalRating[];
+  goals?: AppraisalGoal[];
+}
+
+export interface AppraisalRating {
+  id: string;
+  appraisalId: string;
+  categoryId: string;
+  selfRating: number | null;
+  managerRating: number | null;
+  selfComment: string | null;
+  managerComment: string | null;
+  category?: AppraisalCycleCategory;
+}
+
+export interface AppraisalGoal {
+  id: string;
+  appraisalId: string;
+  title: string;
+  description: string | null;
+  targetDate: string | null;
+  status: AppraisalGoalStatus;
+  sortOrder: number;
+}
+
+export interface AppraisalCalibrationNote {
+  id: string;
+  cycleId: string;
+  fromUserId: string;
+  toUserId: string;
+  storeId: string | null;
+  message: string;
+  createdAt: string;
+  fromUser?: { id: string; name: string };
+  toUser?: { id: string; name: string };
 }
 
 // ============================================================
@@ -1284,14 +1569,115 @@ export interface WellbeingResource {
 
 // ── Kat.6: Kommunikation & Signal ─────────────────────
 
-export type BriefingType = 'MORNING' | 'EVENING' | 'SPECIAL';
+export type BriefingScope = 'STORE' | 'COMPANY';
+export type BriefingPriority = 'NORMAL' | 'IMPORTANT' | 'URGENT';
+export type BriefingStatus = 'DRAFT' | 'PUBLISHED' | 'ARCHIVED';
+
+export interface BriefingTemplate {
+  id: string;
+  tenantId: string;
+  name: string;
+  description: string | null;
+  isActive: boolean;
+  sections?: BriefingTemplateSection[];
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface BriefingTemplateSection {
+  id: string;
+  templateId: string;
+  name: string;
+  description: string | null;
+  placeholder: string | null;
+  isRequired: boolean;
+  sortOrder: number;
+}
+
+export interface Briefing {
+  id: string;
+  tenantId: string;
+  storeId: string | null;
+  store?: { id: string; name: string } | null;
+  templateId: string | null;
+  template?: BriefingTemplate | null;
+  scope: BriefingScope;
+  title: string;
+  content: string;
+  priority: BriefingPriority;
+  status: BriefingStatus;
+  targetRoles: string | null;
+  targetRegionId: string | null;
+  createdBy: string;
+  creator?: { id: string; name: string };
+  publishedAt: string | null;
+  scheduledAt: string | null;
+  expiresAt: string | null;
+  updatedContentAt: string | null;
+  sections?: BriefingSection[];
+  attachments?: BriefingAttachment[];
+  tasks?: BriefingTask[];
+  acknowledgments?: BriefingAcknowledgment[];
+  questions?: BriefingQuestion[];
+  _count?: { acknowledgments: number };
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface BriefingSection {
+  id: string;
+  briefingId: string;
+  name: string;
+  content: string;
+  sortOrder: number;
+}
+
+export interface BriefingAttachment {
+  id: string;
+  briefingId: string;
+  fileName: string;
+  fileUrl: string;
+  fileType: string;
+  linkPreview: string | null;
+  sortOrder: number;
+}
+
+export interface BriefingTask {
+  id: string;
+  briefingId: string;
+  title: string;
+  isCompleted: boolean;
+  completedBy: string | null;
+  completedAt: string | null;
+  completer?: { id: string; name: string } | null;
+  sortOrder: number;
+}
+
+export interface BriefingAcknowledgment {
+  id: string;
+  briefingId: string;
+  userId: string;
+  user?: { id: string; name: string };
+  readAt: string;
+}
+
+export interface BriefingQuestion {
+  id: string;
+  briefingId: string;
+  askerId: string;
+  asker?: { id: string; name: string };
+  question: string;
+  answer: string | null;
+  answeredBy: string | null;
+  answerer?: { id: string; name: string } | null;
+  answeredAt: string | null;
+  createdAt: string;
+}
+
 export type HandoverStatus = 'DRAFT' | 'SUBMITTED' | 'ACKNOWLEDGED';
 export type MessagePriority = 'NORMAL' | 'HIGH' | 'URGENT';
 export type MessageTargetType = 'ALL' | 'STORE' | 'ROLE';
 export type NewsletterStatus = 'DRAFT' | 'PUBLISHED' | 'ARCHIVED';
-
-export interface Briefing { id: string; storeId: string; title: string; content: string; date: string; type: BriefingType; createdBy: string; publishedAt: string | null; }
-export interface BriefingAcknowledgment { id: string; briefingId: string; userId: string; readAt: string; }
 export interface Handover { id: string; storeId: string; fromUserId: string; toUserId: string | null; shiftDate: string; shiftType: string | null; status: HandoverStatus; salesUpdate: string | null; openTasks: string | null; incidents: string | null; customerNotes: string | null; stockNotes: string | null; generalNotes: string | null; }
 export interface TeamMessage { id: string; tenantId: string; title: string; body: string; priority: MessagePriority; targetType: MessageTargetType; targetStoreIds: string | null; sentBy: string; }
 export interface TeamMessageRead { id: string; messageId: string; userId: string; readAt: string; }
@@ -1301,16 +1687,26 @@ export interface NewsletterView { id: string; newsletterId: string; userId: stri
 
 // ── Kat.7: Customer, Clienteling & Stock ──────────────
 
-export type ClientInteractionType = 'VISIT' | 'CALL' | 'EMAIL' | 'EVENT';
+export type ClientInteractionType = 'VISIT' | 'CALL' | 'EMAIL' | 'EVENT' | 'PURCHASE' | 'COMPLAINT' | 'RETURN';
 export type ClientTaskStatus = 'OPEN' | 'DONE' | 'CANCELLED';
+export type ClientTaskType = 'MANUAL' | 'AUTO';
+export type ClientTaskPriority = 'LOW' | 'NORMAL' | 'HIGH';
+export type ClientNoteType = 'GENERAL' | 'CONSULTATION' | 'COMPLAINT' | 'WISH';
+export type ClientOccasionType = 'BIRTHDAY' | 'ANNIVERSARY' | 'CUSTOM';
+export type ClientPreferredChannel = 'PHONE' | 'EMAIL' | 'WHATSAPP' | 'SMS';
+export type CrmHistoryMode = 'CLIENT' | 'STORE';
 export type StockCalloutUrgency = 'LOW' | 'NORMAL' | 'HIGH' | 'CRITICAL';
 export type StockCalloutStatus = 'OPEN' | 'ORDERED' | 'RECEIVED' | 'CANCELLED';
 export type OrderStatus = 'ORDERED' | 'SHIPPED' | 'IN_TRANSIT' | 'DELIVERED' | 'RETURNED';
 
 export interface ConversionGoal { id: string; storeId: string; period: string; targetConversion: number | null; targetAvgBasket: number | null; }
-export interface ClientProfile { id: string; storeId: string; firstName: string; lastName: string; email: string | null; phone: string | null; preferences: string | null; vipLevel: string | null; totalPurchases: number; lastVisit: string | null; createdBy: string; }
-export interface ClientInteraction { id: string; clientId: string; userId: string; type: ClientInteractionType; date: string; notes: string | null; purchaseAmount: number | null; }
-export interface ClientTask { id: string; clientId: string; userId: string; title: string; dueDate: string | null; status: ClientTaskStatus; }
+export interface ClientProfile { id: string; storeId: string; firstName: string; lastName: string; email: string | null; phone: string | null; dateOfBirth: string | null; gender: string | null; address: string | null; company: string | null; preferences: string | null; preferredChannel: string | null; wishlist: string | null; tags: string | null; vipLevel: string | null; totalPurchases: number; totalRevenue: number; avgBasket: number; visitCount: number; lastVisit: string | null; activityScore: number; primaryAdvisorId: string | null; consentProfile: boolean; consentMarketing: boolean; consentBirthday: boolean; selfRegistered: boolean; customFields: string | null; isArchived: boolean; archivedAt: string | null; createdBy: string; }
+export interface ClientInteraction { id: string; clientId: string; userId: string; type: ClientInteractionType; date: string; notes: string | null; purchaseAmount: number | null; items: string | null; category: string | null; paymentMethod: string | null; }
+export interface ClientTask { id: string; clientId: string; userId: string; title: string; description: string | null; type: ClientTaskType; priority: ClientTaskPriority; dueDate: string | null; status: ClientTaskStatus; completedAt: string | null; }
+export interface ClientNote { id: string; clientId: string; userId: string; content: string; type: ClientNoteType; isPinned: boolean; mentionedUserIds: string | null; parentInteractionId: string | null; }
+export interface ClientOccasion { id: string; clientId: string; type: ClientOccasionType; title: string; date: string; reminderDays: number; isRecurring: boolean; }
+export interface ClientSegment { id: string; storeId: string | null; tenantId: string; name: string; filters: string; createdBy: string; }
+export interface CrmSettings { id: string; storeId: string; selfRegistrationEnabled: boolean; selfRegistrationToken: string | null; vipTiers: string | null; autoArchiveDays: number | null; historyMode: CrmHistoryMode; }
 export interface StockCallout { id: string; storeId: string; sku: string; productName: string; currentStock: number; reorderPoint: number; requestedQty: number; urgency: StockCalloutUrgency; status: StockCalloutStatus; reportedBy: string; }
 export interface CustomerOrder { id: string; storeId: string; orderNumber: string; customerName: string; customerEmail: string | null; status: OrderStatus; trackingNumber: string | null; carrier: string | null; estimatedDelivery: string | null; createdBy: string; }
 export interface OrderStatusUpdate { id: string; orderId: string; status: string; updatedBy: string; notes: string | null; }

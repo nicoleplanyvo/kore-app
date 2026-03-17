@@ -10,7 +10,7 @@ interface ProtectedRouteProps {
 }
 
 export function ProtectedRoute({ allowedRoles, minRole }: ProtectedRouteProps) {
-  const { isAuthenticated, isLoading, user } = useAuthStore();
+  const { isAuthenticated, isLoading, user, viewAsRole } = useAuthStore();
 
   if (isLoading) {
     return (
@@ -24,13 +24,16 @@ export function ProtectedRoute({ allowedRoles, minRole }: ProtectedRouteProps) {
     return <Navigate to="/login" replace />;
   }
 
+  // Effektive Rolle: viewAsRole (falls gesetzt) oder echte Rolle
+  const effectiveRole = viewAsRole || user.role;
+
   // Rollenprueefung
-  if (allowedRoles && !allowedRoles.includes(user.role)) {
-    return <Navigate to="/app" replace />;
+  if (allowedRoles && !allowedRoles.includes(effectiveRole)) {
+    return <Navigate to="/" replace />;
   }
 
-  if (minRole && !hasMinRole(user.role, minRole)) {
-    return <Navigate to="/app" replace />;
+  if (minRole && !hasMinRole(effectiveRole, minRole)) {
+    return <Navigate to="/" replace />;
   }
 
   return <Outlet />;

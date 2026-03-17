@@ -25,3 +25,6 @@ uploads/*
 
 # Claude Code
 .claude/worktrees/
+
+# Superpowers brainstorm mockups
+.superpowers/

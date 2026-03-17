@@ -1,18 +1,17 @@
-import { Routes, Route } from 'react-router-dom';
+import { Routes, Route, Navigate } from 'react-router-dom';
 import { OverviewPage } from './pages/OverviewPage';
-import { GuidelinesPage } from './pages/GuidelinesPage';
+import { CheckDetailPage } from './pages/CheckDetailPage';
 import { SubmitPage } from './pages/SubmitPage';
-import { ReviewQueuePage } from './pages/ReviewQueuePage';
-import { SubmissionDetailPage } from './pages/SubmissionDetailPage';
+import { DashboardPage } from './pages/DashboardPage';
 
 export default function VmComplianceRoutes() {
   return (
     <Routes>
       <Route index element={<OverviewPage />} />
-      <Route path="guidelines" element={<GuidelinesPage />} />
+      <Route path="checks/:id" element={<CheckDetailPage />} />
       <Route path="submit" element={<SubmitPage />} />
-      <Route path="review" element={<ReviewQueuePage />} />
-      <Route path="submissions/:id" element={<SubmissionDetailPage />} />
+      <Route path="dashboard" element={<DashboardPage />} />
+      <Route path="*" element={<Navigate to="." replace />} />
     </Routes>
   );
 }

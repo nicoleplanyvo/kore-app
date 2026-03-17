@@ -1,14 +1,14 @@
 import { Routes, Route } from 'react-router-dom';
 import { OverviewPage } from './pages/OverviewPage';
-import { PeriodListPage } from './pages/PeriodListPage';
-import { PeriodDetailPage } from './pages/PeriodDetailPage';
+import { DetailPage } from './pages/DetailPage';
+import { DashboardPage } from './pages/DashboardPage';
 
 export default function BudgetTrackerRoutes() {
   return (
     <Routes>
       <Route index element={<OverviewPage />} />
-      <Route path="periods" element={<PeriodListPage />} />
-      <Route path="periods/:id" element={<PeriodDetailPage />} />
+      <Route path="detail" element={<DetailPage />} />
+      <Route path="dashboard" element={<DashboardPage />} />
     </Routes>
   );
 }

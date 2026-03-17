@@ -1,19 +1,25 @@
 import { NavLink } from 'react-router-dom';
 import {
-  Home, Wrench, LogOut, X,
+  LayoutDashboard, LogOut, X, Wrench,
+  Users, Store, Settings, ShieldCheck, BarChart, Building2, CreditCard,
+  type LucideIcon,
+} from 'lucide-react';
+import { useAuthStore } from '../stores/authStore';
+import { useMyTools } from '../hooks/useMyTools';
+import { useRecentTools } from '../hooks/useRecentTools';
+import { TOOL_ROUTES } from '../lib/toolRoutes';
+import { api } from '../lib/api';
+
+// ── Icon-Mapping: icon string from DB -> Lucide component ──
+// We dynamically import common tool icons so the sidebar can render them.
+import {
   ClipboardCheck, Award, TrendingUp, Camera, BookOpen, BarChart3, Wallet,
   LineChart, Package, Monitor, Activity, Palette, GraduationCap,
   Clock, Trophy, UserPlus, MessageSquare, Compass, Star, CalendarDays,
   Heart, Smile, FileText, ArrowLeftRight, Bell, Mail, Navigation,
-  Map, LayoutDashboard, PackageSearch, Shield, type LucideIcon,
-  Users, Store, Settings, ShieldCheck, BarChart, Building2,
+  Map as MapIcon, PackageSearch, Shield,
 } from 'lucide-react';
-import { useAuthStore } from '../stores/authStore';
-import { useMyTools } from '../hooks/useMyTools';
-import { TOOL_ROUTES } from '../lib/toolRoutes';
-import { api } from '../lib/api';
 
-// Icon-Mapping: icon-String aus DB -> Lucide-Komponente
 const iconMap: Record<string, LucideIcon> = {
   ClipboardCheck, Award, TrendingUp, Camera, BookOpen,
   BarChart3, Wallet, LineChart, Shield, Package,
@@ -21,35 +27,10 @@ const iconMap: Record<string, LucideIcon> = {
   GraduationCap, Clock, Trophy, UserPlus,
   MessageSquare, Compass, Star, CalendarDays, Heart, Smile,
   FileText, ArrowLeftRight, Bell, Mail,
-  PackageSearch, Navigation,
-  Map, LayoutDashboard,
+  PackageSearch, Navigation, Map: MapIcon, LayoutDashboard,
 };
 
-// Kategorie-Labels
-const categoryLabels: Record<string, string> = {
-  STANDARDS_COMPLIANCE: 'Standards & Compliance',
-  PERFORMANCE: 'Performance & Sichtbarkeit',
-  FLOOR: 'Floor in Echtzeit',
-  TRAINING: 'Training & Entwicklung',
-  COACHING_PEOPLE: 'Coaching & People',
-  KOMMUNIKATION: 'Kommunikation & Signal',
-  CUSTOMER_STOCK: 'Customer, Clienteling & Stock',
-  REGIONAL_INSIGHTS: 'Regional Insights',
-};
-
-// Kategorie-Reihenfolge
-const categoryOrder = [
-  'STANDARDS_COMPLIANCE',
-  'PERFORMANCE',
-  'FLOOR',
-  'TRAINING',
-  'COACHING_PEOPLE',
-  'KOMMUNIKATION',
-  'CUSTOMER_STOCK',
-  'REGIONAL_INSIGHTS',
-];
-
-// Rollen-Hierarchie (höherer Index = mehr Rechte)
+// ── Role hierarchy ──
 const ROLE_LEVELS: Record<string, number> = {
   learner: 0,
   store_manager: 1,
@@ -69,29 +50,40 @@ interface AppSidebarProps {
 }
 
 export function AppSidebar({ open, onClose }: AppSidebarProps) {
-  const { user, clearAuth } = useAuthStore();
+  const { user, clearAuth, viewAsRole } = useAuthStore();
+  const effectiveRole = viewAsRole || user?.role || '';
   const { data: myTools } = useMyTools();
+  const { recentTools } = useRecentTools();
 
-  // Tool-Items nach Kategorie gruppieren
-  const toolsByCategory: Record<string, Array<{
-    key: string;
-    to: string;
-    icon: LucideIcon;
-    label: string;
-  }>> = {};
-
+  // Build a lookup from toolKey -> { name, icon, route }
+  const toolLookup = new Map<string, { name: string; icon: LucideIcon; route: string }>();
   for (const assignment of myTools || []) {
     const route = TOOL_ROUTES[assignment.tool.key];
     if (!route) continue;
-    const cat = assignment.tool.category;
-    if (!toolsByCategory[cat]) toolsByCategory[cat] = [];
-    toolsByCategory[cat]!.push({
-      key: assignment.tool.key,
-      to: route,
+    toolLookup.set(assignment.tool.key, {
+      name: assignment.tool.name,
       icon: iconMap[assignment.tool.icon || ''] || Wrench,
-      label: assignment.tool.name,
+      route,
     });
   }
+
+  // Recent tools: match against toolLookup, max 5
+  const recentItems = recentTools
+    .map((r) => {
+      const info = toolLookup.get(r.toolKey);
+      if (!info) return null;
+      return { key: r.toolKey, ...info };
+    })
+    .filter(Boolean)
+    .slice(0, 5) as Array<{ key: string; name: string; icon: LucideIcon; route: string }>;
+
+  // Fallback: if no recent tools, show first 5 from myTools
+  const displayTools =
+    recentItems.length > 0
+      ? recentItems
+      : Array.from(toolLookup.entries())
+          .slice(0, 5)
+          .map(([key, info]) => ({ key, ...info }));
 
   const handleLogout = async () => {
     try {
@@ -128,7 +120,7 @@ export function AppSidebar({ open, onClose }: AppSidebarProps) {
           ${open ? 'translate-x-0' : '-translate-x-full'}
         `}
       >
-        {/* Logo + Close on mobile */}
+        {/* Brand header */}
         <div className="px-lg py-xl border-b border-white/10 flex items-center justify-between">
           <div>
             <h1 className="font-display text-h3 text-kore-white tracking-wider">KORE</h1>
@@ -146,50 +138,54 @@ export function AppSidebar({ open, onClose }: AppSidebarProps) {
 
         {/* Navigation */}
         <nav className="flex-1 py-lg px-md-sm overflow-y-auto">
-          {/* Home */}
+          {/* Dashboard */}
           <NavLink
-            to="/app"
+            to="/"
             end
             onClick={onClose}
             className={linkClasses}
           >
-            <Home size={18} />
-            <span className="font-body text-small font-normal">Home</span>
+            <LayoutDashboard size={18} />
+            <span className="font-body text-small font-normal">Dashboard</span>
           </NavLink>
 
-          {/* Tools nach Kategorie */}
-          {categoryOrder
-            .filter((cat) => toolsByCategory[cat]?.length)
-            .map((cat) => (
-              <div key={cat}>
-                <p className="font-body text-[0.6rem] text-kore-faint/50 uppercase tracking-[0.16em] px-md mt-lg mb-xs">
-                  {categoryLabels[cat] || cat}
-                </p>
-                {toolsByCategory[cat]!.map((item) => (
-                  <NavLink
-                    key={item.key}
-                    to={item.to}
-                    onClick={onClose}
-                    className={linkClasses}
-                  >
-                    <item.icon size={18} />
-                    <span className="font-body text-small font-normal">{item.label}</span>
-                  </NavLink>
-                ))}
-              </div>
-            ))}
-
-          {/* ═══ Admin-Bereich (rollenbasiert) ═══ */}
-          {user && hasMinRole(user.role, 'store_manager') && (
+          {/* Zuletzt verwendet */}
+          {displayTools.length > 0 && (
             <div>
-              <p className="font-body text-[0.6rem] text-kore-brass/60 uppercase tracking-[0.16em] px-md mt-xl mb-xs">
+              <p className="font-body text-[0.6rem] text-kore-faint/50 uppercase tracking-[0.16em] px-md mt-lg mb-xs">
+                Zuletzt verwendet
+              </p>
+              {displayTools.map((item) => (
+                <NavLink
+                  key={item.key}
+                  to={item.route}
+                  onClick={onClose}
+                  className={linkClasses}
+                >
+                  <item.icon size={18} />
+                  <span className="font-body text-small font-normal">{item.name}</span>
+                </NavLink>
+              ))}
+            </div>
+          )}
+
+          {/* Alle Tools anzeigen */}
+          <div className="px-md mt-lg mb-md">
+            <NavLink
+              to="/tools"
+              onClick={onClose}
+              className="flex items-center justify-center py-md-sm rounded-sm border border-white/10 text-kore-faint hover:text-kore-white hover:border-white/20 transition-colors duration-200 font-body text-small"
+            >
+              Alle Tools anzeigen
+            </NavLink>
+          </div>
+
+          {/* Administration */}
+          {user && hasMinRole(effectiveRole, 'store_manager') && (
+            <div>
+              <p className="font-body text-[0.6rem] text-kore-brass/60 uppercase tracking-[0.16em] px-md mt-lg mb-xs">
                 Administration
               </p>
-
-              <NavLink to="/admin" end onClick={onClose} className={linkClasses}>
-                <LayoutDashboard size={18} />
-                <span className="font-body text-small font-normal">Dashboard</span>
-              </NavLink>
 
               <NavLink to="/admin/users" onClick={onClose} className={linkClasses}>
                 <Users size={18} />
@@ -201,32 +197,45 @@ export function AppSidebar({ open, onClose }: AppSidebarProps) {
                 <span className="font-body text-small font-normal">Stores</span>
               </NavLink>
 
-              {hasMinRole(user.role, 'regional_manager') && (
+              {hasMinRole(effectiveRole, 'regional_manager') && (
                 <NavLink to="/admin/tools" onClick={onClose} className={linkClasses}>
                   <Settings size={18} />
                   <span className="font-body text-small font-normal">Tools</span>
                 </NavLink>
               )}
+            </div>
+          )}
 
-              {hasMinRole(user.role, 'tenant_admin') && (
-                <>
-                  <NavLink to="/admin/gdpr" onClick={onClose} className={linkClasses}>
-                    <ShieldCheck size={18} />
-                    <span className="font-body text-small font-normal">DSGVO</span>
-                  </NavLink>
-                  <NavLink to="/admin/reporting" onClick={onClose} className={linkClasses}>
-                    <BarChart size={18} />
-                    <span className="font-body text-small font-normal">Reporting</span>
-                  </NavLink>
-                </>
-              )}
+          {/* Plattform (kore_admin only, with some items for tenant_admin+) */}
+          {user && hasMinRole(effectiveRole, 'tenant_admin') && (
+            <div>
+              <p className="font-body text-[0.6rem] text-kore-brass/60 uppercase tracking-[0.16em] px-md mt-lg mb-xs">
+                Plattform
+              </p>
 
-              {hasMinRole(user.role, 'kore_admin') && (
+              {hasMinRole(effectiveRole, 'kore_admin') && (
                 <NavLink to="/admin/tenants" onClick={onClose} className={linkClasses}>
                   <Building2 size={18} />
                   <span className="font-body text-small font-normal">Kunden</span>
                 </NavLink>
               )}
+
+              {hasMinRole(effectiveRole, 'kore_admin') && (
+                <NavLink to="/admin/buchhaltung" onClick={onClose} className={linkClasses}>
+                  <CreditCard size={18} />
+                  <span className="font-body text-small font-normal">Buchhaltung</span>
+                </NavLink>
+              )}
+
+              <NavLink to="/admin/reporting" onClick={onClose} className={linkClasses}>
+                <BarChart size={18} />
+                <span className="font-body text-small font-normal">Reporting</span>
+              </NavLink>
+
+              <NavLink to="/admin/gdpr" onClick={onClose} className={linkClasses}>
+                <ShieldCheck size={18} />
+                <span className="font-body text-small font-normal">DSGVO</span>
+              </NavLink>
             </div>
           )}
         </nav>

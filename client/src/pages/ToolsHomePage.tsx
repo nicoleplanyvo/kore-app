@@ -5,10 +5,12 @@ import {
   Clock, Trophy, UserPlus, MessageSquare, Compass, Star, CalendarDays,
   Heart, Smile, FileText, ArrowLeftRight, Bell, Mail, Navigation,
   Map, LayoutDashboard, PackageSearch, Shield, type LucideIcon,
+  Settings, Users, Store,
 } from 'lucide-react';
 import { useMyTools } from '../hooks/useMyTools';
 import { useAuthStore } from '../stores/authStore';
-import { useNavigate } from 'react-router-dom';
+import { useEffectiveRole } from '../hooks/useEffectiveRole';
+import { useNavigate, Link } from 'react-router-dom';
 import { TOOL_ROUTES } from '../lib/toolRoutes';
 import { CATEGORY_ORDER } from '../lib/moduleCategories';
 
@@ -46,8 +48,19 @@ const roleLabels: Record<string, string> = {
   learner: 'Mitarbeiter',
 };
 
+// Rollen-Untertitel
+const roleSubtitles: Record<string, string> = {
+  kore_admin: 'Plattform verwalten, Kunden betreuen, alle Tools konfigurieren',
+  tenant_admin: 'Stores & Tools verwalten, Templates konfigurieren, Reporting',
+  regional_manager: 'Stores vergleichen, Standards setzen, Teams coachen',
+  multisite_manager: 'Store-Übersicht, Standards prüfen, Reports abrufen',
+  store_manager: 'Tagesgeschäft steuern, Daten erfassen, Team führen',
+  learner: 'Aufgaben erledigen, Schulungen absolvieren, Checklisten ausfüllen',
+};
+
 export function ToolsHomePage() {
   const { user } = useAuthStore();
+  const { role, isOperator, isConfigurator, isAdmin } = useEffectiveRole();
   const { data: myTools, isLoading } = useMyTools();
   const navigate = useNavigate();
 
@@ -67,12 +80,59 @@ export function ToolsHomePage() {
           Hallo, {user?.name?.split(' ')[0] || 'User'}
         </h1>
         <p className="font-body text-small text-kore-mid mt-xs">
-          {roleLabels[user?.role || ''] || user?.role}
+          {roleLabels[role] || role}
+        </p>
+        <p className="font-body text-caption text-kore-mid/60 mt-xs">
+          {roleSubtitles[role] || ''}
         </p>
       </div>
 
+      {/* Quick-Actions je nach Rolle */}
+      {isAdmin && (
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-md mb-xl">
+          <Link
+            to="/admin/users"
+            className="bg-kore-white border border-kore-border p-md flex items-center gap-md hover:border-kore-brass/40 transition-colors"
+          >
+            <Users size={20} className="text-kore-ink" />
+            <div>
+              <p className="font-body text-small text-kore-ink">Benutzer</p>
+              <p className="font-body text-caption text-kore-mid">Verwalten</p>
+            </div>
+          </Link>
+          <Link
+            to="/admin/stores"
+            className="bg-kore-white border border-kore-border p-md flex items-center gap-md hover:border-kore-brass/40 transition-colors"
+          >
+            <Store size={20} className="text-kore-ink" />
+            <div>
+              <p className="font-body text-small text-kore-ink">Stores</p>
+              <p className="font-body text-caption text-kore-mid">Verwalten</p>
+            </div>
+          </Link>
+          <Link
+            to="/admin/tools"
+            className="bg-kore-white border border-kore-border p-md flex items-center gap-md hover:border-kore-brass/40 transition-colors"
+          >
+            <Settings size={20} className="text-kore-ink" />
+            <div>
+              <p className="font-body text-small text-kore-ink">Tool-Zuweisung</p>
+              <p className="font-body text-caption text-kore-mid">Konfigurieren</p>
+            </div>
+          </Link>
+        </div>
+      )}
+
       {/* Tool-Cards */}
-      <h2 className="font-display text-h3 text-kore-ink mb-lg">Meine Tools</h2>
+      <h2 className="font-display text-h3 text-kore-ink mb-lg">
+        {isOperator ? 'Meine Tools' : 'Tools konfigurieren & auswerten'}
+      </h2>
+
+      {isConfigurator && !isAdmin && (
+        <p className="font-body text-small text-kore-mid mb-lg -mt-md">
+          Templates, Standards und Inhalte für Ihre Stores festlegen
+        </p>
+      )}
 
       {isLoading ? (
         <div className="py-xl text-center">
@@ -125,7 +185,7 @@ export function ToolsHomePage() {
                           )}
                           {!route && (
                             <p className="font-body text-[0.6rem] text-kore-brass mt-xs">
-                              Bald verfuegbar
+                              Bald verfügbar
                             </p>
                           )}
                         </div>

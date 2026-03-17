@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { ArrowLeft, BookOpen, Users, Plus, Award } from 'lucide-react';
 import { useCourses, useCreateCourse, useCompletionReport } from '../../../hooks/useTrainingHub';
+import { useEffectiveRole } from '../../../hooks/useEffectiveRole';
 
 const STATUS_COLORS: Record<string, string> = { DRAFT: 'bg-kore-mid', PUBLISHED: 'bg-emerald-500', ARCHIVED: 'bg-amber-500' };
 const STATUS_LABELS: Record<string, string> = { DRAFT: 'Entwurf', PUBLISHED: 'Veröffentlicht', ARCHIVED: 'Archiviert' };
@@ -12,6 +13,7 @@ export function OverviewPage() {
   const { data, isLoading } = useCourses({ page, status: status || undefined });
   const { data: report } = useCompletionReport();
   const createCourse = useCreateCourse();
+  const { isConfigurator } = useEffectiveRole();
   const [showCreate, setShowCreate] = useState(false);
   const [form, setForm] = useState({ title: '', description: '', category: '', durationMinutes: 0, isRequired: false });
 
@@ -53,15 +55,19 @@ export function OverviewPage() {
           <option value="PUBLISHED">Veröffentlicht</option>
           <option value="ARCHIVED">Archiviert</option>
         </select>
-        <Link to="/tools/training-hub/enrollments" className="px-md py-sm border border-kore-border text-small hover:bg-kore-bg transition-colors flex items-center gap-xs">
-          <Users size={14} /> Enrollments
-        </Link>
-        <button onClick={() => setShowCreate(true)} className="px-md py-sm bg-kore-ink text-kore-white text-small hover:opacity-90 transition-opacity flex items-center gap-xs">
-          <Plus size={14} /> Neuer Kurs
-        </button>
+        {isConfigurator && (
+          <Link to="/tools/training-hub/enrollments" className="px-md py-sm border border-kore-border text-small hover:bg-kore-bg transition-colors flex items-center gap-xs">
+            <Users size={14} /> Enrollments
+          </Link>
+        )}
+        {isConfigurator && (
+          <button onClick={() => setShowCreate(true)} className="px-md py-sm bg-kore-ink text-kore-white text-small hover:opacity-90 transition-opacity flex items-center gap-xs">
+            <Plus size={14} /> Neuer Kurs
+          </button>
+        )}
       </div>
 
-      {showCreate && (
+      {isConfigurator && showCreate && (
         <div className="bg-kore-white border border-kore-border p-lg mb-xl">
           <h3 className="font-medium text-kore-ink mb-md">Neuen Kurs anlegen</h3>
           <div className="grid grid-cols-2 gap-md mb-md">

@@ -1,20 +1,22 @@
 import { Routes, Route } from 'react-router-dom';
 import { OverviewPage } from './pages/OverviewPage';
-import { DefinitionsPage } from './pages/DefinitionsPage';
-import { EvaluationListPage } from './pages/EvaluationListPage';
-import { NewEvaluationPage } from './pages/NewEvaluationPage';
-import { ConductEvaluationPage } from './pages/ConductEvaluationPage';
-import { EvaluationDetailPage } from './pages/EvaluationDetailPage';
+import { RevenuePage } from './pages/RevenuePage';
+import { MonthlyPage } from './pages/MonthlyPage';
+import { SettingsPage } from './pages/SettingsPage';
+import { ManagementPage } from './pages/ManagementPage';
+import { AssociatesPage } from './pages/AssociatesPage';
+import { SummaryPage } from './pages/SummaryPage';
 
 export default function StoreStandardsRoutes() {
   return (
     <Routes>
       <Route index element={<OverviewPage />} />
-      <Route path="definitions" element={<DefinitionsPage />} />
-      <Route path="evaluations" element={<EvaluationListPage />} />
-      <Route path="evaluations/new" element={<NewEvaluationPage />} />
-      <Route path="evaluations/:id" element={<EvaluationDetailPage />} />
-      <Route path="evaluations/:id/conduct" element={<ConductEvaluationPage />} />
+      <Route path="revenue" element={<RevenuePage />} />
+      <Route path="monthly" element={<MonthlyPage />} />
+      <Route path="settings" element={<SettingsPage />} />
+      <Route path="management" element={<ManagementPage />} />
+      <Route path="associates" element={<AssociatesPage />} />
+      <Route path="summary" element={<SummaryPage />} />
     </Routes>
   );
 }

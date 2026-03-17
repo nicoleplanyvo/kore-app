@@ -2,13 +2,13 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { api } from '../lib/api';
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
-export function useVmGuidelineDocs(page = 1, status?: string, category?: string) {
+export function useVmGuidelineDocs(page = 1, category?: string, search?: string) {
   return useQuery({
-    queryKey: ['vmg', 'docs', page, status, category],
+    queryKey: ['vmg', 'docs', page, category, search],
     queryFn: () => {
       const params = new URLSearchParams({ page: String(page), pageSize: '20' });
-      if (status) params.set('status', status);
       if (category) params.set('category', category);
+      if (search) params.set('search', search);
       return api<{ data: any[]; total: number }>(`/api/tools/vm-guidelines?${params}`);
     },
   });
@@ -38,6 +38,14 @@ export function useUpdateVmGuidelineDoc() {
   });
 }
 
+export function useDeleteVmGuidelineDoc() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: (id: string) => api<any>(`/api/tools/vm-guidelines/${id}`, { method: 'DELETE' }),
+    onSuccess: () => { qc.invalidateQueries({ queryKey: ['vmg'] }); },
+  });
+}
+
 export function usePublishVmGuidelineDoc() {
   const qc = useQueryClient();
   return useMutation({
@@ -51,5 +59,18 @@ export function useArchiveVmGuidelineDoc() {
   return useMutation({
     mutationFn: (id: string) => api<any>(`/api/tools/vm-guidelines/${id}/archive`, { method: 'POST' }),
     onSuccess: () => { qc.invalidateQueries({ queryKey: ['vmg'] }); },
+  });
+}
+
+export function useConfirmReadGuideline() {
+  return useMutation({
+    mutationFn: (id: string) => api<any>(`/api/tools/vm-guidelines/${id}/read`, { method: 'POST' }),
+  });
+}
+
+export function useVmGuidelinesDashboard() {
+  return useQuery({
+    queryKey: ['vmg', 'dashboard'],
+    queryFn: () => api<any>('/api/tools/vm-guidelines/dashboard'),
   });
 }

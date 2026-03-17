@@ -1,18 +1,18 @@
 import { Routes, Route } from 'react-router-dom';
 import { OverviewPage } from './pages/OverviewPage';
-import { SessionListPage } from './pages/SessionListPage';
-import { NewSessionPage } from './pages/NewSessionPage';
-import { ConductPage } from './pages/ConductPage';
-import { SessionDetailPage } from './pages/SessionDetailPage';
+import { AuditDetailPage } from './pages/AuditDetailPage';
+import { CreateAuditPage } from './pages/CreateAuditPage';
+import { TemplatesPage } from './pages/TemplatesPage';
+import { DashboardPage } from './pages/DashboardPage';
 
 export function StoreExcellenceAuditRoutes() {
   return (
     <Routes>
       <Route index element={<OverviewPage />} />
-      <Route path="sessions" element={<SessionListPage />} />
-      <Route path="sessions/new" element={<NewSessionPage />} />
-      <Route path="sessions/:id" element={<SessionDetailPage />} />
-      <Route path="sessions/:id/conduct" element={<ConductPage />} />
+      <Route path="create" element={<CreateAuditPage />} />
+      <Route path="audits/:id" element={<AuditDetailPage />} />
+      <Route path="templates" element={<TemplatesPage />} />
+      <Route path="dashboard" element={<DashboardPage />} />
     </Routes>
   );
 }

@@ -1,9 +1,10 @@
-import { Routes, Route } from 'react-router-dom';
+import { Routes, Route, Navigate } from 'react-router-dom';
 import { AuthLayout } from './layouts/AuthLayout';
 import { AppLayout } from './layouts/AppLayout';
 import { ProtectedRoute } from './components/ProtectedRoute';
 import { LoginPage } from './pages/LoginPage';
-import { ToolsHomePage } from './pages/ToolsHomePage';
+import { AllToolsPage } from './pages/AllToolsPage';
+import { HomePage } from './pages/HomePage';
 import { ScrollToTop } from './components/ScrollToTop';
 
 // Admin-Pages
@@ -19,6 +20,9 @@ import { UserCreatePage } from './pages/admin/UserCreatePage';
 import { UserDetailPage } from './pages/admin/UserDetailPage';
 import GdprPage from './pages/admin/GdprPage';
 import { ReportingPage } from './pages/admin/ReportingPage';
+import { BillingOverviewPage } from './pages/admin/BillingOverviewPage';
+import { InvoiceCreatePage } from './pages/admin/InvoiceCreatePage';
+import { InvoiceDetailPage } from './pages/admin/InvoiceDetailPage';
 
 // Tool-Routes
 import { StoreExcellenceAuditRoutes } from './tools/store-excellence-audit/index';
@@ -69,61 +73,63 @@ export function App() {
         {/* Geschuetzter App-Bereich */}
         <Route element={<ProtectedRoute />}>
           <Route element={<AppLayout />}>
-            {/* Home — Tool-Übersicht */}
-            <Route path="/" element={<ToolsHomePage />} />
-            <Route path="/app" element={<ToolsHomePage />} />
+            {/* Home — rollenspezifisches Dashboard */}
+            <Route path="/" element={<HomePage />} />
+
+            {/* Alle Tools */}
+            <Route path="/tools" element={<AllToolsPage />} />
 
             {/* ═══ TOOLS ═══ */}
 
             {/* Standards & Compliance */}
-            <Route path="/app/tools/sea/*" element={<StoreExcellenceAuditRoutes />} />
-            <Route path="/app/tools/checklisten/*" element={<ChecklistenRoutes />} />
-            <Route path="/app/tools/sop/*" element={<SopBibliothekRoutes />} />
-            <Route path="/app/tools/vm-compliance/*" element={<VmComplianceRoutes />} />
-            <Route path="/app/tools/store-standards/*" element={<StoreStandardsRoutes />} />
+            <Route path="/tools/sea/*" element={<StoreExcellenceAuditRoutes />} />
+            <Route path="/tools/checklisten/*" element={<ChecklistenRoutes />} />
+            <Route path="/tools/sop/*" element={<SopBibliothekRoutes />} />
+            <Route path="/tools/vm-compliance/*" element={<VmComplianceRoutes />} />
+            <Route path="/tools/store-standards/*" element={<StoreStandardsRoutes />} />
 
             {/* Performance & Sichtbarkeit */}
-            <Route path="/app/tools/kpi/*" element={<KpiDashboardRoutes />} />
-            <Route path="/app/tools/budget/*" element={<BudgetTrackerRoutes />} />
-            <Route path="/app/tools/forecast/*" element={<ForecastRoutes />} />
-            <Route path="/app/tools/loss-prevention/*" element={<LossPreventionRoutes />} />
-            <Route path="/app/tools/inventory/*" element={<InventoryRoutes />} />
+            <Route path="/tools/kpi/*" element={<KpiDashboardRoutes />} />
+            <Route path="/tools/budget/*" element={<BudgetTrackerRoutes />} />
+            <Route path="/tools/forecast/*" element={<ForecastRoutes />} />
+            <Route path="/tools/loss-prevention/*" element={<LossPreventionRoutes />} />
+            <Route path="/tools/inventory/*" element={<InventoryRoutes />} />
 
             {/* Floor in Echtzeit */}
-            <Route path="/app/tools/live-floor/*" element={<LiveFloorRoutes />} />
-            <Route path="/app/tools/fr-tracking/*" element={<FrTrackingRoutes />} />
-            <Route path="/app/tools/vm-guidelines/*" element={<VmGuidelinesRoutes />} />
-            <Route path="/app/tools/maintenance/*" element={<MaintenanceRoutes />} />
+            <Route path="/tools/live-floor/*" element={<LiveFloorRoutes />} />
+            <Route path="/tools/fr-tracking/*" element={<FrTrackingRoutes />} />
+            <Route path="/tools/vm-guidelines/*" element={<VmGuidelinesRoutes />} />
+            <Route path="/tools/maintenance/*" element={<MaintenanceRoutes />} />
 
             {/* Training & Entwicklung */}
-            <Route path="/app/tools/training-hub/*" element={<TrainingHubRoutes />} />
-            <Route path="/app/tools/training-hours/*" element={<TrainingHoursRoutes />} />
-            <Route path="/app/tools/challenges/*" element={<ChallengesRoutes />} />
-            <Route path="/app/tools/onboarding/*" element={<OnboardingRoutes />} />
+            <Route path="/tools/training-hub/*" element={<TrainingHubRoutes />} />
+            <Route path="/tools/training-hours/*" element={<TrainingHoursRoutes />} />
+            <Route path="/tools/challenges/*" element={<ChallengesRoutes />} />
+            <Route path="/tools/onboarding/*" element={<OnboardingRoutes />} />
 
             {/* Coaching & People */}
-            <Route path="/app/tools/coaching/*" element={<CoachingRoutes />} />
-            <Route path="/app/tools/pdp-pip/*" element={<PdpPipRoutes />} />
-            <Route path="/app/tools/appraisals/*" element={<AppraisalsRoutes />} />
-            <Route path="/app/tools/shift-planning/*" element={<ShiftPlanningRoutes />} />
-            <Route path="/app/tools/pulse-survey/*" element={<PulseSurveyRoutes />} />
-            <Route path="/app/tools/wellbeing/*" element={<WellbeingRoutes />} />
+            <Route path="/tools/coaching/*" element={<CoachingRoutes />} />
+            <Route path="/tools/pdp-pip/*" element={<PdpPipRoutes />} />
+            <Route path="/tools/appraisals/*" element={<AppraisalsRoutes />} />
+            <Route path="/tools/shift-planning/*" element={<ShiftPlanningRoutes />} />
+            <Route path="/tools/pulse-survey/*" element={<PulseSurveyRoutes />} />
+            <Route path="/tools/wellbeing/*" element={<WellbeingRoutes />} />
 
             {/* Kommunikation & Signal */}
-            <Route path="/app/tools/briefings/*" element={<BriefingsRoutes />} />
-            <Route path="/app/tools/handover/*" element={<HandoverRoutes />} />
-            <Route path="/app/tools/team-push/*" element={<TeamPushRoutes />} />
-            <Route path="/app/tools/newsletter/*" element={<NewsletterRoutes />} />
+            <Route path="/tools/briefings/*" element={<BriefingsRoutes />} />
+            <Route path="/tools/handover/*" element={<HandoverRoutes />} />
+            <Route path="/tools/team-push/*" element={<TeamPushRoutes />} />
+            <Route path="/tools/newsletter/*" element={<NewsletterRoutes />} />
 
             {/* Customer, Clienteling & Stock */}
-            <Route path="/app/tools/fr-conversion/*" element={<FrConversionRoutes />} />
-            <Route path="/app/tools/clienteling/*" element={<ClientelingRoutes />} />
-            <Route path="/app/tools/stock-callouts/*" element={<StockCalloutsRoutes />} />
-            <Route path="/app/tools/track-trace/*" element={<TrackTraceRoutes />} />
+            <Route path="/tools/fr-conversion/*" element={<FrConversionRoutes />} />
+            <Route path="/tools/clienteling/*" element={<ClientelingRoutes />} />
+            <Route path="/tools/stock-callouts/*" element={<StockCalloutsRoutes />} />
+            <Route path="/tools/track-trace/*" element={<TrackTraceRoutes />} />
 
             {/* Regional Insights */}
-            <Route path="/app/tools/multi-store/*" element={<MultiStoreRoutes />} />
-            <Route path="/app/tools/rm-dashboard/*" element={<RmDashboardRoutes />} />
+            <Route path="/tools/multi-store/*" element={<MultiStoreRoutes />} />
+            <Route path="/tools/rm-dashboard/*" element={<RmDashboardRoutes />} />
 
             {/* ═══ ADMIN ═══ */}
 
@@ -153,9 +159,15 @@ export function App() {
               <Route path="/admin/tenants" element={<TenantsListPage />} />
               <Route path="/admin/tenants/new" element={<TenantCreatePage />} />
               <Route path="/admin/tenants/:id" element={<TenantDetailPage />} />
+              <Route path="/admin/buchhaltung" element={<BillingOverviewPage />} />
+              <Route path="/admin/buchhaltung/neu" element={<InvoiceCreatePage />} />
+              <Route path="/admin/buchhaltung/:id" element={<InvoiceDetailPage />} />
             </Route>
           </Route>
         </Route>
+
+        {/* Redirect alte /app URLs */}
+        <Route path="/app/*" element={<Navigate to="/" replace />} />
       </Routes>
     </>
   );

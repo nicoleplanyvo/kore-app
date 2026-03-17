@@ -109,7 +109,7 @@ async function main() {
 
     // PERFORMANCE & SICHTBARKEIT
     { key: 'performance.kpi_dashboard', name: 'KPI Dashboard', category: 'PERFORMANCE', description: 'Echtzeit-KPI-Dashboard mit allen relevanten Kennzahlen', icon: 'BarChart3', priceMonthly: 1900, sortOrder: 1 },
-    { key: 'performance.budget_tracker', name: 'Budget Tracker', category: 'PERFORMANCE', description: 'Budget-Planung und Kostenverfolgung pro Store', icon: 'Wallet', priceMonthly: 1500, sortOrder: 2 },
+    { key: 'performance.budget_tracker', name: 'Budget Tracker', category: 'PERFORMANCE', description: 'Umsatz-Ziele verfolgen und Fortschritt pro Store messen', icon: 'Target', priceMonthly: 1500, sortOrder: 2 },
     { key: 'performance.forecast', name: 'Forecast', category: 'PERFORMANCE', description: 'Umsatz- und Performance-Prognosen mit KI', icon: 'LineChart', priceMonthly: 2500, sortOrder: 3 },
     { key: 'performance.loss_prevention', name: 'Loss Prevention', category: 'PERFORMANCE', description: 'Schwund-Erkennung und Verlustprävention', icon: 'Shield', priceMonthly: 1500, sortOrder: 4 },
     { key: 'performance.inventory', name: 'Inventory', category: 'PERFORMANCE', description: 'Bestandsmanagement und Inventur-Automatisierung', icon: 'Package', priceMonthly: 1900, sortOrder: 5 },
@@ -171,9 +171,10 @@ async function main() {
     'standards.vm_foto_compliance', 'standards.sop_bibliothek',
     'performance.kpi_dashboard', 'performance.budget_tracker',
     'floor.live_floor', 'floor.vm_guidelines',
-    'training.training_hub_lms', 'training.training_hours',
-    'coaching.shift_planning', 'coaching.appraisals',
+    'training.training_hub_lms', 'training.training_hours', 'training.challenges',
+    'coaching.one_on_one', 'coaching.shift_planning', 'coaching.appraisals',
     'komm.briefings',
+    'customer.clienteling_crm',
   ];
 
   // Boutique Schmidt — kleines Paket (5 Tools)
@@ -1132,39 +1133,102 @@ März bis August
     const taUser = await prisma.user.findUnique({ where: { email: 'ta@modehouse.de' } });
 
     if (taUser) {
-      await prisma.challenge.create({
+      // Template erstellen
+      await prisma.challengeTemplate.create({
         data: {
           tenantId: tenant1.id,
-          title: 'Cross-Selling Meister',
-          description: 'Wer schafft die meisten Cross-Selling-Abschlüsse in diesem Monat? Mindestens 2 Artikel pro Kauf zählen als Cross-Selling.',
-          type: 'INDIVIDUAL',
-          metric: 'cross_selling_count',
-          targetValue: 50,
-          startDate: new Date().toISOString().split('T')[0],
-          endDate: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
-          reward: '50€ Gutschein + Ehrenplatz im Team-Newsletter',
-          status: 'ACTIVE',
+          title: 'Monats-Verkaufs-Challenge',
+          description: 'Standard-Template für monatliche Verkaufswettbewerbe.',
+          scope: 'INDIVIDUAL',
+          scoringType: 'ABSOLUTE',
+          metric: 'Verkaufsabschlüsse',
+          targetValue: 30,
+          reward: '50 EUR Gutschein',
+          tags: 'Verkauf,Monatlich',
           createdBy: taUser.id,
         },
       });
 
-      await prisma.challenge.create({
+      const challenge1 = await prisma.challenge.create({
+        data: {
+          tenantId: tenant1.id,
+          title: 'Cross-Selling Meister',
+          description: 'Wer schafft die meisten Cross-Selling-Abschlüsse in diesem Monat? Mindestens 2 Artikel pro Kauf zählen als Cross-Selling.',
+          scope: 'INDIVIDUAL',
+          scoringType: 'ABSOLUTE',
+          metric: 'cross_selling_count',
+          targetValue: 50,
+          startDate: new Date().toISOString().split('T')[0],
+          endDate: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
+          reward: '50 EUR Gutschein + Ehrenplatz im Team-Newsletter',
+          rules: 'Mindestens 2 Artikel pro Kauf zählen als Cross-Selling. Retouren werden abgezogen.',
+          status: 'ACTIVE',
+          visibility: 'PUBLIC',
+          participationType: 'OPTIN',
+          tags: 'Verkauf,Cross-Selling',
+          createdBy: taUser.id,
+        },
+      });
+
+      const challenge2 = await prisma.challenge.create({
         data: {
           tenantId: tenant1.id,
           title: 'Store-Sauberkeits-Challenge',
           description: 'Welcher Store erreicht den höchsten Sauberkeits-Score bei den nächsten 4 Checklist-Besuchen?',
-          type: 'STORE',
+          scope: 'TEAM',
+          scoringType: 'RELATIVE',
           metric: 'cleanliness_score',
           targetValue: 95,
           startDate: new Date().toISOString().split('T')[0],
           endDate: new Date(Date.now() + 60 * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
           reward: 'Team-Frühstück für den Gewinner-Store',
+          rules: 'Durchschnitt der nächsten 4 Checklist-Scores. Mindestens 3 Bewertungen nötig.',
           status: 'ACTIVE',
+          visibility: 'PUBLIC',
+          participationType: 'AUTO',
+          tags: 'Sauberkeit,Stores',
           createdBy: taUser.id,
         },
       });
+
+      // Demo-Teilnehmer für Challenge 1
+      const smUser = await prisma.user.findUnique({ where: { email: 'sm@modehouse.de' } });
+      const learnerUser = await prisma.user.findUnique({ where: { email: 'learner@modehouse.de' } });
+      if (smUser && learnerUser) {
+        const p1 = await prisma.challengeParticipant.create({
+          data: { challengeId: challenge1.id, userId: smUser.id, storeId: muellerStoreIds[0], accepted: true, currentValue: 32, handicap: 1.0 },
+        });
+        const p2 = await prisma.challengeParticipant.create({
+          data: { challengeId: challenge1.id, userId: learnerUser.id, storeId: muellerStoreIds[0], accepted: true, currentValue: 18, handicap: 1.0 },
+        });
+
+        // Demo-Einträge
+        for (let i = 0; i < 5; i++) {
+          const date = new Date();
+          date.setDate(date.getDate() - i * 2);
+          await prisma.challengeEntry.create({
+            data: { challengeId: challenge1.id, participantId: p1.id, value: 5 + Math.round(Math.random() * 3), note: `Tag ${i + 1}`, enteredBy: taUser.id },
+          });
+          await prisma.challengeEntry.create({
+            data: { challengeId: challenge1.id, participantId: p2.id, value: 2 + Math.round(Math.random() * 4), enteredBy: taUser.id },
+          });
+        }
+
+        // Demo-Teilnehmer für Challenge 2 (Team-Challenge per Store)
+        await prisma.challengeParticipant.create({
+          data: { challengeId: challenge2.id, storeId: muellerStoreIds[0], teamName: 'Düsseldorf Kö', accepted: true, currentValue: 88, handicap: 1.0 },
+        });
+        await prisma.challengeParticipant.create({
+          data: { challengeId: challenge2.id, storeId: muellerStoreIds[1], teamName: 'Köln Schildergasse', accepted: true, currentValue: 92, handicap: 1.0 },
+        });
+        if (muellerStoreIds[2]) {
+          await prisma.challengeParticipant.create({
+            data: { challengeId: challenge2.id, storeId: muellerStoreIds[2], teamName: 'Essen Limbecker', accepted: true, currentValue: 85, handicap: 1.0 },
+          });
+        }
+      }
     }
-    console.log('✓ Challenges: 2 Default-Challenges erstellt');
+    console.log('✓ Challenges: 1 Template + 2 Challenges + Teilnehmer + Einträge erstellt');
   } else {
     console.log('✓ Challenges Default-Daten bereits vorhanden');
   }
@@ -1246,36 +1310,108 @@ März bis August
   }
 
   // ============================================================
-  // Budget Tracker — Demo-Budget für aktuellen Monat
+  // Budget Tracker — Demo-Umsatzziele und Einträge
   // ============================================================
 
-  const existingBudget = await prisma.budgetPeriod.findFirst({
+  const existingRevenue = await prisma.revenuePeriod.findFirst({
     where: { tenantId: tenant1.id },
   });
 
-  if (!existingBudget) {
+  if (!existingRevenue) {
     const smUser = await prisma.user.findUnique({ where: { email: 'sm@modehouse.de' } });
     if (smUser) {
-      const currentMonth = new Date().toISOString().slice(0, 7);
+      const now = new Date();
+      const currentMonth = now.toISOString().slice(0, 7);
+      const currentYear = now.getFullYear().toString();
+      const currentQuarter = `${currentYear}-Q${Math.ceil((now.getMonth() + 1) / 3)}`;
+      const monthEnd = new Date(now.getFullYear(), now.getMonth() + 1, 0);
+
+      // Config erstellen
+      await prisma.revenueConfig.upsert({
+        where: { tenantId: tenant1.id },
+        update: {},
+        create: {
+          tenantId: tenant1.id,
+          currency: 'EUR',
+          comparisonYoy: true,
+          comparisonRank: true,
+          retentionMonths: 24,
+          weekdayWeights: JSON.stringify({ mon: 0.8, tue: 0.9, wed: 1.0, thu: 1.0, fri: 1.3, sat: 1.5, sun: 0.5 }),
+        },
+      });
+
       for (const storeId of muellerStoreIds) {
-        await prisma.budgetPeriod.create({
+        // Jahres-Periode
+        const yearPeriod = await prisma.revenuePeriod.create({
           data: {
             tenantId: tenant1.id,
             storeId,
-            period: currentMonth,
-            budgetType: 'MONTHLY',
-            revenue: 165000,
-            cogs: 66000,
-            labor: 33000,
-            rent: 12000,
-            marketing: 5000,
-            other: 8000,
+            periodType: 'YEARLY',
+            periodKey: currentYear,
+            startDate: `${currentYear}-01-01`,
+            endDate: `${currentYear}-12-31`,
+            targetAmount: 1800000,
             createdBy: smUser.id,
           },
         });
+
+        // Quartals-Periode
+        const qStart = new Date(now.getFullYear(), Math.floor(now.getMonth() / 3) * 3, 1);
+        const qEnd = new Date(now.getFullYear(), Math.floor(now.getMonth() / 3) * 3 + 3, 0);
+        const quarterPeriod = await prisma.revenuePeriod.create({
+          data: {
+            tenantId: tenant1.id,
+            storeId,
+            periodType: 'QUARTERLY',
+            periodKey: currentQuarter,
+            parentId: yearPeriod.id,
+            startDate: qStart.toISOString().slice(0, 10),
+            endDate: qEnd.toISOString().slice(0, 10),
+            targetAmount: 450000,
+            createdBy: smUser.id,
+          },
+        });
+
+        // Monats-Periode
+        const monthPeriod = await prisma.revenuePeriod.create({
+          data: {
+            tenantId: tenant1.id,
+            storeId,
+            periodType: 'MONTHLY',
+            periodKey: currentMonth,
+            parentId: quarterPeriod.id,
+            startDate: `${currentMonth}-01`,
+            endDate: monthEnd.toISOString().slice(0, 10),
+            targetAmount: 150000,
+            createdBy: smUser.id,
+          },
+        });
+
+        // Demo-Einträge: bisherige Tage des Monats
+        const dayOfMonth = now.getDate();
+        for (let d = 1; d < dayOfMonth; d++) {
+          const date = `${currentMonth}-${d.toString().padStart(2, '0')}`;
+          const dayOfWeek = new Date(date).getDay();
+          // Wochenende weniger, Freitag/Samstag mehr
+          const baseRevenue = 5000;
+          const multiplier = dayOfWeek === 0 ? 0.4 : dayOfWeek === 6 ? 1.6 : dayOfWeek === 5 ? 1.3 : 1.0;
+          const variance = 0.8 + Math.random() * 0.4; // ±20%
+          const amount = Math.round(baseRevenue * multiplier * variance);
+
+          await prisma.revenueEntry.create({
+            data: {
+              periodId: monthPeriod.id,
+              amount,
+              date,
+              tag: Math.random() > 0.85 ? 'AKTION' : 'NORMAL',
+              source: 'MANUAL',
+              enteredBy: smUser.id,
+            },
+          });
+        }
       }
     }
-    console.log('✓ Budget Tracker: Demo-Budgets für aktuellen Monat erstellt');
+    console.log('✓ Budget Tracker: Demo-Umsatzziele und Einträge erstellt');
   } else {
     console.log('✓ Budget Tracker Demo-Daten bereits vorhanden');
   }
@@ -1466,28 +1602,30 @@ März bis August
 
       await prisma.briefing.create({
         data: {
+          tenantId: tenant1.id,
           storeId: muellerStoreIds[0],
+          scope: 'STORE',
           title: 'Morgen-Briefing',
-          content: `## Guten Morgen Team! 🌟
+          content: `Guten Morgen Team!
 
-### Tageszielen
-- Umsatzziel: **€5.800**
-- Conversion-Ziel: **28%**
-- UPT-Ziel: **1.8**
+Tageszielen:
+- Umsatzziel: 5.800 EUR
+- Conversion-Ziel: 28%
+- UPT-Ziel: 1.8
 
-### Wichtige Infos
-- Neue Kollektion "Summer Breeze" ist eingetroffen → bitte heute einräumen
+Wichtige Infos:
+- Neue Kollektion "Summer Breeze" ist eingetroffen, bitte heute einräumen
 - Kampagnen-Poster im Eingangsbereich austauschen
-- Mystery Shopper ist diese Woche angekündigt!
+- Mystery Shopper ist diese Woche angekündigt
 
-### Team heute
+Team heute:
 - Sarah (Früh), Marco (Mittel), Lisa (Spät)
 - Kasse: Lisa (vormittags), Marco (nachmittags)
 
-### Fokus des Tages
+Fokus des Tages:
 Cross-Selling! Jede Beratung sollte mindestens ein Accessoire beinhalten.`,
-          date: today,
-          type: 'MORNING',
+          priority: 'NORMAL',
+          status: 'PUBLISHED',
           createdBy: smUser.id,
           publishedAt: new Date(),
         },
@@ -1495,23 +1633,22 @@ Cross-Selling! Jede Beratung sollte mindestens ein Accessoire beinhalten.`,
 
       await prisma.briefing.create({
         data: {
+          tenantId: tenant1.id,
           storeId: muellerStoreIds[0],
-          title: 'Abend-Briefing',
-          content: `## Tagesrückblick
+          scope: 'COMPANY',
+          title: 'Neue Kollektion: Summer Breeze Launch',
+          content: `Liebe Store Manager,
 
-### Ergebnisse
-- Umsatz: **€6.120** ✅ (Ziel: €5.800)
-- Conversion: **26.5%** ⚠️ (Ziel: 28%)
-- UPT: **2.1** ✅ (Ziel: 1.8)
+die neue Kollektion "Summer Breeze" ist ab sofort in allen Stores verfügbar.
 
-### Vorfälle
-- Keine besonderen Vorkommnisse
+Bitte beachten:
+- VM-Richtlinien im VM Guidelines Tool beachten
+- Schaufenster bis Freitag umstellen
+- Verkaufstraining im Training Hub absolvieren
 
-### Morgen beachten
-- Wareneingang erwartet (2 Kartons)
-- Umkleide-Tür reparieren lassen`,
-          date: yesterday,
-          type: 'EVENING',
+Bei Fragen wendet euch an euren Regional Manager.`,
+          priority: 'IMPORTANT',
+          status: 'PUBLISHED',
           createdBy: smUser.id,
           publishedAt: new Date(),
         },
@@ -1556,38 +1693,7 @@ Cross-Selling! Jede Beratung sollte mindestens ein Accessoire beinhalten.`,
     console.log('✓ Handover Demo-Daten bereits vorhanden');
   }
 
-  // ============================================================
-  // Clienteling / CRM — Demo-Kundenprofile
-  // ============================================================
-
-  const existingClient = await prisma.clientProfile.findFirst({
-    where: { storeId: muellerStoreIds[0] },
-  });
-
-  if (!existingClient) {
-    const smUser = await prisma.user.findUnique({ where: { email: 'sm@modehouse.de' } });
-    if (smUser) {
-      const clients = [
-        { firstName: 'Dr. Christina', lastName: 'Hoffman', email: 'c.hoffman@example.com', phone: '+49 171 1234567', preferences: 'Bevorzugt klassische Schnitte. Farben: Schwarz, Navy, Creme. Größe 38.', vipLevel: 'GOLD', totalPurchases: 4580.50 },
-        { firstName: 'Michael', lastName: 'Brandt', email: 'm.brandt@example.com', phone: '+49 172 9876543', preferences: 'Sucht regelmäßig Business-Hemden (Größe 41). Lieblingsmarke: Hugo Boss.', vipLevel: 'SILVER', totalPurchases: 2150.00 },
-        { firstName: 'Sophia', lastName: 'König', email: null, phone: '+49 176 5551234', preferences: 'Junge Mode. Größe 36. Interessiert an nachhaltigen Marken.', vipLevel: null, totalPurchases: 890.00 },
-      ];
-
-      for (const c of clients) {
-        await prisma.clientProfile.create({
-          data: {
-            ...c,
-            storeId: muellerStoreIds[0],
-            createdBy: smUser.id,
-            lastVisit: new Date(Date.now() - Math.random() * 14 * 86400000),
-          },
-        });
-      }
-    }
-    console.log('✓ Clienteling: 3 Demo-Kundenprofile erstellt');
-  } else {
-    console.log('✓ Clienteling Demo-Daten bereits vorhanden');
-  }
+  // (Clienteling old seed removed — replaced by comprehensive CRM seed at end of file)
 
   // ============================================================
   // Stock Callouts — Demo-Bestandsmeldungen
@@ -1975,6 +2081,324 @@ Lager-Mitarbeiter / Schichtleiter
     console.log('✓ SOP Bibliothek: 2 weitere Default-SOPs erstellt');
   } else {
     console.log('✓ SOP Bibliothek zusätzliche SOPs bereits vorhanden');
+  }
+
+  // ═══════════════════════════════════════════════════════
+  // Clienteling / CRM — Demo-Daten
+  // ═══════════════════════════════════════════════════════
+  const existingCrmClients = await prisma.clientProfile.count();
+  if (existingCrmClients === 0) {
+    const smUser = await prisma.user.findUnique({ where: { email: 'sm@modehouse.de' } });
+    const learnerUser = await prisma.user.findUnique({ where: { email: 'learner@modehouse.de' } });
+    const storeId = muellerStoreIds[0]!;
+
+    if (smUser && learnerUser) {
+      // CRM Settings mit QR-Registrierung
+      await prisma.crmSettings.upsert({
+        where: { storeId },
+        update: {},
+        create: {
+          storeId,
+          selfRegistrationEnabled: true,
+          selfRegistrationToken: 'demo-qr-token-mueller-01',
+          vipTiers: JSON.stringify([
+            { name: 'BRONZE', minRevenue: 500 },
+            { name: 'SILVER', minRevenue: 2000 },
+            { name: 'GOLD', minRevenue: 5000 },
+            { name: 'PLATINUM', minRevenue: 15000 },
+          ]),
+          autoArchiveDays: 365,
+          historyMode: 'CLIENT',
+        },
+      });
+
+      // Demo-Kunden
+      const clients = [
+        {
+          firstName: 'Katharina', lastName: 'Schneider', email: 'k.schneider@mail.de', phone: '+49 170 1234567',
+          dateOfBirth: new Date('1985-06-15'), gender: 'W', company: 'Schneider GmbH', address: 'Hauptstr. 42, 80331 Muenchen',
+          preferences: 'Premium, Business, Groesse 38', preferredChannel: 'EMAIL', wishlist: 'Burberry Trenchcoat, Gucci Guertel',
+          tags: 'VIP,Stammkundin,Business', vipLevel: 'GOLD',
+          totalPurchases: 12, totalRevenue: 8500, avgBasket: 708.33, visitCount: 18,
+          lastVisit: new Date('2026-03-10'), activityScore: 85,
+          consentProfile: true, consentMarketing: true, consentBirthday: true,
+          primaryAdvisorId: learnerUser.id,
+        },
+        {
+          firstName: 'Michael', lastName: 'Weber', email: 'm.weber@firma.de', phone: '+49 171 9876543',
+          dateOfBirth: new Date('1978-11-22'), gender: 'M',
+          preferences: 'Sneaker, Streetwear, Groesse 43', preferredChannel: 'WHATSAPP',
+          tags: 'Sneakerhead,Sammler', vipLevel: 'PLATINUM',
+          totalPurchases: 28, totalRevenue: 16200, avgBasket: 578.57, visitCount: 35,
+          lastVisit: new Date('2026-03-14'), activityScore: 95,
+          consentProfile: true, consentMarketing: true, consentBirthday: false,
+          primaryAdvisorId: smUser.id,
+        },
+        {
+          firstName: 'Anna', lastName: 'Hoffmann', email: 'a.hoffmann@web.de', phone: '+49 172 5551234',
+          dateOfBirth: new Date('1992-03-08'), gender: 'W',
+          preferences: 'Casual, Accessories', tags: 'Gelegenheitskaeuferin',
+          totalPurchases: 3, totalRevenue: 450, avgBasket: 150, visitCount: 5,
+          lastVisit: new Date('2025-12-20'), activityScore: 25,
+          consentProfile: true, consentMarketing: false, consentBirthday: true,
+          primaryAdvisorId: learnerUser.id,
+        },
+        {
+          firstName: 'Stefan', lastName: 'Koch', email: 'stefan.koch@gmail.com',
+          preferredChannel: 'PHONE', tags: 'Neukundin',
+          totalPurchases: 1, totalRevenue: 220, avgBasket: 220, visitCount: 2,
+          lastVisit: new Date('2026-02-28'), activityScore: 40,
+          consentProfile: true, consentMarketing: true, consentBirthday: false,
+          selfRegistered: true, primaryAdvisorId: smUser.id,
+        },
+        {
+          firstName: 'Maria', lastName: 'Fischer',
+          tags: 'Archiv-Kandidat', vipLevel: 'BRONZE',
+          totalPurchases: 5, totalRevenue: 780, avgBasket: 156, visitCount: 7,
+          lastVisit: new Date('2025-06-15'), activityScore: 10,
+          consentProfile: true, primaryAdvisorId: learnerUser.id,
+        },
+      ];
+
+      const clientRecords = [];
+      for (const c of clients) {
+        const record = await prisma.clientProfile.create({ data: { storeId, createdBy: smUser.id, ...c } });
+        clientRecords.push(record);
+      }
+
+      // Demo-Interaktionen fuer Katharina (Index 0) und Michael (Index 1)
+      const interactionData = [
+        { clientId: clientRecords[0]!.id, userId: learnerUser.id, type: 'VISIT', notes: 'Beratung Business-Garderobe', purchaseAmount: 890, items: 'Hugo Boss Blazer, Seidenbluse', category: 'Business', paymentMethod: 'KARTE' },
+        { clientId: clientRecords[0]!.id, userId: learnerUser.id, type: 'PURCHASE', notes: 'Stammkundin-Rabatt 10%', purchaseAmount: 1200, items: 'Burberry Schal, Max Mara Mantel', category: 'Premium', paymentMethod: 'KARTE' },
+        { clientId: clientRecords[0]!.id, userId: smUser.id, type: 'CALL', notes: 'Neue Kollektion vorgestellt, Termin vereinbart' },
+        { clientId: clientRecords[1]!.id, userId: smUser.id, type: 'VISIT', notes: 'Nike Dunk Low Release Day', purchaseAmount: 350, items: 'Nike Dunk Low Panda, Socken', category: 'Sneaker', paymentMethod: 'BAR' },
+        { clientId: clientRecords[1]!.id, userId: smUser.id, type: 'PURCHASE', notes: 'Online-Bestellung', purchaseAmount: 680, items: 'Jordan 4 Retro, New Balance 550', category: 'Sneaker', paymentMethod: 'ONLINE' },
+        { clientId: clientRecords[1]!.id, userId: learnerUser.id, type: 'EVENT', notes: 'VIP-Preview-Event teilgenommen' },
+      ];
+      for (const int of interactionData) {
+        await prisma.clientInteraction.create({ data: { ...int, date: new Date(Date.now() - Math.random() * 30 * 24 * 60 * 60 * 1000) } });
+      }
+
+      // Demo-Tasks
+      await prisma.clientTask.createMany({
+        data: [
+          { clientId: clientRecords[0]!.id, userId: learnerUser.id, title: 'Neue Kollektion vorstellen', priority: 'HIGH', dueDate: new Date('2026-03-25'), type: 'MANUAL' },
+          { clientId: clientRecords[0]!.id, userId: learnerUser.id, title: 'Geburtstags-Gruss vorbereiten', type: 'AUTO', dueDate: new Date('2026-06-08'), priority: 'NORMAL' },
+          { clientId: clientRecords[1]!.id, userId: smUser.id, title: 'Nike Dunk Release informieren', priority: 'NORMAL', dueDate: new Date('2026-04-01'), type: 'MANUAL' },
+          { clientId: clientRecords[2]!.id, userId: learnerUser.id, title: 'Follow-up nach langem Ausbleiben', type: 'AUTO', priority: 'LOW', dueDate: new Date('2026-03-20') },
+        ],
+      });
+
+      // Demo-Notizen
+      await prisma.clientNote.createMany({
+        data: [
+          { clientId: clientRecords[0]!.id, userId: learnerUser.id, content: 'Bevorzugt Termine am Vormittag. Trinkt gerne Cappuccino bei der Beratung.', type: 'CONSULTATION', isPinned: true },
+          { clientId: clientRecords[0]!.id, userId: smUser.id, content: 'Hat nach Burberry Trenchcoat gefragt, naechste Lieferung Mai.', type: 'WISH' },
+          { clientId: clientRecords[1]!.id, userId: smUser.id, content: 'Sammelt limitierte Sneaker. Immer fuer Releases informieren!', type: 'GENERAL', isPinned: true },
+          { clientId: clientRecords[1]!.id, userId: learnerUser.id, content: 'War beim VIP-Event sehr zufrieden, moechte zu allen Events eingeladen werden.', type: 'GENERAL' },
+        ],
+      });
+
+      // Demo-Anlaesse
+      await prisma.clientOccasion.createMany({
+        data: [
+          { clientId: clientRecords[0]!.id, type: 'BIRTHDAY', title: 'Geburtstag', date: new Date('2026-06-15'), reminderDays: 7, isRecurring: true },
+          { clientId: clientRecords[0]!.id, type: 'ANNIVERSARY', title: '5 Jahre Stammkundin', date: new Date('2026-09-01'), reminderDays: 14, isRecurring: true },
+          { clientId: clientRecords[1]!.id, type: 'BIRTHDAY', title: 'Geburtstag', date: new Date('2026-11-22'), reminderDays: 7, isRecurring: true },
+          { clientId: clientRecords[2]!.id, type: 'BIRTHDAY', title: 'Geburtstag', date: new Date('2026-03-08'), reminderDays: 7, isRecurring: true },
+        ],
+      });
+
+      console.log(`✓ Clienteling/CRM: ${clientRecords.length} Demo-Kunden, Interaktionen, Tasks, Notizen und Anlaesse erstellt`);
+    }
+  } else {
+    console.log('✓ Clienteling/CRM Demo-Daten bereits vorhanden');
+  }
+
+  // ============================================================
+  // COACHING / 1:1 — Seed Data
+  // ============================================================
+  const existingCoachingSessions = await prisma.coachingSession.count({ where: { tenantId: tenant1.id } });
+  if (existingCoachingSessions === 0) {
+    // Create coaching settings
+    await prisma.coachingSettings.upsert({
+      where: { tenantId: tenant1.id },
+      update: {},
+      create: {
+        tenantId: tenant1.id,
+        ratingScale: 5,
+        ratingLabels: JSON.stringify({ '1': 'Ungenuegend', '2': 'Ausbaufaehig', '3': 'Befriedigend', '4': 'Gut', '5': 'Ausgezeichnet' }),
+        defaultFrequencyDays: 14,
+        escalationThreshold: 3,
+        reminderDaysBefore: 2,
+      },
+    });
+
+    // Get demo users
+    const smUser = await prisma.user.findUnique({ where: { email: 'sm@modehouse.de' } });
+    const learnerUser = await prisma.user.findUnique({ where: { email: 'learner@modehouse.de' } });
+    const taUser = await prisma.user.findUnique({ where: { email: 'ta@modehouse.de' } });
+
+    if (smUser && learnerUser && taUser && muellerStoreIds.length > 0) {
+      const storeId = muellerStoreIds[0]!;
+
+      // Create coaching templates
+      const template1on1 = await prisma.coachingTemplate.create({
+        data: {
+          tenantId: tenant1.id,
+          name: 'Standard 1:1 Coaching',
+          description: 'Regulaeres 1:1 Coaching-Gespraech mit Leistungsbewertung',
+          type: 'ONE_ON_ONE',
+          isDefault: true,
+          ratingScale: 5,
+          ratingLabels: JSON.stringify({ '1': 'Ungenuegend', '2': 'Ausbaufaehig', '3': 'Befriedigend', '4': 'Gut', '5': 'Ausgezeichnet' }),
+          defaultDuration: 30,
+          sections: {
+            create: [
+              { title: 'Verkaufsleistung', type: 'RATING', weight: 2, sortOrder: 0, description: 'Zielerreichung, Conversion, Durchschnittsbon' },
+              { title: 'Kundenservice', type: 'RATING', weight: 1.5, sortOrder: 1, description: 'Beratungsqualitaet, Kundenzufriedenheit, Beschwerdehandling' },
+              { title: 'Produktwissen', type: 'COMPETENCY', weight: 1, sortOrder: 2, competencies: JSON.stringify(['Sortimentskenntnisse', 'Materialwissen', 'Trend-Awareness', 'Cross-Selling']) },
+              { title: 'Teamarbeit', type: 'RATING', weight: 1, sortOrder: 3, description: 'Zusammenarbeit, Kommunikation, Zuverlaessigkeit' },
+              { title: 'Allgemeine Bemerkungen', type: 'TEXT', weight: 0, sortOrder: 4, isRequired: false },
+              { title: 'Store-Standards eingehalten', type: 'CHECKBOX', weight: 0, sortOrder: 5, isRequired: false },
+            ],
+          },
+        },
+      });
+
+      const templateFloor = await prisma.coachingTemplate.create({
+        data: {
+          tenantId: tenant1.id,
+          name: 'Floor Coaching Quick-Check',
+          description: 'Schnelle Beobachtung auf der Verkaufsflaeche',
+          type: 'FLOOR',
+          isDefault: true,
+          ratingScale: 5,
+          defaultDuration: 10,
+          sections: {
+            create: [
+              { title: 'Kundenkontakt', type: 'RATING', weight: 2, sortOrder: 0, description: 'Ansprache, Begruessungszeit, Kontaktqualitaet' },
+              { title: 'Produktpraesentation', type: 'RATING', weight: 1, sortOrder: 1 },
+              { title: 'Abschluss-Sicherheit', type: 'RATING', weight: 1.5, sortOrder: 2 },
+              { title: 'Beobachtungen', type: 'TEXT', weight: 0, sortOrder: 3 },
+            ],
+          },
+        },
+      });
+
+      // Get template sections for linking
+      const t1Sections = await prisma.coachingTemplateSection.findMany({ where: { templateId: template1on1.id }, orderBy: { sortOrder: 'asc' } });
+
+      // Create coaching sessions with various statuses
+      const now = new Date();
+      const sessionsData = [
+        {
+          tenantId: tenant1.id, storeId, coachId: smUser.id, coacheeId: learnerUser.id,
+          templateId: template1on1.id, type: 'ONE_ON_ONE', status: 'COMPLETED',
+          title: 'Monats-Review Januar', scheduledAt: new Date(now.getTime() - 30 * 24 * 60 * 60 * 1000),
+          completedAt: new Date(now.getTime() - 29 * 24 * 60 * 60 * 1000),
+          duration: 35, mood: 4, overallRating: 3.8,
+          notes: 'Lisa zeigt gute Fortschritte im Verkauf. Produktwissen hat sich deutlich verbessert.',
+          managerSummary: 'Positiver Trend. Fokus auf Cross-Selling beibehalten.',
+          selfAssessmentNotes: 'Ich fuehle mich sicherer in der Beratung. Cross-Selling faellt mir noch schwer.',
+          coacheeConfirmation: true, coacheeComment: 'Danke fuer das konstruktive Feedback.',
+        },
+        {
+          tenantId: tenant1.id, storeId, coachId: smUser.id, coacheeId: learnerUser.id,
+          templateId: template1on1.id, type: 'ONE_ON_ONE', status: 'COMPLETED',
+          title: 'Monats-Review Februar', scheduledAt: new Date(now.getTime() - 14 * 24 * 60 * 60 * 1000),
+          completedAt: new Date(now.getTime() - 13 * 24 * 60 * 60 * 1000),
+          duration: 30, mood: 5, overallRating: 4.2,
+          notes: 'Deutliche Verbesserung bei Cross-Selling. Conversion-Rate gestiegen.',
+          managerSummary: 'Sehr gute Entwicklung. Bereit fuer mehr Verantwortung.',
+          coacheeConfirmation: true,
+        },
+        {
+          tenantId: tenant1.id, storeId, coachId: smUser.id, coacheeId: learnerUser.id,
+          templateId: template1on1.id, type: 'ONE_ON_ONE', status: 'SELF_ASSESSMENT',
+          title: 'Monats-Review Maerz', scheduledAt: new Date(now.getTime() + 2 * 24 * 60 * 60 * 1000),
+          duration: 30,
+        },
+        {
+          tenantId: tenant1.id, storeId, coachId: smUser.id, coacheeId: learnerUser.id,
+          templateId: templateFloor.id, type: 'FLOOR', status: 'COMPLETED',
+          title: 'Floor-Check Samstag', scheduledAt: new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000),
+          completedAt: new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000),
+          duration: 10, mood: 4, overallRating: 4.0,
+          notes: 'Guter Kundenkontakt, aktive Ansprache. Produktpraesentation koennte dynamischer sein.',
+        },
+        {
+          tenantId: tenant1.id, storeId, coachId: smUser.id, coacheeId: learnerUser.id,
+          type: 'ONE_ON_ONE', status: 'PLANNED',
+          title: 'Quartals-Gespraech Q2', scheduledAt: new Date(now.getTime() + 30 * 24 * 60 * 60 * 1000),
+          duration: 45,
+        },
+      ];
+
+      for (const sd of sessionsData) {
+        const session = await prisma.coachingSession.create({ data: sd });
+
+        // Add sections for completed sessions with template
+        if (sd.status === 'COMPLETED' && sd.templateId === template1on1.id && t1Sections.length > 0) {
+          const sectionRatings = [
+            { mRating: 4, sRating: 3, mComment: 'Gute Zielerreichung', sComment: 'Kann mich verbessern' },
+            { mRating: 4, sRating: 4, mComment: 'Sehr kundenorientiert', sComment: null },
+            { mRating: 3, sRating: 3, mComment: null, sComment: 'Lerne staendig dazu' },
+            { mRating: 4, sRating: 4, mComment: 'Zuverlaessig', sComment: null },
+            { mRating: null, sRating: null, mComment: null, sComment: null, text: 'Weiter so!' },
+            { mRating: null, sRating: null, mComment: null, sComment: null, checkbox: true },
+          ];
+          for (let i = 0; i < Math.min(t1Sections.length, sectionRatings.length); i++) {
+            const ts = t1Sections[i]!;
+            const sr = sectionRatings[i]!;
+            await prisma.coachingSessionSection.create({
+              data: {
+                sessionId: session.id,
+                templateSectionId: ts.id,
+                title: ts.title,
+                type: ts.type,
+                managerRating: (sr as any).mRating ?? null,
+                selfRating: (sr as any).sRating ?? null,
+                managerComment: (sr as any).mComment ?? null,
+                selfComment: (sr as any).sComment ?? null,
+                textValue: (sr as any).text ?? null,
+                checkboxValue: (sr as any).checkbox ?? null,
+                sortOrder: i,
+              },
+            });
+          }
+        }
+
+        // Add action items for completed sessions
+        if (sd.status === 'COMPLETED' && sd.title?.includes('Januar')) {
+          await prisma.coachingActionItem.createMany({
+            data: [
+              { sessionId: session.id, tenantId: tenant1.id, title: 'Cross-Selling Uebungen durchfuehren', assigneeId: learnerUser.id, priority: 'HIGH', status: 'COMPLETED', dueDate: new Date(now.getTime() - 15 * 24 * 60 * 60 * 1000), completedAt: new Date(now.getTime() - 16 * 24 * 60 * 60 * 1000) },
+              { sessionId: session.id, tenantId: tenant1.id, title: 'Produktschulung Premium-Marken besuchen', assigneeId: learnerUser.id, priority: 'MEDIUM', status: 'COMPLETED', dueDate: new Date(now.getTime() - 10 * 24 * 60 * 60 * 1000), completedAt: new Date(now.getTime() - 12 * 24 * 60 * 60 * 1000) },
+            ],
+          });
+        }
+        if (sd.status === 'COMPLETED' && sd.title?.includes('Februar')) {
+          await prisma.coachingActionItem.createMany({
+            data: [
+              { sessionId: session.id, tenantId: tenant1.id, title: 'Schaufenster-Gestaltung ueben', assigneeId: learnerUser.id, priority: 'MEDIUM', status: 'IN_PROGRESS', dueDate: new Date(now.getTime() + 7 * 24 * 60 * 60 * 1000) },
+              { sessionId: session.id, tenantId: tenant1.id, title: 'Kundenbindungs-Workshop vorbereiten', assigneeId: learnerUser.id, priority: 'LOW', status: 'OPEN', dueDate: new Date(now.getTime() + 14 * 24 * 60 * 60 * 1000) },
+            ],
+          });
+        }
+
+        // Add anonymous feedback for completed sessions
+        if (sd.status === 'COMPLETED' && sd.title?.includes('Januar')) {
+          await prisma.coachingFeedback.create({
+            data: { sessionId: session.id, rating: 4, comment: 'Sehr hilfreiches Gespraech', isAnonymous: true },
+          });
+        }
+      }
+
+      console.log('✓ Coaching/1:1: 2 Templates, 5 Sessions, Action Items und Feedback erstellt');
+    }
+  } else {
+    console.log('✓ Coaching/1:1 Demo-Daten bereits vorhanden');
   }
 
   console.log('\n═══════════════════════════════════════');

@@ -391,29 +391,57 @@ export const kpiEntryUpsertSchema = z.object({
 });
 
 // ============================================================
-// Budget Tracker — Validators
+// Budget Tracker — Umsatz-Ziel-Tracking Validators
 // ============================================================
 
-export const budgetPeriodCreateSchema = z.object({
+export const revenueConfigUpdateSchema = z.object({
+  currency: z.string().min(1).max(5).optional(),
+  locale: z.string().min(2).max(10).optional(),
+  comparisonYoy: z.boolean().optional(),
+  comparisonRank: z.boolean().optional(),
+  retentionMonths: z.number().int().min(6).max(120).optional(),
+  weekdayWeights: z.record(z.string(), z.number().min(0).max(5)).optional(),
+});
+
+export const revenuePeriodCreateSchema = z.object({
   storeId: z.string().min(1),
-  period: z.string().min(1).max(20),
-  budgetType: z.enum(['MONTHLY', 'QUARTERLY', 'YEARLY']).default('MONTHLY'),
-  revenue: z.number().min(0).default(0),
-  cogs: z.number().min(0).default(0),
-  labor: z.number().min(0).default(0),
-  rent: z.number().min(0).default(0),
-  marketing: z.number().min(0).default(0),
-  other: z.number().min(0).default(0),
+  periodType: z.enum(['YEARLY', 'QUARTERLY', 'MONTHLY']),
+  periodKey: z.string().min(1).max(20),
+  parentId: z.string().optional(),
+  startDate: z.string().regex(/^\d{4}-\d{2}-\d{2}$/),
+  endDate: z.string().regex(/^\d{4}-\d{2}-\d{2}$/),
+  targetAmount: z.number().min(0),
   notes: z.string().max(2000).optional(),
 });
 
-export const budgetPeriodUpdateSchema = budgetPeriodCreateSchema.omit({ storeId: true, period: true, budgetType: true }).partial();
+export const revenuePeriodUpdateSchema = z.object({
+  targetAmount: z.number().min(0).optional(),
+  status: z.enum(['ACTIVE', 'CLOSED']).optional(),
+  notes: z.string().max(2000).optional(),
+});
 
-export const budgetActualCreateSchema = z.object({
-  category: z.enum(['REVENUE', 'COGS', 'LABOR', 'RENT', 'MARKETING', 'OTHER']),
-  actualAmount: z.number(),
+export const revenueEntryCreateSchema = z.object({
+  amount: z.number().min(0),
   date: z.string().regex(/^\d{4}-\d{2}-\d{2}$/),
-  description: z.string().max(500).optional(),
+  time: z.string().regex(/^\d{2}:\d{2}$/).optional(),
+  comment: z.string().max(500).optional(),
+  tag: z.enum(['NORMAL', 'AKTION', 'EVENT']).optional(),
+  source: z.enum(['MANUAL', 'CSV']).default('MANUAL'),
+});
+
+export const revenueChangeRequestSchema = z.object({
+  newTarget: z.number().min(0),
+  reason: z.string().min(1).max(1000),
+});
+
+export const revenueChangeReviewSchema = z.object({
+  status: z.enum(['APPROVED', 'REJECTED']),
+  reviewNote: z.string().max(1000).optional(),
+});
+
+export const revenueDayOverrideSchema = z.object({
+  date: z.string().regex(/^\d{4}-\d{2}-\d{2}$/),
+  target: z.number().min(0),
 });
 
 // ============================================================
@@ -481,9 +509,13 @@ export const inventoryItemUpsertSchema = z.object({
 // === Type Exports (Performance) ===
 
 export type KpiEntryUpsertInput = z.infer<typeof kpiEntryUpsertSchema>;
-export type BudgetPeriodCreateInput = z.infer<typeof budgetPeriodCreateSchema>;
-export type BudgetPeriodUpdateInput = z.infer<typeof budgetPeriodUpdateSchema>;
-export type BudgetActualCreateInput = z.infer<typeof budgetActualCreateSchema>;
+export type RevenueConfigUpdateInput = z.infer<typeof revenueConfigUpdateSchema>;
+export type RevenuePeriodCreateInput = z.infer<typeof revenuePeriodCreateSchema>;
+export type RevenuePeriodUpdateInput = z.infer<typeof revenuePeriodUpdateSchema>;
+export type RevenueEntryCreateInput = z.infer<typeof revenueEntryCreateSchema>;
+export type RevenueChangeRequestInput = z.infer<typeof revenueChangeRequestSchema>;
+export type RevenueChangeReviewInput = z.infer<typeof revenueChangeReviewSchema>;
+export type RevenueDayOverrideInput = z.infer<typeof revenueDayOverrideSchema>;
 export type ForecastCreateInput = z.infer<typeof forecastCreateSchema>;
 export type ForecastUpdateInput = z.infer<typeof forecastUpdateSchema>;
 export type LossIncidentCreateInput = z.infer<typeof lossIncidentCreateSchema>;
@@ -652,30 +684,69 @@ export const trainingLogUpdateSchema = z.object({
 });
 
 // ============================================================
-// Challenges — Validators
+// Challenges — Gamification & Wettbewerbe Validators
 // ============================================================
 
-export const challengeCreateSchema = z.object({
+export const challengeTemplateCreateSchema = z.object({
   title: z.string().min(2).max(200),
   description: z.string().max(2000).optional(),
-  type: z.enum(['INDIVIDUAL', 'TEAM', 'STORE']).default('INDIVIDUAL'),
+  scope: z.enum(['INDIVIDUAL', 'TEAM']).default('INDIVIDUAL'),
+  scoringType: z.enum(['ABSOLUTE', 'RELATIVE', 'POINTS']).default('ABSOLUTE'),
   metric: z.string().max(100).optional(),
   targetValue: z.number().optional(),
+  rules: z.string().max(5000).optional(),
+  fairnessNote: z.string().max(2000).optional(),
+  tags: z.string().max(500).optional(),
+  durationDays: z.number().int().min(1).max(365).optional(),
+  reward: z.string().max(500).optional(),
+  badgeName: z.string().max(100).optional(),
+});
+
+export const challengeCreateSchema = z.object({
+  templateId: z.string().optional(),
+  title: z.string().min(2).max(200),
+  description: z.string().max(2000).optional(),
+  scope: z.enum(['INDIVIDUAL', 'TEAM']).default('INDIVIDUAL'),
+  scoringType: z.enum(['ABSOLUTE', 'RELATIVE', 'POINTS']).default('ABSOLUTE'),
+  metric: z.string().max(100).optional(),
+  targetValue: z.number().optional(),
+  rules: z.string().max(5000).optional(),
+  fairnessNote: z.string().max(2000).optional(),
+  tags: z.string().max(500).optional(),
   startDate: z.string().regex(/^\d{4}-\d{2}-\d{2}$/),
   endDate: z.string().regex(/^\d{4}-\d{2}-\d{2}$/),
   reward: z.string().max(500).optional(),
+  badgeName: z.string().max(100).optional(),
+  visibility: z.enum(['PUBLIC', 'PRIVATE', 'TOP_N']).default('PUBLIC'),
+  visibleTopN: z.number().int().min(1).optional(),
+  participationType: z.enum(['AUTO', 'INVITE', 'OPTIN']).default('AUTO'),
+  storeIds: z.array(z.string()).optional(),
+  regionId: z.string().optional(),
+  isRecurring: z.boolean().default(false),
+  recurringCron: z.string().max(50).optional(),
 });
 
 export const challengeUpdateSchema = z.object({
   title: z.string().min(2).max(200).optional(),
   description: z.string().max(2000).optional(),
-  status: z.enum(['DRAFT', 'ACTIVE', 'COMPLETED', 'CANCELLED']).optional(),
+  status: z.enum(['DRAFT', 'PLANNED', 'ACTIVE', 'EVALUATION', 'PUBLISHED', 'ARCHIVED']).optional(),
   targetValue: z.number().optional(),
   reward: z.string().max(500).optional(),
+  visibility: z.enum(['PUBLIC', 'PRIVATE', 'TOP_N']).optional(),
+  visibleTopN: z.number().int().min(1).optional(),
 });
 
-export const challengeProgressSchema = z.object({
-  currentValue: z.number(),
+export const challengeEntrySchema = z.object({
+  participantId: z.string().min(1),
+  value: z.number(),
+  note: z.string().max(500).optional(),
+});
+
+export const challengeParticipantSchema = z.object({
+  userId: z.string().optional(),
+  storeId: z.string().optional(),
+  teamName: z.string().max(100).optional(),
+  handicap: z.number().min(0).max(5).default(1.0),
 });
 
 // ============================================================
@@ -720,9 +791,11 @@ export type EnrollmentCreateInput = z.infer<typeof enrollmentCreateSchema>;
 export type EnrollmentProgressInput = z.infer<typeof enrollmentProgressSchema>;
 export type TrainingLogCreateInput = z.infer<typeof trainingLogCreateSchema>;
 export type TrainingLogUpdateInput = z.infer<typeof trainingLogUpdateSchema>;
+export type ChallengeTemplateCreateInput = z.infer<typeof challengeTemplateCreateSchema>;
 export type ChallengeCreateInput = z.infer<typeof challengeCreateSchema>;
 export type ChallengeUpdateInput = z.infer<typeof challengeUpdateSchema>;
-export type ChallengeProgressInput = z.infer<typeof challengeProgressSchema>;
+export type ChallengeEntryInput = z.infer<typeof challengeEntrySchema>;
+export type ChallengeParticipantInput = z.infer<typeof challengeParticipantSchema>;
 export type OnboardingTemplateCreateInput = z.infer<typeof onboardingTemplateCreateSchema>;
 export type OnboardingJourneyCreateInput = z.infer<typeof onboardingJourneyCreateSchema>;
 export type OnboardingStepUpdateInput = z.infer<typeof onboardingStepUpdateSchema>;
@@ -734,11 +807,13 @@ export type OnboardingStepUpdateInput = z.infer<typeof onboardingStepUpdateSchem
 export const coachingSessionCreateSchema = z.object({
   storeId: z.string().min(1),
   coacheeId: z.string().min(1),
+  templateId: z.string().optional(),
   scheduledAt: z.string().min(1),
   duration: z.number().int().min(5).max(480).default(30),
-  type: z.enum(['REGULAR', 'AD_HOC', 'FOLLOW_UP']).default('REGULAR'),
-  notes: z.string().max(5000).optional(),
-  actionItems: z.string().max(5000).optional(),
+  type: z.enum(['ONE_ON_ONE', 'FLOOR', 'GROUP']).default('ONE_ON_ONE'),
+  title: z.string().max(200).optional(),
+  location: z.string().max(200).optional(),
+  notes: z.string().max(10000).optional(),
   mood: z.number().int().min(1).max(5).optional(),
   followUpDate: z.string().optional(),
 });
@@ -746,12 +821,79 @@ export const coachingSessionCreateSchema = z.object({
 export const coachingSessionUpdateSchema = z.object({
   scheduledAt: z.string().optional(),
   duration: z.number().int().min(5).max(480).optional(),
-  type: z.enum(['REGULAR', 'AD_HOC', 'FOLLOW_UP']).optional(),
-  status: z.enum(['SCHEDULED', 'COMPLETED', 'CANCELLED']).optional(),
-  notes: z.string().max(5000).optional(),
-  actionItems: z.string().max(5000).optional(),
+  type: z.enum(['ONE_ON_ONE', 'FLOOR', 'GROUP']).optional(),
+  status: z.enum(['PLANNED', 'SELF_ASSESSMENT', 'PREPARATION', 'IN_PROGRESS', 'DOCUMENTATION', 'CONFIRMATION', 'COMPLETED', 'ARCHIVED', 'CANCELLED', 'NO_SHOW']).optional(),
+  title: z.string().max(200).optional(),
+  location: z.string().max(200).optional(),
+  notes: z.string().max(10000).optional(),
+  privateNotes: z.string().max(10000).optional(),
+  selfAssessmentNotes: z.string().max(10000).optional(),
+  managerSummary: z.string().max(10000).optional(),
+  coacheeConfirmation: z.boolean().optional(),
+  coacheeComment: z.string().max(5000).optional(),
   mood: z.number().int().min(1).max(5).optional(),
+  overallRating: z.number().min(0).max(10).optional(),
   followUpDate: z.string().optional(),
+});
+
+export const coachingTemplateCreateSchema = z.object({
+  name: z.string().min(2).max(200),
+  description: z.string().max(2000).optional(),
+  type: z.enum(['ONE_ON_ONE', 'FLOOR', 'GROUP']).default('ONE_ON_ONE'),
+  isDefault: z.boolean().default(false),
+  ratingScale: z.number().int().min(3).max(10).default(5),
+  ratingLabels: z.string().max(2000).optional(),
+  defaultDuration: z.number().int().min(5).max(480).default(30),
+  defaultGoals: z.string().max(5000).optional(),
+  sections: z.array(z.object({
+    title: z.string().min(1).max(200),
+    description: z.string().max(1000).optional(),
+    type: z.enum(['RATING', 'TEXT', 'CHECKBOX', 'COMPETENCY']).default('RATING'),
+    competencies: z.string().max(5000).optional(),
+    weight: z.number().min(0).max(100).default(1),
+    sortOrder: z.number().int().default(0),
+    isRequired: z.boolean().default(true),
+  })).optional(),
+});
+
+export const coachingTemplateUpdateSchema = coachingTemplateCreateSchema.partial();
+
+export const coachingSessionSectionSchema = z.object({
+  templateSectionId: z.string().optional(),
+  title: z.string().min(1).max(200),
+  type: z.enum(['RATING', 'TEXT', 'CHECKBOX', 'COMPETENCY']).default('RATING'),
+  managerRating: z.number().min(0).max(10).optional().nullable(),
+  selfRating: z.number().min(0).max(10).optional().nullable(),
+  managerComment: z.string().max(5000).optional().nullable(),
+  selfComment: z.string().max(5000).optional().nullable(),
+  checkboxValue: z.boolean().optional().nullable(),
+  textValue: z.string().max(10000).optional().nullable(),
+  sortOrder: z.number().int().default(0),
+});
+
+export const coachingActionItemSchema = z.object({
+  title: z.string().min(1).max(300),
+  description: z.string().max(2000).optional(),
+  assigneeId: z.string().min(1),
+  status: z.enum(['OPEN', 'IN_PROGRESS', 'COMPLETED', 'CANCELLED']).default('OPEN'),
+  priority: z.enum(['LOW', 'MEDIUM', 'HIGH']).default('MEDIUM'),
+  dueDate: z.string().optional(),
+  linkedPlanId: z.string().optional(),
+  linkedCourseId: z.string().optional(),
+});
+
+export const coachingFeedbackSchema = z.object({
+  rating: z.number().int().min(1).max(5),
+  comment: z.string().max(2000).optional(),
+  isAnonymous: z.boolean().default(true),
+});
+
+export const coachingSettingsSchema = z.object({
+  ratingScale: z.number().int().min(3).max(10).default(5),
+  ratingLabels: z.string().max(2000).optional(),
+  defaultFrequencyDays: z.number().int().min(1).max(365).default(14),
+  escalationThreshold: z.number().int().min(1).max(10).default(3),
+  reminderDaysBefore: z.number().int().min(1).max(30).default(2),
 });
 
 // ============================================================
@@ -789,11 +931,39 @@ export const developmentReviewCreateSchema = z.object({
 // Appraisals — Validators
 // ============================================================
 
+export const appraisalTemplateCreateSchema = z.object({
+  name: z.string().min(2).max(200),
+  description: z.string().max(1000).optional(),
+  ratingScale: z.number().int().min(2).max(10).default(5),
+  ratingLabels: z.array(z.string()).optional(),
+  categories: z.array(z.object({
+    name: z.string().min(1).max(200),
+    description: z.string().max(500).optional(),
+    weight: z.number().min(0.1).max(10).default(1),
+    sortOrder: z.number().int().default(0),
+  })).min(1),
+  defaultGoals: z.array(z.object({
+    title: z.string().min(1).max(200),
+    description: z.string().max(500).optional(),
+    sortOrder: z.number().int().default(0),
+  })).optional(),
+});
+
+export const appraisalTemplateUpdateSchema = appraisalTemplateCreateSchema.partial();
+
 export const appraisalCycleCreateSchema = z.object({
   name: z.string().min(2).max(200),
+  templateId: z.string().optional(),
   period: z.string().max(50).optional(),
   startDate: z.string().min(1),
   endDate: z.string().min(1),
+  retentionMonths: z.number().int().min(1).max(120).default(36),
+  categories: z.array(z.object({
+    name: z.string().min(1).max(200),
+    description: z.string().max(500).optional(),
+    weight: z.number().min(0.1).max(10).default(1),
+    sortOrder: z.number().int().default(0),
+  })).optional(),
 });
 
 export const appraisalCreateSchema = z.object({
@@ -804,14 +974,35 @@ export const appraisalCreateSchema = z.object({
 });
 
 export const appraisalUpdateSchema = z.object({
-  status: z.enum(['PENDING', 'SELF_REVIEW', 'MANAGER_REVIEW', 'COMPLETED']).optional(),
-  selfRating: z.number().int().min(1).max(5).optional(),
-  managerRating: z.number().int().min(1).max(5).optional(),
-  overallRating: z.number().int().min(1).max(5).optional(),
+  status: z.enum(['OPEN', 'SELF_ASSESSMENT', 'MANAGER_REVIEW', 'RELEASED', 'CONFIRMED', 'ARCHIVED']).optional(),
   strengths: z.string().max(5000).optional(),
   improvements: z.string().max(5000).optional(),
-  goals: z.string().max(5000).optional(),
   meetingNotes: z.string().max(5000).optional(),
+  employeeComment: z.string().max(5000).optional(),
+  managerSummary: z.string().max(5000).optional(),
+});
+
+export const appraisalRatingSchema = z.object({
+  categoryId: z.string().min(1),
+  selfRating: z.number().int().min(1).max(10).optional(),
+  managerRating: z.number().int().min(1).max(10).optional(),
+  selfComment: z.string().max(2000).optional(),
+  managerComment: z.string().max(2000).optional(),
+});
+
+export const appraisalGoalSchema = z.object({
+  title: z.string().min(1).max(200),
+  description: z.string().max(1000).optional(),
+  targetDate: z.string().optional(),
+  status: z.enum(['OPEN', 'IN_PROGRESS', 'ACHIEVED', 'MISSED']).optional(),
+  sortOrder: z.number().int().default(0),
+});
+
+export const appraisalCalibrationNoteSchema = z.object({
+  cycleId: z.string().min(1),
+  toUserId: z.string().min(1),
+  storeId: z.string().optional(),
+  message: z.string().min(1).max(2000),
 });
 
 // ============================================================
@@ -909,10 +1100,90 @@ export const wellbeingResourceUpdateSchema = z.object({
 // Kat.6: Kommunikation & Signal — Validators
 // ============================================================
 
-export const briefingCreateSchema = z.object({ title: z.string().min(1), content: z.string().min(1), date: z.string().min(1), type: z.enum(['MORNING', 'EVENING', 'SPECIAL']).optional() });
+// ── Briefing Templates ──
+export const briefingTemplateSectionSchema = z.object({
+  name: z.string().min(1),
+  description: z.string().optional(),
+  placeholder: z.string().optional(),
+  isRequired: z.boolean().optional(),
+  sortOrder: z.number().optional(),
+});
+
+export const briefingTemplateCreateSchema = z.object({
+  name: z.string().min(1),
+  description: z.string().optional(),
+  sections: z.array(briefingTemplateSectionSchema).optional(),
+});
+export type BriefingTemplateCreateInput = z.infer<typeof briefingTemplateCreateSchema>;
+
+export const briefingTemplateUpdateSchema = z.object({
+  name: z.string().min(1).optional(),
+  description: z.string().optional(),
+  isActive: z.boolean().optional(),
+  sections: z.array(briefingTemplateSectionSchema).optional(),
+});
+export type BriefingTemplateUpdateInput = z.infer<typeof briefingTemplateUpdateSchema>;
+
+// ── Briefings ──
+export const briefingCreateSchema = z.object({
+  scope: z.enum(['STORE', 'COMPANY']),
+  title: z.string().min(1),
+  content: z.string().min(1),
+  priority: z.enum(['NORMAL', 'IMPORTANT', 'URGENT']).optional(),
+  status: z.enum(['DRAFT', 'PUBLISHED']).optional(),
+  targetRoles: z.array(z.string()).optional(),
+  targetRegionId: z.string().optional(),
+  templateId: z.string().optional(),
+  scheduledAt: z.string().optional(),
+  expiresAt: z.string().optional(),
+  sections: z.array(z.object({
+    name: z.string().min(1),
+    content: z.string().min(1),
+    sortOrder: z.number().optional(),
+  })).optional(),
+  tasks: z.array(z.object({
+    title: z.string().min(1),
+    sortOrder: z.number().optional(),
+  })).optional(),
+  attachments: z.array(z.object({
+    fileName: z.string().min(1),
+    fileUrl: z.string().min(1),
+    fileType: z.string().min(1),
+    linkPreview: z.string().optional(),
+  })).optional(),
+});
 export type BriefingCreateInput = z.infer<typeof briefingCreateSchema>;
 
-export const briefingUpdateSchema = z.object({ title: z.string().min(1).optional(), content: z.string().min(1).optional(), type: z.enum(['MORNING', 'EVENING', 'SPECIAL']).optional() });
+export const briefingUpdateSchema = z.object({
+  title: z.string().min(1).optional(),
+  content: z.string().min(1).optional(),
+  priority: z.enum(['NORMAL', 'IMPORTANT', 'URGENT']).optional(),
+  status: z.enum(['DRAFT', 'PUBLISHED', 'ARCHIVED']).optional(),
+  targetRoles: z.array(z.string()).optional(),
+  targetRegionId: z.string().optional(),
+  scheduledAt: z.string().nullable().optional(),
+  expiresAt: z.string().nullable().optional(),
+  sections: z.array(z.object({
+    name: z.string().min(1),
+    content: z.string().min(1),
+    sortOrder: z.number().optional(),
+  })).optional(),
+  tasks: z.array(z.object({
+    title: z.string().min(1),
+    sortOrder: z.number().optional(),
+  })).optional(),
+});
+export type BriefingUpdateInput = z.infer<typeof briefingUpdateSchema>;
+
+export const briefingQuestionSchema = z.object({
+  question: z.string().min(1),
+});
+export type BriefingQuestionInput = z.infer<typeof briefingQuestionSchema>;
+
+export const briefingAnswerSchema = z.object({
+  answer: z.string().min(1),
+});
+export type BriefingAnswerInput = z.infer<typeof briefingAnswerSchema>;
 
 export const handoverCreateSchema = z.object({ toUserId: z.string().optional(), shiftDate: z.string().min(1), shiftType: z.string().optional(), salesUpdate: z.string().optional(), openTasks: z.string().optional(), incidents: z.string().optional(), customerNotes: z.string().optional(), stockNotes: z.string().optional(), generalNotes: z.string().optional() });
 export type HandoverCreateInput = z.infer<typeof handoverCreateSchema>;
@@ -933,13 +1204,75 @@ export const newsletterSectionSchema = z.object({ title: z.string().min(1), cont
 
 export const conversionGoalSchema = z.object({ period: z.string().min(1), targetConversion: z.number().optional(), targetAvgBasket: z.number().optional() });
 
-export const clientProfileCreateSchema = z.object({ firstName: z.string().min(1), lastName: z.string().min(1), email: z.string().email().optional(), phone: z.string().optional(), preferences: z.string().optional(), vipLevel: z.string().optional() });
+export const clientProfileCreateSchema = z.object({
+  firstName: z.string().min(1), lastName: z.string().min(1),
+  email: z.string().email().optional(), phone: z.string().optional(),
+  dateOfBirth: z.string().optional(), gender: z.string().optional(),
+  address: z.string().optional(), company: z.string().optional(),
+  preferences: z.string().optional(), preferredChannel: z.enum(['PHONE', 'EMAIL', 'WHATSAPP', 'SMS']).optional(),
+  wishlist: z.string().optional(), tags: z.string().optional(), vipLevel: z.string().optional(),
+  consentProfile: z.boolean().optional(), consentMarketing: z.boolean().optional(), consentBirthday: z.boolean().optional(),
+  customFields: z.string().optional(), primaryAdvisorId: z.string().optional(),
+});
 
-export const clientProfileUpdateSchema = z.object({ firstName: z.string().min(1).optional(), lastName: z.string().min(1).optional(), email: z.string().email().optional(), phone: z.string().optional(), preferences: z.string().optional(), vipLevel: z.string().optional(), totalPurchases: z.number().optional(), lastVisit: z.string().optional() });
+export const clientProfileUpdateSchema = z.object({
+  firstName: z.string().min(1).optional(), lastName: z.string().min(1).optional(),
+  email: z.string().email().optional(), phone: z.string().optional(),
+  dateOfBirth: z.string().optional(), gender: z.string().optional(),
+  address: z.string().optional(), company: z.string().optional(),
+  preferences: z.string().optional(), preferredChannel: z.enum(['PHONE', 'EMAIL', 'WHATSAPP', 'SMS']).optional(),
+  wishlist: z.string().optional(), tags: z.string().optional(), vipLevel: z.string().optional(),
+  totalPurchases: z.number().optional(), totalRevenue: z.number().optional(),
+  avgBasket: z.number().optional(), visitCount: z.number().int().optional(),
+  lastVisit: z.string().optional(), activityScore: z.number().int().optional(),
+  consentProfile: z.boolean().optional(), consentMarketing: z.boolean().optional(), consentBirthday: z.boolean().optional(),
+  customFields: z.string().optional(), primaryAdvisorId: z.string().nullable().optional(),
+  isArchived: z.boolean().optional(),
+});
 
-export const clientInteractionSchema = z.object({ type: z.enum(['VISIT', 'CALL', 'EMAIL', 'EVENT']).optional(), notes: z.string().optional(), purchaseAmount: z.number().optional() });
+export const clientInteractionSchema = z.object({
+  type: z.enum(['VISIT', 'CALL', 'EMAIL', 'EVENT', 'PURCHASE', 'COMPLAINT', 'RETURN']).optional(),
+  notes: z.string().optional(), purchaseAmount: z.number().optional(),
+  items: z.string().optional(), category: z.string().optional(),
+  paymentMethod: z.enum(['BAR', 'KARTE', 'ONLINE']).optional(),
+});
 
-export const clientTaskSchema = z.object({ title: z.string().min(1), dueDate: z.string().optional(), status: z.enum(['OPEN', 'DONE', 'CANCELLED']).optional() });
+export const clientTaskSchema = z.object({
+  title: z.string().min(1), description: z.string().optional(),
+  type: z.enum(['MANUAL', 'AUTO']).optional(), priority: z.enum(['LOW', 'NORMAL', 'HIGH']).optional(),
+  dueDate: z.string().optional(), status: z.enum(['OPEN', 'DONE', 'CANCELLED']).optional(),
+});
+
+export const clientNoteSchema = z.object({
+  content: z.string().min(1),
+  type: z.enum(['GENERAL', 'CONSULTATION', 'COMPLAINT', 'WISH']).optional(),
+  isPinned: z.boolean().optional(),
+  mentionedUserIds: z.string().optional(),
+  parentInteractionId: z.string().optional(),
+});
+
+export const clientOccasionSchema = z.object({
+  type: z.enum(['BIRTHDAY', 'ANNIVERSARY', 'CUSTOM']).optional(),
+  title: z.string().min(1), date: z.string().min(1),
+  reminderDays: z.number().int().optional(), isRecurring: z.boolean().optional(),
+});
+
+export const clientSegmentSchema = z.object({
+  name: z.string().min(1), filters: z.string().min(1), storeId: z.string().optional(),
+});
+
+export const crmSettingsSchema = z.object({
+  selfRegistrationEnabled: z.boolean().optional(),
+  vipTiers: z.string().optional(), autoArchiveDays: z.number().int().nullable().optional(),
+  historyMode: z.enum(['CLIENT', 'STORE']).optional(),
+});
+
+export const clientSelfRegisterSchema = z.object({
+  firstName: z.string().min(1), lastName: z.string().min(1),
+  email: z.string().email().optional(), phone: z.string().optional(),
+  dateOfBirth: z.string().optional(),
+  consentProfile: z.literal(true), consentMarketing: z.boolean().optional(), consentBirthday: z.boolean().optional(),
+});
 
 export const stockCalloutCreateSchema = z.object({ sku: z.string().min(1), productName: z.string().min(1), currentStock: z.number().int().optional(), reorderPoint: z.number().int().optional(), requestedQty: z.number().int().min(1), urgency: z.enum(['LOW', 'NORMAL', 'HIGH', 'CRITICAL']).optional() });
 

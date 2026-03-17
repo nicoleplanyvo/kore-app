@@ -1,12 +1,16 @@
 import { Routes, Route, Navigate } from 'react-router-dom';
-import { LibraryPage } from './pages/LibraryPage';
-import { DetailPage } from './pages/DetailPage';
+import { OverviewPage } from './pages/OverviewPage';
+import { GuidelineDetailPage } from './pages/GuidelineDetailPage';
+import { ManagePage } from './pages/ManagePage';
+import { DashboardPage } from './pages/DashboardPage';
 
-export default function VmGuidelinesTool() {
+export default function VmGuidelinesRoutes() {
   return (
     <Routes>
-      <Route index element={<LibraryPage />} />
-      <Route path=":id" element={<DetailPage />} />
+      <Route index element={<OverviewPage />} />
+      <Route path="guidelines/:id" element={<GuidelineDetailPage />} />
+      <Route path="manage" element={<ManagePage />} />
+      <Route path="dashboard" element={<DashboardPage />} />
       <Route path="*" element={<Navigate to="." replace />} />
     </Routes>
   );

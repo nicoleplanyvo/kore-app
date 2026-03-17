@@ -1,14 +1,15 @@
-import { Routes, Route } from 'react-router-dom';
+import { Routes, Route, Navigate } from 'react-router-dom';
 import { OverviewPage } from './pages/OverviewPage';
-import { AnalysisPage } from './pages/AnalysisPage';
-import { ComparisonPage } from './pages/ComparisonPage';
+import { DashboardPage } from './pages/DashboardPage';
+import { SettingsPage } from './pages/SettingsPage';
 
 export default function FrConversionRoutes() {
   return (
     <Routes>
       <Route index element={<OverviewPage />} />
-      <Route path="analysis" element={<AnalysisPage />} />
-      <Route path="comparison" element={<ComparisonPage />} />
+      <Route path="dashboard" element={<DashboardPage />} />
+      <Route path="settings" element={<SettingsPage />} />
+      <Route path="*" element={<Navigate to="." replace />} />
     </Routes>
   );
 }

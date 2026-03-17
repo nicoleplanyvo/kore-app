@@ -18,8 +18,8 @@ export function EntryListPage() {
       <div className="flex items-center gap-md mb-2xl">
         <Link to="/tools/kpi" className="text-kore-mid hover:text-kore-ink transition-colors"><ArrowLeft size={20} /></Link>
         <div>
-          <h1 className="font-display text-h1 text-kore-ink">KPI-Eintraege</h1>
-          <p className="text-body text-kore-mid mt-xs">Taegliche Kennzahlen aller Stores</p>
+          <h1 className="font-display text-h1 text-kore-ink">KPI-Einträge</h1>
+          <p className="text-body text-kore-mid mt-xs">Tägliche Kennzahlen aller Stores</p>
         </div>
       </div>
 
@@ -34,7 +34,7 @@ export function EntryListPage() {
       {isLoading ? (
         <div className="text-body text-kore-mid">Lade...</div>
       ) : entries.length === 0 ? (
-        <div className="text-body text-kore-mid">Keine Eintraege gefunden.</div>
+        <div className="text-body text-kore-mid">Keine Einträge gefunden.</div>
       ) : (
         <>
           <div className="border border-kore-border bg-kore-white">
@@ -69,7 +69,7 @@ export function EntryListPage() {
           {/* Pagination */}
           {totalPages > 1 && (
             <div className="flex items-center justify-between mt-xl">
-              <span className="text-small text-kore-mid">{total} Eintraege &middot; Seite {page} von {totalPages}</span>
+              <span className="text-small text-kore-mid">{total} Einträge &middot; Seite {page} von {totalPages}</span>
               <div className="flex gap-sm">
                 <button onClick={() => setPage(p => Math.max(1, p - 1))} disabled={page <= 1} className="p-sm border border-kore-border hover:bg-kore-bg disabled:opacity-30"><ChevronLeft size={16} /></button>
                 <button onClick={() => setPage(p => Math.min(totalPages, p + 1))} disabled={page >= totalPages} className="p-sm border border-kore-border hover:bg-kore-bg disabled:opacity-30"><ChevronRight size={16} /></button>

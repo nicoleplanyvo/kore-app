@@ -56,7 +56,16 @@ model User {
   appraisalsAsManager  Appraisal[] @relation("AppraisalManager")
   shiftEntries     ShiftEntry[]
   swapRequests     ShiftSwapRequest[] @relation("SwapRequester")
+  shiftAvailabilities ShiftAvailability[]
+  shiftTimeEntries    ShiftTimeEntry[]
   wellbeingCheckIns WellbeingCheckIn[]
+  challengeEntries   ChallengeEntry[]    @relation("ChallengeEntries")
+  challengeVotesCast ChallengeVote[]     @relation("ChallengeVoter")
+  challengeVotesReceived ChallengeVote[] @relation("ChallengeVoteTarget")
+  coachingTemplates CoachingTemplate[] @relation("CoachingTemplateCreator")
+  clientAppointments   ClientAppointment[]   @relation("ClientAppointmentAdvisor")
+  budgetScenarios      BudgetScenario[]      @relation("BudgetScenarioCreator")
+  frSessions           FRSession[]           @relation("FRSessionStaff")
   briefingsCreated     Briefing[]               @relation("BriefingCreator")
   briefingAcks         BriefingAcknowledgment[] @relation("BriefingAcknowledgments")
   handoversFrom        Handover[]               @relation("HandoverFrom")
@@ -118,6 +127,7 @@ model Tenant {
   onboardingTemplates OnboardingTemplate[]
   onboardingJourneys  OnboardingJourney[]
   coachingSessions CoachingSession[]
+  coachingTemplates CoachingTemplate[]
   developmentPlans DevelopmentPlan[]
   appraisalCycles  AppraisalCycle[]
   pulseSurveys     PulseSurvey[]
@@ -125,6 +135,7 @@ model Tenant {
   wellbeingResources WellbeingResource[]
   teamMessages    TeamMessage[]
   newsletters     Newsletter[]
+  floorFrequencyLogs FloorFrequencyLog[]
 }
 
 model Region {
@@ -181,14 +192,23 @@ model Store {
   appraisals        Appraisal[]
   shiftTemplates    ShiftTemplate[]
   shiftEntries      ShiftEntry[]
+  shiftAvailabilities ShiftAvailability[]
+  shiftTimeEntries    ShiftTimeEntry[]
+  shiftWeekStatuses   ShiftWeekStatus[]
   pulseResponses    PulseResponse[]
   wellbeingCheckIns WellbeingCheckIn[]
   briefings    Briefing[]
   handovers    Handover[]
   conversionGoals    ConversionGoal[]
   clientProfiles     ClientProfile[]
+  clientAppointments ClientAppointment[]
   stockCallouts      StockCallout[]
   customerOrders     CustomerOrder[]
+  budgetScenarios    BudgetScenario[]
+  floorFrequencyLogs FloorFrequencyLog[]
+  frSettings         FRSettings?
+  frRooms            FRRoom[]
+  frSessions         FRSession[]
 
   @@index([tenantId])
   @@index([regionId])
@@ -843,22 +863,46 @@ model InventoryItem {
 // ============================================================
 
 model FloorZone {
-  id          String   @id @default(cuid())
-  tenantId    String
-  tenant      Tenant   @relation(fields: [tenantId], references: [id])
-  storeId     String
-  store       Store    @relation(fields: [storeId], references: [id])
-  name        String
-  description String?
-  sortOrder   Int      @default(0)
-  isActive    Boolean  @default(true)
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  id              String   @id @default(cuid())
+  tenantId        String
+  tenant          Tenant   @relation(fields: [tenantId], references: [id])
+  storeId         String
+  store           Store    @relation(fields: [storeId], references: [id])
+  name            String
+  description     String?
+  sortOrder       Int      @default(0)
+  minStaff        Int      @default(1)
+  maxStaff        Int      @default(5)
+  customerCount   Int      @default(0)
+  isActive        Boolean  @default(true)
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
 
-  positions FloorStaffPosition[]
+  positions     FloorStaffPosition[]
+  frequencyLogs FloorFrequencyLog[]
 
   @@index([tenantId])
   @@index([storeId])
+}
+
+model FloorFrequencyLog {
+  id            String   @id @default(cuid())
+  tenantId      String
+  tenant        Tenant   @relation(fields: [tenantId], references: [id])
+  storeId       String
+  store         Store    @relation(fields: [storeId], references: [id])
+  zoneId        String
+  zone          FloorZone @relation(fields: [zoneId], references: [id])
+  customerCount Int
+  staffCount    Int
+  hour          Int      // 0-23
+  date          String   // ISO date "2026-03-17"
+  recordedBy    String
+  createdAt     DateTime @default(now())
+
+  @@index([tenantId])
+  @@index([storeId, date])
+  @@index([zoneId, date])
 }
 
 model FloorStaffPosition {
@@ -1082,19 +1126,25 @@ model Challenge {
   tenant       Tenant    @relation(fields: [tenantId], references: [id])
   title        String
   description  String?
+  mode         String    @default("KPI")        // KPI, VOTING (creative)
   type         String    @default("INDIVIDUAL") // INDIVIDUAL, TEAM, STORE
   metric       String?
   targetValue  Float?
   startDate    String
   endDate      String
+  recurring    String?                           // NONE, WEEKLY, MONTHLY, QUARTERLY
   reward       String?
-  status       String    @default("DRAFT") // DRAFT, ACTIVE, COMPLETED, CANCELLED
+  rewardType   String?                           // HONOUR, PRIZE, POINTS, BADGE
+  anonymized   Boolean   @default(false)
+  status       String    @default("DRAFT")       // DRAFT, ACTIVE, COMPLETED, CANCELLED
   createdBy    String
   creator      User      @relation("ChallengeCreator", fields: [createdBy], references: [id])
   createdAt    DateTime  @default(now())
   updatedAt    DateTime  @updatedAt
 
   participants ChallengeParticipant[]
+  entries      ChallengeEntry[]
+  votes        ChallengeVote[]
 
   @@index([tenantId])
   @@index([status])
@@ -1116,6 +1166,34 @@ model ChallengeParticipant {
 
   @@unique([challengeId, userId])
   @@index([userId])
+}
+
+model ChallengeEntry {
+  id           String    @id @default(cuid())
+  challengeId  String
+  challenge    Challenge @relation(fields: [challengeId], references: [id], onDelete: Cascade)
+  userId       String
+  user         User      @relation("ChallengeEntries", fields: [userId], references: [id])
+  value        Float     @default(0)
+  note         String?
+  createdAt    DateTime  @default(now())
+
+  @@index([challengeId])
+  @@index([userId])
+}
+
+model ChallengeVote {
+  id           String    @id @default(cuid())
+  challengeId  String
+  challenge    Challenge @relation(fields: [challengeId], references: [id], onDelete: Cascade)
+  voterId      String
+  voter        User      @relation("ChallengeVoter", fields: [voterId], references: [id])
+  targetUserId String
+  targetUser   User      @relation("ChallengeVoteTarget", fields: [targetUserId], references: [id])
+  createdAt    DateTime  @default(now())
+
+  @@unique([challengeId, voterId])
+  @@index([challengeId])
 }
 
 // ============================================================
@@ -1213,10 +1291,19 @@ model CoachingSession {
   duration    Int      @default(30)
   type        String   @default("REGULAR") // REGULAR, AD_HOC, FOLLOW_UP
   status      String   @default("SCHEDULED") // SCHEDULED, COMPLETED, CANCELLED
+  framework   String   @default("GROW") // GROW, SMART, FREE
+  topic       String?  // Verkauf, Kundenservice, Fuehrung, Produktwissen, Soft Skills, custom
+  category    String?  // additional category tag
+  goalText       String? // GROW: Goal / SMART: Specific
+  realityText    String? // GROW: Reality / SMART: Measurable
+  optionsText    String? // GROW: Options / SMART: Achievable
+  wayForwardText String? // GROW: Way forward / SMART: Relevant
+  timelineText   String? // SMART: Time-bound
   notes       String?
   actionItems String?
   mood        Int?     // 1-5
   followUpDate DateTime?
+  templateId  String?
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 
@@ -1224,6 +1311,28 @@ model CoachingSession {
   store   Store  @relation(fields: [storeId], references: [id])
   coach   User   @relation("CoachSessions", fields: [coachId], references: [id])
   coachee User   @relation("CoacheeSessions", fields: [coacheeId], references: [id])
+}
+
+model CoachingTemplate {
+  id          String   @id @default(cuid())
+  tenantId    String
+  name        String
+  framework   String   @default("GROW")
+  topic       String?
+  category    String?
+  goalText       String?
+  realityText    String?
+  optionsText    String?
+  wayForwardText String?
+  timelineText   String?
+  notes       String?
+  createdBy   String
+  isActive    Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  tenant  Tenant @relation(fields: [tenantId], references: [id])
+  creator User   @relation("CoachingTemplateCreator", fields: [createdBy], references: [id])
 }
 
 model DevelopmentPlan {
@@ -1369,6 +1478,58 @@ model ShiftSwapRequest {
   requester  User       @relation("SwapRequester", fields: [requestedBy], references: [id])
 }
 
+model ShiftAvailability {
+  id        String   @id @default(cuid())
+  storeId   String
+  userId    String
+  date      DateTime
+  type      String   @default("AVAILABLE") // AVAILABLE, UNAVAILABLE, WISH, VACATION, SICK
+  wishStart String?  // gewuenschte Schicht-Startzeit
+  wishEnd   String?  // gewuenschte Schicht-Endzeit
+  note      String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  store Store @relation(fields: [storeId], references: [id])
+  user  User  @relation(fields: [userId], references: [id])
+
+  @@unique([storeId, userId, date])
+}
+
+model ShiftTimeEntry {
+  id        String    @id @default(cuid())
+  storeId   String
+  userId    String
+  date      DateTime
+  clockIn   DateTime?
+  clockOut  DateTime?
+  pauseMin  Int       @default(0)
+  note      String?
+  status    String    @default("OPEN") // OPEN, CLOCKED_IN, PAUSED, DONE
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+
+  store Store @relation(fields: [storeId], references: [id])
+  user  User  @relation(fields: [userId], references: [id])
+
+  @@unique([storeId, userId, date])
+}
+
+model ShiftWeekStatus {
+  id        String   @id @default(cuid())
+  storeId   String
+  weekStart DateTime
+  status    String   @default("DRAFT") // DRAFT, PUBLISHED
+  publishedBy String?
+  publishedAt DateTime?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  store Store @relation(fields: [storeId], references: [id])
+
+  @@unique([storeId, weekStart])
+}
+
 // ============================================================
 // Pulse Surveys
 // ============================================================
@@ -1471,8 +1632,10 @@ model Briefing {
   store        Store    @relation(fields: [storeId], references: [id])
   title        String
   content      String
+  sections     String   @default("[]") // JSON array of {title,content,sortOrder}
   date         String
   type         String   @default("MORNING") // MORNING, EVENING, SPECIAL
+  scheduledFor String?  // ISO date-time; if set, visible from that moment
   createdBy    String
   creator      User     @relation("BriefingCreator", fields: [createdBy], references: [id])
   publishedAt  DateTime?
@@ -1592,32 +1755,44 @@ model ConversionGoal {
 }
 
 model ClientProfile {
-  id             String   @id @default(cuid())
-  storeId        String
-  store          Store    @relation(fields: [storeId], references: [id])
-  firstName      String
-  lastName       String
-  email          String?
-  phone          String?
-  preferences    String?
-  vipLevel       String?
-  totalPurchases Float    @default(0)
-  lastVisit      DateTime?
-  createdBy      String
-  creator        User     @relation("ClientCreator", fields: [createdBy], references: [id])
-  interactions   ClientInteraction[]
-  tasks          ClientTask[]
-  createdAt      DateTime @default(now())
-  updatedAt      DateTime @updatedAt
+  id              String   @id @default(cuid())
+  storeId         String
+  store           Store    @relation(fields: [storeId], references: [id])
+  firstName       String
+  lastName        String
+  email           String?
+  phone           String?
+  whatsapp        String?
+  preferences     String?
+  sizes           String?
+  birthday        DateTime?
+  vipLevel        String?
+  loyaltyPoints   Int      @default(0)
+  totalPurchases  Float    @default(0)
+  totalSpent      Float    @default(0)
+  notes           String?
+  consentEmail    Boolean  @default(false)
+  consentSms      Boolean  @default(false)
+  consentWhatsapp Boolean  @default(false)
+  consentGeneral  Boolean  @default(false)
+  lastVisit       DateTime?
+  createdBy       String
+  creator         User     @relation("ClientCreator", fields: [createdBy], references: [id])
+  interactions    ClientInteraction[]
+  tasks           ClientTask[]
+  appointments    ClientAppointment[]
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
 }
 
 model ClientInteraction {
   id             String        @id @default(cuid())
   clientId       String
-  client         ClientProfile @relation(fields: [clientId], references: [id])
+  client         ClientProfile @relation(fields: [clientId], references: [id], onDelete: Cascade)
   userId         String
   user           User          @relation("ClientInteractions", fields: [userId], references: [id])
   type           String        @default("VISIT")
+  channel        String?
   date           DateTime      @default(now())
   notes          String?
   purchaseAmount Float?
@@ -1627,7 +1802,7 @@ model ClientInteraction {
 model ClientTask {
   id        String        @id @default(cuid())
   clientId  String
-  client    ClientProfile @relation(fields: [clientId], references: [id])
+  client    ClientProfile @relation(fields: [clientId], references: [id], onDelete: Cascade)
   userId    String
   user      User          @relation("ClientTasks", fields: [userId], references: [id])
   title     String
@@ -1681,4 +1856,90 @@ model OrderStatusUpdate {
   updater   User          @relation("OrderStatusUpdater", fields: [updatedBy], references: [id])
   notes     String?
   createdAt DateTime      @default(now())
+}
+
+model ClientAppointment {
+  id          String        @id @default(cuid())
+  storeId     String
+  store       Store         @relation(fields: [storeId], references: [id])
+  clientId    String?
+  client      ClientProfile? @relation(fields: [clientId], references: [id], onDelete: SetNull)
+  advisorId   String
+  advisor     User          @relation("ClientAppointmentAdvisor", fields: [advisorId], references: [id])
+  type        String        @default("BERATUNG")
+  title       String
+  notes       String?
+  startsAt    DateTime
+  endsAt      DateTime
+  status      String        @default("GEPLANT")
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @updatedAt
+}
+
+model BudgetScenario {
+  id        String   @id @default(cuid())
+  storeId   String
+  store     Store    @relation(fields: [storeId], references: [id], onDelete: Cascade)
+  createdBy String
+  creator   User     @relation("BudgetScenarioCreator", fields: [createdBy], references: [id])
+  name      String
+  data      String   // JSON blob with full scenario state
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([storeId])
+  @@index([createdBy])
+}
+
+// ── FR Conversion (Fitting Room) ────────────────────
+
+model FRSettings {
+  id              String   @id @default(cuid())
+  storeId         String   @unique
+  store           Store    @relation(fields: [storeId], references: [id])
+  maxItems        Int      @default(8)
+  warningMinutes  Int      @default(15)
+  alertMinutes    Int      @default(20)
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+}
+
+model FRRoom {
+  id        String   @id @default(cuid())
+  storeId   String
+  store     Store    @relation(fields: [storeId], references: [id])
+  number    Int
+  name      String?
+  status    String   @default("active") // active, deleted
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  sessions  FRSession[]
+
+  @@unique([storeId, number])
+}
+
+model FRSession {
+  id              String    @id @default(cuid())
+  storeId         String
+  store           Store     @relation(fields: [storeId], references: [id])
+  roomId          String
+  room            FRRoom    @relation(fields: [roomId], references: [id])
+  staffId         String?
+  staff           User?     @relation("FRSessionStaff", fields: [staffId], references: [id])
+  itemsIn         Int       @default(0)
+  itemsReturned   Int?
+  itemsPurchased  Int?
+  itemsShrinkage  Int?
+  conversionRate  Int?
+  status          String    @default("active") // active, completed, canceled
+  notes           String?
+  checkedInBy     String
+  checkInAt       DateTime  @default(now())
+  checkOutAt      DateTime?
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+
+  @@index([storeId, status])
+  @@index([roomId])
 }

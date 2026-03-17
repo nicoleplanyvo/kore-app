@@ -1,10 +1,23 @@
-import { useState } from 'react';
-import { Outlet } from 'react-router-dom';
+import { useState, useEffect } from 'react';
+import { Outlet, useLocation } from 'react-router-dom';
 import { AppSidebar } from '../components/AppSidebar';
 import { AppTopBar } from '../components/AppTopBar';
+import { useRecentTools } from '../hooks/useRecentTools';
+import { TOOL_ROUTES } from '../lib/toolRoutes';
 
 export function AppLayout() {
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const location = useLocation();
+  const { trackTool } = useRecentTools();
+
+  useEffect(() => {
+    const entry = Object.entries(TOOL_ROUTES).find(([, route]) =>
+      location.pathname.startsWith(route)
+    );
+    if (entry) {
+      trackTool(entry[0]);
+    }
+  }, [location.pathname, trackTool]);
 
   return (
     <div className="flex h-screen overflow-hidden">

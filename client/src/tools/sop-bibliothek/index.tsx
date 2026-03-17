@@ -1,17 +1,17 @@
 import { Routes, Route } from 'react-router-dom';
-import { LibraryPage } from './pages/LibraryPage';
-import { DocumentPage } from './pages/DocumentPage';
+import { OverviewPage } from './pages/OverviewPage';
+import { SopDetailPage } from './pages/SopDetailPage';
 import { CreateEditPage } from './pages/CreateEditPage';
-import { AcknowledgmentPage } from './pages/AcknowledgmentPage';
+import { DashboardPage } from './pages/DashboardPage';
 
 export default function SopBibliothekRoutes() {
   return (
     <Routes>
-      <Route index element={<LibraryPage />} />
-      <Route path="documents/new" element={<CreateEditPage />} />
-      <Route path="documents/:id" element={<DocumentPage />} />
-      <Route path="documents/:id/edit" element={<CreateEditPage />} />
-      <Route path="acknowledgments" element={<AcknowledgmentPage />} />
+      <Route index element={<OverviewPage />} />
+      <Route path="create" element={<CreateEditPage />} />
+      <Route path="sops/:id" element={<SopDetailPage />} />
+      <Route path="sops/:id/edit" element={<CreateEditPage />} />
+      <Route path="dashboard" element={<DashboardPage />} />
     </Routes>
   );
 }

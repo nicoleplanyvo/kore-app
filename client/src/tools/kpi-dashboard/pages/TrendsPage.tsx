@@ -18,7 +18,7 @@ export function TrendsPage() {
         <Link to="/tools/kpi" className="text-kore-mid hover:text-kore-ink transition-colors"><ArrowLeft size={20} /></Link>
         <div>
           <h1 className="font-display text-h1 text-kore-ink">KPI-Trends</h1>
-          <p className="text-body text-kore-mid mt-xs">Entwicklung der Kennzahlen ueber Zeit</p>
+          <p className="text-body text-kore-mid mt-xs">Entwicklung der Kennzahlen über Zeit</p>
         </div>
       </div>
 
@@ -61,7 +61,7 @@ export function TrendsPage() {
                   <th className="text-right px-lg py-md text-caption text-kore-mid uppercase tracking-widest">Ø Frequenz</th>
                   <th className="text-right px-lg py-md text-caption text-kore-mid uppercase tracking-widest">Ø Conversion</th>
                   <th className="text-right px-lg py-md text-caption text-kore-mid uppercase tracking-widest">Ø Bon</th>
-                  <th className="text-right px-lg py-md text-caption text-kore-mid uppercase tracking-widest">Eintraege</th>
+                  <th className="text-right px-lg py-md text-caption text-kore-mid uppercase tracking-widest">Einträge</th>
                 </tr>
               </thead>
               <tbody>

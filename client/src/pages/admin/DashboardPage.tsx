@@ -159,7 +159,7 @@ export function DashboardPage() {
           </p>
         </div>
         <a
-          href="/app"
+          href="/"
           target="_blank"
           rel="noopener noreferrer"
           className="flex items-center gap-md-sm px-lg py-md bg-kore-ink text-kore-white font-body text-small hover:bg-kore-ink/90 transition-colors"

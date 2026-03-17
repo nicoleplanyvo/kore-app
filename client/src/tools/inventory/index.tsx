@@ -1,14 +1,15 @@
-import { Routes, Route } from 'react-router-dom';
+import { Routes, Route, Navigate } from 'react-router-dom';
 import { OverviewPage } from './pages/OverviewPage';
-import { CountListPage } from './pages/CountListPage';
-import { CountDetailPage } from './pages/CountDetailPage';
+import { CountPage } from './pages/CountPage';
+import { DashboardPage } from './pages/DashboardPage';
 
 export default function InventoryRoutes() {
   return (
     <Routes>
       <Route index element={<OverviewPage />} />
-      <Route path="counts" element={<CountListPage />} />
-      <Route path="counts/:id" element={<CountDetailPage />} />
+      <Route path="count/:id" element={<CountPage />} />
+      <Route path="dashboard" element={<DashboardPage />} />
+      <Route path="*" element={<Navigate to="." replace />} />
     </Routes>
   );
 }

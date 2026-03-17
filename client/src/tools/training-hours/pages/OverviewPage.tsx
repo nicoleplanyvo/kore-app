@@ -2,11 +2,13 @@ import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { ArrowLeft, Clock, BarChart3, List, Plus } from 'lucide-react';
 import { useTrainingStores, useTrainingSummary, useCreateTrainingLog } from '../../../hooks/useTrainingHours';
+import { useEffectiveRole } from '../../../hooks/useEffectiveRole';
 
 const CATEGORIES = ['PRODUCT', 'SALES', 'SERVICE', 'COMPLIANCE', 'ONBOARDING', 'OTHER'];
 const CATEGORY_LABELS: Record<string, string> = { PRODUCT: 'Produkt', SALES: 'Verkauf', SERVICE: 'Service', COMPLIANCE: 'Compliance', ONBOARDING: 'Onboarding', OTHER: 'Sonstiges' };
 
 export function OverviewPage() {
+  const { isConfigurator } = useEffectiveRole();
   const [storeId, setStoreId] = useState('');
   const { data: stores } = useTrainingStores();
   const { data: summary, isLoading } = useTrainingSummary(storeId || undefined);
@@ -43,12 +45,14 @@ export function OverviewPage() {
         <Link to="/tools/training-hours/summary" className="px-md py-sm border border-kore-border text-small hover:bg-kore-bg transition-colors flex items-center gap-xs">
           <BarChart3 size={14} /> Zusammenfassung
         </Link>
-        <button onClick={() => setShowCreate(true)} className="px-md py-sm bg-kore-ink text-kore-white text-small hover:opacity-90 transition-opacity flex items-center gap-xs">
-          <Plus size={14} /> Neuer Eintrag
-        </button>
+        {isConfigurator && (
+          <button onClick={() => setShowCreate(true)} className="px-md py-sm bg-kore-ink text-kore-white text-small hover:opacity-90 transition-opacity flex items-center gap-xs">
+            <Plus size={14} /> Neuer Eintrag
+          </button>
+        )}
       </div>
 
-      {showCreate && (
+      {isConfigurator && showCreate && (
         <div className="bg-kore-white border border-kore-border p-lg mb-xl">
           <h3 className="font-medium text-kore-ink mb-md">Neuen Training-Eintrag erfassen</h3>
           <div className="grid grid-cols-2 gap-md mb-md">

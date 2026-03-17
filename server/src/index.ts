@@ -14,6 +14,8 @@ import { adminGdprRouter } from './routes/admin/gdpr.js';
 import { adminUsersRouter } from './routes/admin/users.js';
 import { adminReportingRouter } from './routes/admin/reporting.js';
 import { adminRegionsRouter } from './routes/admin/regions.js';
+import { adminDashboardRouter } from './routes/admin/dashboard.js';
+import { adminBillingRouter } from './routes/admin/billing.js';
 import { storeExcellenceAuditRouter } from './routes/tools/store-excellence-audit/index.js';
 import { checklistenRouter } from './routes/tools/checklisten/index.js';
 import { sopRouter } from './routes/tools/sop/index.js';
@@ -79,6 +81,8 @@ app.use('/api/admin/gdpr', adminGdprRouter);
 app.use('/api/admin/users', adminUsersRouter);
 app.use('/api/admin/reporting', adminReportingRouter);
 app.use('/api/admin/regions', adminRegionsRouter);
+app.use('/api/admin/dashboard', adminDashboardRouter);
+app.use('/api/admin/billing', adminBillingRouter);
 
 // Tools
 app.use('/api/tools', toolsRouter);

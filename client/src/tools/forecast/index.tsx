@@ -1,14 +1,13 @@
-import { Routes, Route } from 'react-router-dom';
+import { Routes, Route, Navigate } from 'react-router-dom';
 import { OverviewPage } from './pages/OverviewPage';
-import { ForecastListPage } from './pages/ForecastListPage';
-import { ForecastDetailPage } from './pages/ForecastDetailPage';
+import { DashboardPage } from './pages/DashboardPage';
 
 export default function ForecastRoutes() {
   return (
     <Routes>
       <Route index element={<OverviewPage />} />
-      <Route path="list" element={<ForecastListPage />} />
-      <Route path=":id" element={<ForecastDetailPage />} />
+      <Route path="dashboard" element={<DashboardPage />} />
+      <Route path="*" element={<Navigate to="." replace />} />
     </Routes>
   );
 }
