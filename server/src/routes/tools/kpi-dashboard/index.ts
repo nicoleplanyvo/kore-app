@@ -109,6 +109,7 @@ kpiDashboardRouter.get('/summary', async (req, res) => {
       totalRevenue,
       totalTransactions,
       totalFootfall,
+      avgATV: totalTransactions > 0 ? Math.round((totalRevenue / totalTransactions) * 100) / 100 : 0,
       avgConversion: totalFootfall > 0 ? Math.round((totalTransactions / totalFootfall) * 10000) / 100 : 0,
       avgUPT: totalTransactions > 0 ? Math.round((totalUnits / totalTransactions) * 100) / 100 : 0,
       storeCount: storeCount.length,

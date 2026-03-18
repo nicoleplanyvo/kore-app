@@ -3,6 +3,8 @@ import { fileURLToPath } from 'url';
 import express from 'express';
 import path from 'path';
 import cookieParser from 'cookie-parser';
+import helmet from 'helmet';
+import rateLimit from 'express-rate-limit';
 import { contactRouter } from './routes/contact.js';
 import { auditRouter } from './routes/audit.js';
 import { authRouter } from './routes/auth.js';
@@ -51,6 +53,7 @@ import { trackTraceRouter } from './routes/tools/track-trace/index.js';
 import { multiStoreRouter } from './routes/tools/multi-store/index.js';
 import { rmDashboardRouter } from './routes/tools/rm-dashboard/index.js';
 import { toolsRouter } from './routes/tools/index.js';
+import { myDayRouter } from './routes/tools/my-day/index.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -60,18 +63,42 @@ const PORT = parseInt(process.env['PORT'] ?? '3001', 10);
 const NODE_ENV = process.env['NODE_ENV'] ?? 'development';
 const isProduction = NODE_ENV === 'production';
 
+// ── Security ──────────────────────────────────────
+app.use(helmet({
+  contentSecurityPolicy: isProduction ? undefined : false,
+}));
+
+// Rate Limiting: max 100 Requests pro 15 Minuten pro IP
+const apiLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000,
+  max: 100,
+  standardHeaders: true,
+  legacyHeaders: false,
+  message: { error: 'Zu viele Anfragen. Bitte versuche es später erneut.' },
+});
+
+// Strengeres Limit für Auth-Endpoints (Brute-Force Schutz)
+const authLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000,
+  max: 20,
+  standardHeaders: true,
+  legacyHeaders: false,
+  message: { error: 'Zu viele Login-Versuche. Bitte warte 15 Minuten.' },
+});
+
 // ── Middleware ────────────────────────────────────
 // Same-Origin: kein CORS nötig (Client + API auf einer Domain)
-app.use(express.json());
+app.use(express.json({ limit: '10mb' }));
 app.use(cookieParser());
+app.use('/api/', apiLimiter);
 
 // ── API Routes ────────────────────────────────────
 // Website-Formulare (öffentlich)
 app.use('/api/contact', contactRouter);
 app.use('/api/audit', auditRouter);
 
-// Auth
-app.use('/api/auth', authRouter);
+// Auth (mit strengerem Rate-Limit)
+app.use('/api/auth', authLimiter, authRouter);
 
 // Admin
 app.use('/api/admin/tenants', adminTenantsRouter);
@@ -86,6 +113,7 @@ app.use('/api/admin/billing', adminBillingRouter);
 
 // Tools
 app.use('/api/tools', toolsRouter);
+app.use('/api/tools/my-day', myDayRouter);
 app.use('/api/tools/sea', storeExcellenceAuditRouter);
 app.use('/api/tools/checklisten', checklistenRouter);
 app.use('/api/tools/sop', sopRouter);

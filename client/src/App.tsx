@@ -59,6 +59,7 @@ import StockCalloutsRoutes from './tools/stock-callouts/index';
 import TrackTraceRoutes from './tools/track-trace/index';
 import MultiStoreRoutes from './tools/multi-store/index';
 import RmDashboardRoutes from './tools/rm-dashboard/index';
+import { MyDayPage } from './pages/MyDayPage';
 
 export function App() {
   return (
@@ -75,6 +76,9 @@ export function App() {
           <Route element={<AppLayout />}>
             {/* Home — rollenspezifisches Dashboard */}
             <Route path="/" element={<HomePage />} />
+
+            {/* Mein Tag — Store Manager Tages-Dashboard */}
+            <Route path="/my-day" element={<MyDayPage />} />
 
             {/* Alle Tools */}
             <Route path="/tools" element={<AllToolsPage />} />
