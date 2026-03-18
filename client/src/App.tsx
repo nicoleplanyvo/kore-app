@@ -60,6 +60,7 @@ import TrackTraceRoutes from './tools/track-trace/index';
 import MultiStoreRoutes from './tools/multi-store/index';
 import RmDashboardRoutes from './tools/rm-dashboard/index';
 import { MyDayPage } from './pages/MyDayPage';
+import MetrixRoutes from './tools/metrix/index';
 
 export function App() {
   return (
@@ -98,6 +99,7 @@ export function App() {
             <Route path="/tools/forecast/*" element={<ForecastRoutes />} />
             <Route path="/tools/loss-prevention/*" element={<LossPreventionRoutes />} />
             <Route path="/tools/inventory/*" element={<InventoryRoutes />} />
+            <Route path="/tools/metrix/*" element={<MetrixRoutes />} />
 
             {/* Floor in Echtzeit */}
             <Route path="/tools/live-floor/*" element={<LiveFloorRoutes />} />

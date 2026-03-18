@@ -5,7 +5,7 @@ import { requireToolAccess } from '../../../middleware/requireToolAccess.js';
 import { z } from 'zod';
 
 export const checklistenRouter: RouterType = Router();
-checklistenRouter.use(authenticate, requireToolAccess('operations.checklisten'));
+checklistenRouter.use(authenticate, requireToolAccess('standards.checklisten'));
 
 // ── Validators ────────────────────────────────────────────
 const templateCreateSchema = z.object({

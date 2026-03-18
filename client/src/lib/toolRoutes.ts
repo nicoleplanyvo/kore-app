@@ -16,6 +16,7 @@ export const TOOL_ROUTES: Record<string, string> = {
   'performance.forecast': '/tools/forecast',
   'performance.loss_prevention': '/tools/loss-prevention',
   'performance.inventory': '/tools/inventory',
+  'performance.metrix': '/tools/metrix',
   // Floor in Echtzeit
   'floor.live_floor': '/tools/live-floor',
   'floor.fr_tracking': '/tools/fr-tracking',

@@ -5,7 +5,7 @@ import { requireToolAccess } from '../../../middleware/requireToolAccess.js';
 import { challengeCreateSchema, challengeUpdateSchema, challengeEntrySchema, challengeVoteSchema } from '@shared/validators';
 
 export const challengesRouter: RouterType = Router();
-challengesRouter.use(authenticate, requireToolAccess('coaching.challenges'));
+challengesRouter.use(authenticate, requireToolAccess('training.challenges'));
 
 // ── GET /stores ──────────────────────────────────────
 challengesRouter.get('/stores', async (req, res) => {

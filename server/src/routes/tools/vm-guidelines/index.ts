@@ -8,7 +8,7 @@ import {
 } from '@shared/validators';
 
 export const vmGuidelinesRouter: RouterType = Router();
-vmGuidelinesRouter.use(authenticate, requireToolAccess('vm.vm_guidelines'));
+vmGuidelinesRouter.use(authenticate, requireToolAccess('floor.vm_guidelines'));
 
 // GET /stores
 vmGuidelinesRouter.get('/stores', async (req, res) => {
@@ -65,6 +65,46 @@ vmGuidelinesRouter.post('/', async (req, res) => {
       data: { ...parsed.data, tenantId, createdBy: userId },
     });
     res.status(201).json(doc);
+  } catch (err) { console.error(err); res.status(500).json({ error: 'Interner Serverfehler.' }); }
+});
+
+// GET /dashboard — Dashboard-Daten (MUST be before /:id)
+vmGuidelinesRouter.get('/dashboard', async (req, res) => {
+  try {
+    const tenantId = (req as any).tenantId as string;
+
+    const [totalDocs, published, draft, archived] = await Promise.all([
+      prisma.vmGuidelineDoc.count({ where: { tenantId } }),
+      prisma.vmGuidelineDoc.count({ where: { tenantId, status: 'PUBLISHED' } }),
+      prisma.vmGuidelineDoc.count({ where: { tenantId, status: 'DRAFT' } }),
+      prisma.vmGuidelineDoc.count({ where: { tenantId, status: 'ARCHIVED' } }),
+    ]);
+
+    const recentUpdates = await prisma.vmGuidelineDoc.findMany({
+      where: { tenantId },
+      orderBy: { updatedAt: 'desc' },
+      take: 5,
+      select: { id: true, title: true, category: true, status: true, updatedAt: true, version: true },
+    });
+
+    const byCategory: Record<string, number> = {};
+    const allDocs = await prisma.vmGuidelineDoc.findMany({
+      where: { tenantId, status: 'PUBLISHED' },
+      select: { category: true },
+    });
+    for (const d of allDocs) {
+      const cat = d.category || 'Ohne Kategorie';
+      byCategory[cat] = (byCategory[cat] ?? 0) + 1;
+    }
+
+    res.json({
+      totalDocs,
+      published,
+      draft,
+      archived,
+      recentUpdates,
+      byCategory,
+    });
   } catch (err) { console.error(err); res.status(500).json({ error: 'Interner Serverfehler.' }); }
 });
 
@@ -162,42 +202,3 @@ vmGuidelinesRouter.post('/:id/images', async (req, res) => {
   } catch (err) { console.error(err); res.status(500).json({ error: 'Interner Serverfehler.' }); }
 });
 
-// GET /dashboard — Dashboard-Daten
-vmGuidelinesRouter.get('/dashboard', async (req, res) => {
-  try {
-    const tenantId = (req as any).tenantId as string;
-
-    const [totalDocs, published, draft, archived] = await Promise.all([
-      prisma.vmGuidelineDoc.count({ where: { tenantId } }),
-      prisma.vmGuidelineDoc.count({ where: { tenantId, status: 'PUBLISHED' } }),
-      prisma.vmGuidelineDoc.count({ where: { tenantId, status: 'DRAFT' } }),
-      prisma.vmGuidelineDoc.count({ where: { tenantId, status: 'ARCHIVED' } }),
-    ]);
-
-    const recentUpdates = await prisma.vmGuidelineDoc.findMany({
-      where: { tenantId },
-      orderBy: { updatedAt: 'desc' },
-      take: 5,
-      select: { id: true, title: true, category: true, status: true, updatedAt: true, version: true },
-    });
-
-    const byCategory: Record<string, number> = {};
-    const allDocs = await prisma.vmGuidelineDoc.findMany({
-      where: { tenantId, status: 'PUBLISHED' },
-      select: { category: true },
-    });
-    for (const d of allDocs) {
-      const cat = d.category || 'Ohne Kategorie';
-      byCategory[cat] = (byCategory[cat] ?? 0) + 1;
-    }
-
-    res.json({
-      totalDocs,
-      published,
-      draft,
-      archived,
-      recentUpdates,
-      byCategory,
-    });
-  } catch (err) { console.error(err); res.status(500).json({ error: 'Interner Serverfehler.' }); }
-});

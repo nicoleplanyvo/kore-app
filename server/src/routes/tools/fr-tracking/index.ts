@@ -5,7 +5,26 @@ import { requireToolAccess } from '../../../middleware/requireToolAccess.js';
 import { footfallUpsertSchema } from '@shared/validators';
 
 export const frTrackingRouter: RouterType = Router();
-frTrackingRouter.use(authenticate, requireToolAccess('customer.fr_tracking'));
+frTrackingRouter.use(authenticate, requireToolAccess('floor.fr_tracking'));
+
+// GET /positions — Staff positions / zone tracking
+frTrackingRouter.get('/positions', async (req, res) => {
+  try {
+    const tenantId = (req as any).tenantId as string;
+    const toolStoreIds = (req as any).toolStoreIds as string[] | 'all';
+    const where: Record<string, unknown> = { tenantId };
+    if (req.query['storeId']) where['storeId'] = req.query['storeId'];
+    else if (toolStoreIds !== 'all') where['storeId'] = { in: toolStoreIds };
+
+    const users = await prisma.user.findMany({
+      where: { tenantId, isActive: true },
+      select: { id: true, name: true, email: true, role: true },
+      orderBy: { name: 'asc' },
+    });
+    // Return users as "positions" — the frontend uses this to map staff to zones
+    res.json(users.map(u => ({ userId: u.id, userName: u.name, role: u.role })));
+  } catch (err) { console.error(err); res.status(500).json({ error: 'Interner Serverfehler.' }); }
+});
 
 // GET /stores
 frTrackingRouter.get('/stores', async (req, res) => {

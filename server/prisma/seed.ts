@@ -149,6 +149,9 @@ async function main() {
     // REGIONAL INSIGHTS
     { key: 'regional.multi_store_view', name: 'Multi-Store View', category: 'REGIONAL_INSIGHTS', description: 'Vergleichende Ansicht aller Stores einer Region', icon: 'Map', priceMonthly: 3500, sortOrder: 1 },
     { key: 'regional.rm_dashboard', name: 'RM Dashboard', category: 'REGIONAL_INSIGHTS', description: 'Regional-Manager-Dashboard mit aggregierten KPIs', icon: 'LayoutDashboard', priceMonthly: 2500, sortOrder: 2 },
+
+    // METRIX
+    { key: 'performance.metrix', name: 'Metrix', category: 'PERFORMANCE', description: 'Gewichtete KPI-Scorecard mit bis zu 10 KPIs und Gesamtergebnis', icon: 'Gauge', priceMonthly: 1900, sortOrder: 6 },
   ];
 
   for (const t of tools) {
@@ -165,16 +168,27 @@ async function main() {
   const allTools = await prisma.toolDefinition.findMany();
   const toolMap = Object.fromEntries(allTools.map((t) => [t.key, t.id]));
 
-  // Modehouse Müller Stores — mittleres Paket (14 Tools pro Store)
+  // Modehouse Müller Stores — ALLE 34 Tools (Demo-Store zeigt alles)
   const muellerToolKeys = [
+    // Standards & Compliance
     'standards.checklisten', 'standards.store_standards', 'standards.excellence_tracker',
     'standards.vm_foto_compliance', 'standards.sop_bibliothek',
-    'performance.kpi_dashboard', 'performance.budget_tracker',
-    'floor.live_floor', 'floor.vm_guidelines',
-    'training.training_hub_lms', 'training.training_hours', 'training.challenges',
-    'coaching.one_on_one', 'coaching.shift_planning', 'coaching.appraisals',
-    'komm.briefings',
-    'customer.clienteling_crm',
+    // Performance & Sichtbarkeit
+    'performance.kpi_dashboard', 'performance.budget_tracker', 'performance.forecast',
+    'performance.loss_prevention', 'performance.inventory',
+    // Floor in Echtzeit
+    'floor.live_floor', 'floor.fr_tracking', 'floor.vm_guidelines', 'floor.maintenance',
+    // Training & Entwicklung
+    'training.training_hub_lms', 'training.training_hours', 'training.challenges', 'training.onboarding',
+    // Coaching & People
+    'coaching.one_on_one', 'coaching.pdp_pip', 'coaching.appraisals',
+    'coaching.shift_planning', 'coaching.pulse_survey', 'coaching.wellbeing',
+    // Kommunikation & Signal
+    'komm.briefings', 'komm.handover', 'komm.team_push', 'komm.team_newsletter',
+    // Customer, Clienteling & Stock
+    'customer.fr_conversion', 'customer.clienteling_crm', 'customer.stock_callouts', 'customer.track_trace',
+    // Regional Insights
+    'regional.multi_store_view', 'regional.rm_dashboard',
   ];
 
   // Boutique Schmidt — kleines Paket (5 Tools)

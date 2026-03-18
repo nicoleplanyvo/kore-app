@@ -11,7 +11,46 @@ import {
 } from '@shared/validators';
 
 export const shiftPlanningRouter: RouterType = Router();
-shiftPlanningRouter.use(authenticate, requireToolAccess('operations.shift_planning'));
+shiftPlanningRouter.use(authenticate, requireToolAccess('coaching.shift_planning'));
+
+// ── GET /templates ───────────────────────────────────
+shiftPlanningRouter.get('/templates', async (req, res) => {
+  try {
+    const toolStoreIds = (req as any).toolStoreIds as string[] | 'all';
+    const where: Record<string, unknown> = {};
+    if (req.query.storeId) where['storeId'] = req.query.storeId;
+    else if (toolStoreIds !== 'all') where['storeId'] = { in: toolStoreIds };
+    const templates = await prisma.shiftTemplate.findMany({
+      where,
+      include: { store: { select: { id: true, name: true } } },
+      orderBy: [{ storeId: 'asc' }, { dayOfWeek: 'asc' }, { startTime: 'asc' }],
+    });
+    res.json(templates);
+  } catch (err) { console.error(err); res.status(500).json({ error: 'Interner Serverfehler.' }); }
+});
+
+// ── POST /templates ──────────────────────────────────
+shiftPlanningRouter.post('/templates', async (req, res) => {
+  try {
+    const { storeId, name, dayOfWeek, startTime, endTime, minStaff, role } = req.body;
+    if (!storeId || !name || dayOfWeek == null || !startTime || !endTime) {
+      return res.status(400).json({ error: 'storeId, name, dayOfWeek, startTime und endTime sind erforderlich.' });
+    }
+    const template = await prisma.shiftTemplate.create({
+      data: { storeId, name, dayOfWeek, startTime, endTime, minStaff: minStaff ?? 1, role },
+      include: { store: { select: { id: true, name: true } } },
+    });
+    res.status(201).json(template);
+  } catch (err) { console.error(err); res.status(500).json({ error: 'Interner Serverfehler.' }); }
+});
+
+// ── DELETE /templates/:id ────────────────────────────
+shiftPlanningRouter.delete('/templates/:id', async (req, res) => {
+  try {
+    await prisma.shiftTemplate.delete({ where: { id: req.params['id'] } });
+    res.json({ success: true });
+  } catch (err) { console.error(err); res.status(500).json({ error: 'Interner Serverfehler.' }); }
+});
 
 // ── GET /stores ──────────────────────────────────────
 shiftPlanningRouter.get('/stores', async (req, res) => {

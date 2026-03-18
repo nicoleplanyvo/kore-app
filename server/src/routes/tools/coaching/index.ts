@@ -9,7 +9,7 @@ import {
 } from '@shared/validators';
 
 export const coachingRouter: RouterType = Router();
-coachingRouter.use(authenticate, requireToolAccess('coaching.coaching'));
+coachingRouter.use(authenticate, requireToolAccess('coaching.one_on_one'));
 
 // ── GET /stores ─────────────────────────────────────
 coachingRouter.get('/stores', async (req, res) => {

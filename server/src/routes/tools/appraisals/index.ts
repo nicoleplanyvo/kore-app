@@ -23,6 +23,34 @@ const DEFAULT_CATEGORIES = [
   'Kundenfokus',
 ];
 
+// ── GET /cycles ──────────────────────────
+appraisalsRouter.get('/cycles', async (req, res) => {
+  try {
+    const tenantId = (req as any).tenantId as string;
+    const cycles = await prisma.appraisalCycle.findMany({
+      where: { tenantId },
+      include: { _count: { select: { appraisals: true } } },
+      orderBy: { createdAt: 'desc' },
+    });
+    res.json(cycles);
+  } catch (err) { console.error(err); res.status(500).json({ error: 'Interner Serverfehler.' }); }
+});
+
+// ── POST /cycles ─────────────────────────
+appraisalsRouter.post('/cycles', async (req, res) => {
+  try {
+    const tenantId = (req as any).tenantId as string;
+    const { name, period, startDate, endDate } = req.body;
+    if (!name || !period || !startDate || !endDate) {
+      return res.status(400).json({ error: 'name, period, startDate und endDate sind erforderlich.' });
+    }
+    const cycle = await prisma.appraisalCycle.create({
+      data: { tenantId, name, period, startDate: new Date(startDate), endDate: new Date(endDate), status: 'ACTIVE' },
+    });
+    res.status(201).json(cycle);
+  } catch (err) { console.error(err); res.status(500).json({ error: 'Interner Serverfehler.' }); }
+});
+
 // ── GET /stores ──────────────────────────
 appraisalsRouter.get('/stores', async (req, res) => {
   try {

@@ -12,7 +12,7 @@ import {
 } from '@shared/validators';
 
 export const clientelingRouter: RouterType = Router();
-clientelingRouter.use(authenticate, requireToolAccess('customer.clienteling'));
+clientelingRouter.use(authenticate, requireToolAccess('customer.clienteling_crm'));
 
 // ── Helper ───────────────────────────────────────
 function storeWhere(req: any, filter?: string) {
@@ -44,6 +44,43 @@ clientelingRouter.get('/users', async (req, res) => {
     if (tenantId) where['tenantId'] = tenantId;
     const users = await prisma.user.findMany({ where, select: { id: true, name: true, email: true }, orderBy: { name: 'asc' } });
     res.json(users);
+  } catch (err) { console.error(err); res.status(500).json({ error: 'Interner Serverfehler.' }); }
+});
+
+// ── GET /clients — Alias for /customers ──────────
+clientelingRouter.get('/clients', async (req, res) => {
+  try {
+    const page = Math.max(1, Number(req.query.page) || 1);
+    const pageSize = Math.min(100, Math.max(1, Number(req.query.pageSize) || 20));
+    const where: Record<string, unknown> = storeWhere(req, req.query.storeId as string);
+
+    if (req.query.search) {
+      const s = req.query.search as string;
+      where['OR'] = [
+        { firstName: { contains: s } },
+        { lastName: { contains: s } },
+        { email: { contains: s } },
+        { phone: { contains: s } },
+      ];
+    }
+    if (req.query.vip === 'true') where['vipLevel'] = { not: null };
+    if (req.query.vipLevel) where['vipLevel'] = req.query.vipLevel;
+
+    const [data, total] = await Promise.all([
+      prisma.clientProfile.findMany({
+        where,
+        include: {
+          store: { select: { id: true, name: true } },
+          creator: { select: { id: true, name: true } },
+          _count: { select: { interactions: true, tasks: true, appointments: true } },
+        },
+        orderBy: { updatedAt: 'desc' },
+        skip: (page - 1) * pageSize,
+        take: pageSize,
+      }),
+      prisma.clientProfile.count({ where }),
+    ]);
+    res.json({ data, total, page, pageSize });
   } catch (err) { console.error(err); res.status(500).json({ error: 'Interner Serverfehler.' }); }
 });
 

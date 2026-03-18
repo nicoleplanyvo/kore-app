@@ -86,6 +86,29 @@ function buildStoreWhere(tenantId: string, toolStoreIds: string[] | 'all') {
   return where;
 }
 
+// ── GET /periods ─────────────────────────────────
+
+budgetTrackerRouter.get('/periods', async (req, res) => {
+  try {
+    const tenantId = (req as any).tenantId as string;
+    const toolStoreIds = (req as any).toolStoreIds as string[] | 'all';
+    const where: Record<string, unknown> = { tenantId };
+    if (req.query.storeId) where['storeId'] = String(req.query.storeId);
+    else if (toolStoreIds !== 'all') where['storeId'] = { in: toolStoreIds };
+    if (req.query.budgetType) where['budgetType'] = String(req.query.budgetType);
+
+    const periods = await prisma.budgetPeriod.findMany({
+      where,
+      include: {
+        store: { select: { id: true, name: true, city: true } },
+        _count: { select: { actuals: true } },
+      },
+      orderBy: { period: 'desc' },
+    });
+    res.json(periods);
+  } catch (err) { console.error(err); res.status(500).json({ error: 'Interner Serverfehler.' }); }
+});
+
 // ── GET /stores ──────────────────────────────────
 
 budgetTrackerRouter.get('/stores', async (req, res) => {

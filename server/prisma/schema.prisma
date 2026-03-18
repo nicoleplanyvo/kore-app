@@ -80,6 +80,7 @@ model User {
   stockCallouts        StockCallout[]        @relation("StockCalloutReporter")
   ordersCreated        CustomerOrder[]       @relation("OrderCreator")
   orderStatusUpdates   OrderStatusUpdate[]   @relation("OrderStatusUpdater")
+  metrixConfigs        MetrixConfig[]        @relation("MetrixConfigCreator")
 
   @@index([tenantId])
 }
@@ -209,6 +210,7 @@ model Store {
   frSettings         FRSettings?
   frRooms            FRRoom[]
   frSessions         FRSession[]
+  metrixConfigs      MetrixConfig[]
 
   @@index([tenantId])
   @@index([regionId])
@@ -1942,4 +1944,74 @@ model FRSession {
 
   @@index([storeId, status])
   @@index([roomId])
+}
+
+// ── Metrix (Gewichtete KPI-Scorecard) ────────────────
+
+model MetrixConfig {
+  id          String   @id @default(cuid())
+  storeId     String
+  store       Store    @relation(fields: [storeId], references: [id], onDelete: Cascade)
+  name        String   @default("Standard Scorecard")
+  isActive    Boolean  @default(true)
+  createdBy   String
+  creator     User     @relation("MetrixConfigCreator", fields: [createdBy], references: [id])
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  kpis     MetrixKpi[]
+  entries  MetrixEntry[]
+
+  @@index([storeId])
+  @@index([createdBy])
+}
+
+model MetrixKpi {
+  id          String   @id @default(cuid())
+  configId    String
+  config      MetrixConfig @relation(fields: [configId], references: [id], onDelete: Cascade)
+  name        String       // z.B. "Conversion Rate", "UPT", "Kundenzufriedenheit"
+  unit        String       @default("%")  // %, EUR, Stk, Score
+  weight      Float        // Gewichtung 0-100 (Summe aller KPIs = 100)
+  targetValue Float        // Zielwert
+  minValue    Float        @default(0)    // Minimum (0%-Erreichung)
+  maxValue    Float?       // Maximum (optional, z.B. 200% Cap)
+  sortOrder   Int          @default(0)
+  color       String       @default("#9E8460")  // Brass default
+  createdAt   DateTime     @default(now())
+
+  scores   MetrixScore[]
+
+  @@index([configId])
+}
+
+model MetrixEntry {
+  id        String   @id @default(cuid())
+  configId  String
+  config    MetrixConfig @relation(fields: [configId], references: [id], onDelete: Cascade)
+  period    String       // "2026-03", "2026-W12", oder "2026-03-17"
+  enteredBy String
+  notes     String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  scores   MetrixScore[]
+
+  @@unique([configId, period])
+  @@index([configId])
+}
+
+model MetrixScore {
+  id          String   @id @default(cuid())
+  entryId     String
+  entry       MetrixEntry @relation(fields: [entryId], references: [id], onDelete: Cascade)
+  kpiId       String
+  kpi         MetrixKpi   @relation(fields: [kpiId], references: [id], onDelete: Cascade)
+  actualValue Float
+  achievement Float        // Zielerreichung in % (berechnet)
+  createdAt   DateTime     @default(now())
+
+  @@unique([entryId, kpiId])
+  @@index([entryId])
+  @@index([kpiId])
 }

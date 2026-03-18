@@ -52,6 +52,7 @@ import { stockCalloutsRouter } from './routes/tools/stock-callouts/index.js';
 import { trackTraceRouter } from './routes/tools/track-trace/index.js';
 import { multiStoreRouter } from './routes/tools/multi-store/index.js';
 import { rmDashboardRouter } from './routes/tools/rm-dashboard/index.js';
+import { metrixRouter } from './routes/tools/metrix/index.js';
 import { toolsRouter } from './routes/tools/index.js';
 import { myDayRouter } from './routes/tools/my-day/index.js';
 
@@ -148,6 +149,7 @@ app.use('/api/tools/stock-callouts', stockCalloutsRouter);
 app.use('/api/tools/track-trace', trackTraceRouter);
 app.use('/api/tools/multi-store', multiStoreRouter);
 app.use('/api/tools/rm-dashboard', rmDashboardRouter);
+app.use('/api/tools/metrix', metrixRouter);
 
 // Statische Uploads mit Auth-Schutz
 const UPLOAD_DIR = process.env['UPLOAD_DIR'] ?? path.join(process.cwd(), 'uploads');

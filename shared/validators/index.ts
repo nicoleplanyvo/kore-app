@@ -749,6 +749,10 @@ export const challengeParticipantSchema = z.object({
   handicap: z.number().min(0).max(5).default(1.0),
 });
 
+export const challengeVoteSchema = z.object({
+  targetUserId: z.string().min(1),
+});
+
 // ============================================================
 // Onboarding — Validators
 // ============================================================
@@ -1039,6 +1043,22 @@ export const shiftSwapRequestSchema = z.object({
   swapWithUserId: z.string().optional(),
 });
 
+export const shiftAvailabilitySchema = z.object({
+  storeId: z.string().min(1),
+  userId: z.string().min(1),
+  date: z.string().min(1),
+  type: z.enum(['AVAILABLE', 'UNAVAILABLE', 'WISH']).default('AVAILABLE'),
+  wishStart: z.string().optional(),
+  wishEnd: z.string().optional(),
+  note: z.string().max(500).optional(),
+});
+
+export const shiftClockSchema = z.object({
+  storeId: z.string().min(1),
+  action: z.enum(['CLOCK_IN', 'CLOCK_OUT', 'PAUSE_START', 'PAUSE_END']),
+  note: z.string().max(500).optional(),
+});
+
 // ============================================================
 // Pulse Survey — Validators
 // ============================================================
@@ -1241,6 +1261,27 @@ export const clientTaskSchema = z.object({
   title: z.string().min(1), description: z.string().optional(),
   type: z.enum(['MANUAL', 'AUTO']).optional(), priority: z.enum(['LOW', 'NORMAL', 'HIGH']).optional(),
   dueDate: z.string().optional(), status: z.enum(['OPEN', 'DONE', 'CANCELLED']).optional(),
+});
+
+export const clientAppointmentCreateSchema = z.object({
+  storeId: z.string().min(1),
+  clientId: z.string().optional(),
+  title: z.string().min(1).max(200),
+  startsAt: z.string().min(1),
+  endsAt: z.string().min(1),
+  type: z.string().max(50).optional(),
+  notes: z.string().max(2000).optional(),
+  advisorId: z.string().optional(),
+});
+
+export const clientAppointmentUpdateSchema = z.object({
+  title: z.string().min(1).max(200).optional(),
+  startsAt: z.string().optional(),
+  endsAt: z.string().optional(),
+  type: z.string().max(50).optional(),
+  notes: z.string().max(2000).optional(),
+  status: z.string().max(50).optional(),
+  advisorId: z.string().optional(),
 });
 
 export const clientNoteSchema = z.object({
