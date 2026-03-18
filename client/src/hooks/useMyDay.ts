@@ -49,8 +49,7 @@ export function useMyDay() {
   return useQuery<MyDayData>({
     queryKey: ['my-day'],
     queryFn: async () => {
-      const res = await api.get('/api/tools/my-day');
-      return res.data;
+      return await api<MyDayData>('/api/tools/my-day');
     },
     refetchInterval: 5 * 60 * 1000, // Alle 5 Minuten refreshen
     staleTime: 2 * 60 * 1000,
