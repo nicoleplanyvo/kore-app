@@ -9,6 +9,7 @@ import {
 import { useAuthStore } from '../stores/authStore';
 import { useEffectiveRole } from '../hooks/useEffectiveRole';
 import { useDashboardStats } from '../hooks/useDashboardData';
+import { MyDayPage } from './MyDayPage';
 
 /* ── Rollen-Labels ── */
 const roleLabels: Record<string, string> = {
@@ -417,5 +418,8 @@ function InvoiceRow({
 export function HomePage() {
   const { isSuperAdmin } = useEffectiveRole();
 
-  return isSuperAdmin ? <AdminDashboard /> : <RoleDashboard />;
+  if (isSuperAdmin) return <AdminDashboard />;
+
+  // Alle anderen Rollen bekommen MyDayPage direkt als Dashboard
+  return <MyDayPage />;
 }

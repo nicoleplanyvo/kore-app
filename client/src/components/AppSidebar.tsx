@@ -10,8 +10,6 @@ import { useRecentTools } from '../hooks/useRecentTools';
 import { TOOL_ROUTES } from '../lib/toolRoutes';
 import { api } from '../lib/api';
 
-// ── Icon-Mapping: icon string from DB -> Lucide component ──
-// We dynamically import common tool icons so the sidebar can render them.
 import {
   ClipboardCheck, Award, TrendingUp, Camera, BookOpen, BarChart3, Wallet,
   LineChart, Package, Monitor, Activity, Palette, GraduationCap,
@@ -30,14 +28,9 @@ const iconMap: Record<string, LucideIcon> = {
   PackageSearch, Navigation, Map: MapIcon, LayoutDashboard,
 };
 
-// ── Role hierarchy ──
 const ROLE_LEVELS: Record<string, number> = {
-  learner: 0,
-  store_manager: 1,
-  multisite_manager: 2,
-  regional_manager: 3,
-  tenant_admin: 4,
-  kore_admin: 5,
+  learner: 0, store_manager: 1, multisite_manager: 2,
+  regional_manager: 3, tenant_admin: 4, kore_admin: 5,
 };
 
 function hasMinRole(userRole: string, minRole: string): boolean {
@@ -55,7 +48,6 @@ export function AppSidebar({ open, onClose }: AppSidebarProps) {
   const { data: myTools } = useMyTools();
   const { recentTools } = useRecentTools();
 
-  // Build a lookup from toolKey -> { name, icon, route }
   const toolLookup = new Map<string, { name: string; icon: LucideIcon; route: string }>();
   for (const assignment of myTools || []) {
     const route = TOOL_ROUTES[assignment.tool.key];
@@ -67,7 +59,6 @@ export function AppSidebar({ open, onClose }: AppSidebarProps) {
     });
   }
 
-  // Recent tools: match against toolLookup, max 5
   const recentItems = recentTools
     .map((r) => {
       const info = toolLookup.get(r.toolKey);
@@ -75,182 +66,158 @@ export function AppSidebar({ open, onClose }: AppSidebarProps) {
       return { key: r.toolKey, ...info };
     })
     .filter(Boolean)
-    .slice(0, 5) as Array<{ key: string; name: string; icon: LucideIcon; route: string }>;
+    .slice(0, 6) as Array<{ key: string; name: string; icon: LucideIcon; route: string }>;
 
-  // Fallback: if no recent tools, show first 5 from myTools
-  const displayTools =
-    recentItems.length > 0
-      ? recentItems
-      : Array.from(toolLookup.entries())
-          .slice(0, 5)
-          .map(([key, info]) => ({ key, ...info }));
+  const displayTools = recentItems.length > 0
+    ? recentItems
+    : Array.from(toolLookup.entries()).slice(0, 6).map(([key, info]) => ({ key, ...info }));
 
   const handleLogout = async () => {
-    try {
-      await api('/api/auth/logout', { method: 'POST' });
-    } catch {
-      // Ignoriere Fehler beim Logout
-    }
+    try { await api('/api/auth/logout', { method: 'POST' }); } catch {}
     clearAuth();
   };
 
   const linkClasses = ({ isActive }: { isActive: boolean }) =>
-    `flex items-center gap-md-sm px-md py-md-sm rounded-sm mb-xs transition-colors duration-200 ${
+    `flex items-center gap-md-sm px-md py-[10px] rounded-md mb-xs transition-all duration-200 ${
       isActive
-        ? 'bg-white/10 text-kore-brass-lt'
+        ? 'bg-kore-brass/15 text-kore-brass-lt font-medium'
         : 'text-kore-faint hover:text-kore-white hover:bg-white/5'
     }`;
 
   return (
     <>
-      {/* Mobile backdrop */}
+      {/* Backdrop */}
       {open && (
-        <div
-          className="fixed inset-0 bg-black/40 z-40 lg:hidden"
-          onClick={onClose}
-        />
+        <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-40 animate-fade-in" onClick={onClose} />
       )}
 
       {/* Sidebar */}
-      <aside
-        className={`
-          fixed inset-y-0 left-0 z-50 w-[240px] bg-kore-ink flex flex-col flex-shrink-0
-          transform transition-transform duration-200 ease-in-out
-          lg:relative lg:translate-x-0
-          ${open ? 'translate-x-0' : '-translate-x-full'}
-        `}
-      >
-        {/* Brand header */}
+      <aside className={`
+        fixed inset-y-0 left-0 z-50 w-[260px] bg-kore-ink flex flex-col
+        transform transition-transform duration-300 ease-out
+        lg:relative lg:translate-x-0
+        ${open ? 'translate-x-0' : '-translate-x-full'}
+      `}>
+        {/* Brand */}
         <div className="px-lg py-xl border-b border-white/10 flex items-center justify-between">
           <div>
             <h1 className="font-display text-h3 text-kore-white tracking-wider">KORE</h1>
-            <p className="font-body text-[0.65rem] text-kore-faint uppercase tracking-[0.16em] mt-xs">
+            <p className="font-body text-[0.65rem] text-kore-brass uppercase tracking-[0.16em] mt-xs">
               Retail Platform
             </p>
           </div>
           <button
             onClick={onClose}
-            className="lg:hidden text-kore-faint hover:text-kore-white transition-colors p-1"
+            className="lg:hidden text-kore-faint hover:text-kore-white transition-colors p-sm rounded-md hover:bg-white/5"
           >
             <X size={20} />
           </button>
         </div>
 
-        {/* Navigation */}
+        {/* Nav */}
         <nav className="flex-1 py-lg px-md-sm overflow-y-auto">
-          {/* Dashboard */}
-          <NavLink
-            to="/"
-            end
-            onClick={onClose}
-            className={linkClasses}
-          >
+          <NavLink to="/" end onClick={onClose} className={linkClasses}>
             <LayoutDashboard size={18} />
-            <span className="font-body text-small font-normal">Dashboard</span>
+            <span className="font-body text-small">Dashboard</span>
           </NavLink>
 
-          {/* Zuletzt verwendet */}
+          {/* Recent Tools */}
           {displayTools.length > 0 && (
-            <div>
-              <p className="font-body text-[0.6rem] text-kore-faint/50 uppercase tracking-[0.16em] px-md mt-lg mb-xs">
+            <div className="mt-lg">
+              <p className="font-body text-caption text-kore-faint/40 px-md mb-sm">
                 Zuletzt verwendet
               </p>
               {displayTools.map((item) => (
-                <NavLink
-                  key={item.key}
-                  to={item.route}
-                  onClick={onClose}
-                  className={linkClasses}
-                >
+                <NavLink key={item.key} to={item.route} onClick={onClose} className={linkClasses}>
                   <item.icon size={18} />
-                  <span className="font-body text-small font-normal">{item.name}</span>
+                  <span className="font-body text-small truncate">{item.name}</span>
                 </NavLink>
               ))}
             </div>
           )}
 
-          {/* Alle Tools anzeigen */}
-          <div className="px-md mt-lg mb-md">
+          {/* All Tools Button */}
+          <div className="px-sm mt-lg mb-md">
             <NavLink
               to="/tools"
               onClick={onClose}
-              className="flex items-center justify-center py-md-sm rounded-sm border border-white/10 text-kore-faint hover:text-kore-white hover:border-white/20 transition-colors duration-200 font-body text-small"
+              className="flex items-center justify-center py-[10px] rounded-md border border-white/10 text-kore-faint hover:text-kore-white hover:border-kore-brass/40 hover:bg-kore-brass/5 transition-all duration-200 font-body text-small"
             >
               Alle Tools anzeigen
             </NavLink>
           </div>
 
-          {/* Administration */}
+          {/* Admin */}
           {user && hasMinRole(effectiveRole, 'store_manager') && (
-            <div>
-              <p className="font-body text-[0.6rem] text-kore-brass/60 uppercase tracking-[0.16em] px-md mt-lg mb-xs">
+            <div className="mt-lg">
+              <p className="font-body text-caption text-kore-brass/50 px-md mb-sm">
                 Administration
               </p>
-
               <NavLink to="/admin/users" onClick={onClose} className={linkClasses}>
                 <Users size={18} />
-                <span className="font-body text-small font-normal">Benutzer</span>
+                <span className="font-body text-small">Benutzer</span>
               </NavLink>
-
               <NavLink to="/admin/stores" onClick={onClose} className={linkClasses}>
                 <Store size={18} />
-                <span className="font-body text-small font-normal">Stores</span>
+                <span className="font-body text-small">Stores</span>
               </NavLink>
-
               {hasMinRole(effectiveRole, 'regional_manager') && (
                 <NavLink to="/admin/tools" onClick={onClose} className={linkClasses}>
                   <Settings size={18} />
-                  <span className="font-body text-small font-normal">Tools</span>
+                  <span className="font-body text-small">Tools</span>
                 </NavLink>
               )}
             </div>
           )}
 
-          {/* Plattform (kore_admin only, with some items for tenant_admin+) */}
+          {/* Platform (kore_admin) */}
           {user && hasMinRole(effectiveRole, 'tenant_admin') && (
-            <div>
-              <p className="font-body text-[0.6rem] text-kore-brass/60 uppercase tracking-[0.16em] px-md mt-lg mb-xs">
+            <div className="mt-lg">
+              <p className="font-body text-caption text-kore-brass/50 px-md mb-sm">
                 Plattform
               </p>
-
               {hasMinRole(effectiveRole, 'kore_admin') && (
-                <NavLink to="/admin/tenants" onClick={onClose} className={linkClasses}>
-                  <Building2 size={18} />
-                  <span className="font-body text-small font-normal">Kunden</span>
-                </NavLink>
+                <>
+                  <NavLink to="/admin/tenants" onClick={onClose} className={linkClasses}>
+                    <Building2 size={18} />
+                    <span className="font-body text-small">Kunden</span>
+                  </NavLink>
+                  <NavLink to="/admin/buchhaltung" onClick={onClose} className={linkClasses}>
+                    <CreditCard size={18} />
+                    <span className="font-body text-small">Buchhaltung</span>
+                  </NavLink>
+                </>
               )}
-
-              {hasMinRole(effectiveRole, 'kore_admin') && (
-                <NavLink to="/admin/buchhaltung" onClick={onClose} className={linkClasses}>
-                  <CreditCard size={18} />
-                  <span className="font-body text-small font-normal">Buchhaltung</span>
-                </NavLink>
-              )}
-
               <NavLink to="/admin/reporting" onClick={onClose} className={linkClasses}>
                 <BarChart size={18} />
-                <span className="font-body text-small font-normal">Reporting</span>
+                <span className="font-body text-small">Reporting</span>
               </NavLink>
-
               <NavLink to="/admin/gdpr" onClick={onClose} className={linkClasses}>
                 <ShieldCheck size={18} />
-                <span className="font-body text-small font-normal">DSGVO</span>
+                <span className="font-body text-small">DSGVO</span>
               </NavLink>
             </div>
           )}
         </nav>
 
-        {/* User Info + Logout */}
+        {/* User + Logout */}
         <div className="px-md-sm py-lg border-t border-white/10">
           {user && (
-            <div className="px-md mb-md">
-              <p className="font-body text-[0.7rem] text-kore-faint truncate">{user.name}</p>
-              <p className="font-body text-[0.6rem] text-kore-faint/60 truncate">{user.email}</p>
+            <div className="px-md mb-md flex items-center gap-md">
+              <div className="w-[32px] h-[32px] rounded-full bg-gradient-to-br from-kore-brass-lt to-kore-brass flex items-center justify-center flex-shrink-0">
+                <span className="text-white font-body text-small font-medium">
+                  {user.name?.charAt(0)?.toUpperCase() || 'U'}
+                </span>
+              </div>
+              <div className="min-w-0">
+                <p className="font-body text-small text-kore-faint truncate">{user.name}</p>
+                <p className="font-body text-[0.65rem] text-kore-faint/50 truncate">{user.email}</p>
+              </div>
             </div>
           )}
           <button
             onClick={handleLogout}
-            className="flex items-center gap-md-sm px-md py-md-sm text-kore-faint hover:text-kore-error transition-colors duration-200 w-full font-body text-small"
+            className="flex items-center gap-md-sm px-md py-[10px] text-kore-faint hover:text-kore-error transition-colors duration-200 w-full font-body text-small rounded-md hover:bg-white/5"
           >
             <LogOut size={18} />
             <span>Abmelden</span>

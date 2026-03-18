@@ -43,7 +43,13 @@ export function LoginPage() {
   };
 
   return (
-    <div className="bg-kore-white border border-kore-border p-xl">
+    <div className="bg-kore-white border border-kore-border rounded-xl p-xl sm:p-2xl shadow-lg max-w-[420px] w-full animate-slide-up">
+      {/* Logo */}
+      <div className="text-center mb-xl">
+        <h1 className="font-display text-h1 text-kore-ink tracking-wider">KORE</h1>
+        <p className="font-body text-small text-kore-brass mt-xs">Retail Platform</p>
+      </div>
+
       <h2 className="font-display text-h3 text-kore-ink mb-xs">{t.login.title}</h2>
       <p className="font-body text-small text-kore-mid mb-xl">{t.login.subtitle}</p>
 
@@ -52,6 +58,7 @@ export function LoginPage() {
           label={t.login.email}
           type="email"
           autoComplete="email"
+          placeholder="name@unternehmen.de"
           {...register('email')}
           error={errors.email?.message}
         />
@@ -59,18 +66,22 @@ export function LoginPage() {
           label={t.login.password}
           type="password"
           autoComplete="current-password"
+          placeholder="••••••••"
           {...register('password')}
           error={errors.password?.message}
         />
 
         {serverError && (
-          <p className="font-body text-small text-kore-error">{serverError}</p>
+          <div className="flex items-center gap-sm px-md py-sm bg-red-50 rounded-md">
+            <p className="font-body text-small text-kore-error">{serverError}</p>
+          </div>
         )}
 
         <Button
           type="submit"
           disabled={isSubmitting}
-          style={{ width: '100%', marginTop: '8px' }}
+          loading={isSubmitting}
+          className="w-full mt-sm"
         >
           {isSubmitting ? t.common.loading : t.login.submit}
         </Button>

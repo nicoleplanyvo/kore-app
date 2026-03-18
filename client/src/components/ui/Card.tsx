@@ -1,21 +1,26 @@
-import React from 'react';
+import type { HTMLAttributes, ReactNode } from 'react';
 
-interface CardProps {
-  children: React.ReactNode;
-  accent?: boolean;
-  className?: string;
-  style?: React.CSSProperties;
+interface CardProps extends HTMLAttributes<HTMLDivElement> {
+  children: ReactNode;
+  hover?: boolean;
+  padding?: 'sm' | 'md' | 'lg';
 }
 
-export function Card({ children, accent = false, style }: CardProps) {
-  const cardStyle: React.CSSProperties = {
-    background: 'var(--kore-white)',
-    border: '1px solid var(--kore-border)',
-    borderRadius: 'var(--radius-md)',
-    padding: '32px',
-    ...(accent ? { borderLeft: '3px solid var(--kore-brass)' } : {}),
-    ...style,
-  };
+const paddingMap = {
+  sm: 'p-md',
+  md: 'p-lg',
+  lg: 'p-xl',
+};
 
-  return <div style={cardStyle}>{children}</div>;
+export function Card({ children, hover, padding = 'md', className = '', ...props }: CardProps) {
+  return (
+    <div
+      className={`bg-kore-white border border-kore-border rounded-lg shadow-card ${paddingMap[padding]} ${
+        hover ? 'transition-all duration-200 hover:shadow-card-hover hover:border-kore-brass/30 hover:-translate-y-[1px] cursor-pointer active:translate-y-0 active:shadow-card' : ''
+      } ${className}`}
+      {...props}
+    >
+      {children}
+    </div>
+  );
 }

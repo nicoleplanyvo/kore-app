@@ -1,69 +1,34 @@
-import React from 'react';
+import { forwardRef, type InputHTMLAttributes } from 'react';
 
-interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> {
+interface InputProps extends InputHTMLAttributes<HTMLInputElement> {
   label?: string;
   error?: string;
+  hint?: string;
 }
 
-export const Input = React.forwardRef<HTMLInputElement, InputProps>(
-  ({ label, error, style, id, ...props }, ref) => {
-    const inputId = id || label?.toLowerCase().replace(/\s+/g, '-');
+export const Input = forwardRef<HTMLInputElement, InputProps>(
+  ({ label, error, hint, className = '', id, ...props }, ref) => {
+    const inputId = id || label?.toLowerCase().replace(/\s/g, '-');
 
     return (
-      <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
+      <div className="space-y-xs">
         {label && (
-          <label
-            htmlFor={inputId}
-            style={{
-              fontFamily: "'Jost', sans-serif",
-              fontWeight: 500,
-              fontSize: '0.65rem',
-              letterSpacing: '0.16em',
-              textTransform: 'uppercase',
-              color: 'var(--kore-mid)',
-            }}
-          >
+          <label htmlFor={inputId} className="block font-body text-small text-kore-ink font-medium">
             {label}
           </label>
         )}
         <input
           ref={ref}
           id={inputId}
-          style={{
-            background: 'var(--kore-white)',
-            border: error ? '1px solid var(--kore-error)' : '1px solid var(--kore-border)',
-            borderRadius: 0,
-            padding: '12px 16px',
-            fontFamily: "'Jost', sans-serif",
-            fontWeight: 300,
-            fontSize: '0.9rem',
-            color: 'var(--kore-ink)',
-            outline: 'none',
-            transition: 'border-color 0.2s ease',
-            width: '100%',
-            ...style,
-          }}
-          onFocus={(e) => {
-            e.currentTarget.style.borderColor = 'var(--kore-brass)';
-            props.onFocus?.(e);
-          }}
-          onBlur={(e) => {
-            e.currentTarget.style.borderColor = error ? 'var(--kore-error)' : 'var(--kore-border)';
-            props.onBlur?.(e);
-          }}
+          className={`w-full bg-kore-white border rounded-md px-md py-[10px] font-body text-body text-kore-ink placeholder:text-kore-faint transition-all duration-200 outline-none ${
+            error
+              ? 'border-kore-error focus:border-kore-error focus:ring-2 focus:ring-kore-error/20'
+              : 'border-kore-border focus:border-kore-brass focus:ring-2 focus:ring-kore-brass/20'
+          } ${className}`}
           {...props}
         />
-        {error && (
-          <span
-            style={{
-              fontFamily: "'Jost', sans-serif",
-              fontSize: '0.78rem',
-              color: 'var(--kore-error)',
-            }}
-          >
-            {error}
-          </span>
-        )}
+        {error && <p className="font-body text-small text-kore-error">{error}</p>}
+        {hint && !error && <p className="font-body text-small text-kore-faint">{hint}</p>}
       </div>
     );
   }

@@ -1,78 +1,49 @@
-import React from 'react';
+import type { ButtonHTMLAttributes, ReactNode } from 'react';
 
-interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
-  variant?: 'primary' | 'secondary' | 'brass';
+interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
+  variant?: 'primary' | 'secondary' | 'ghost' | 'danger';
   size?: 'sm' | 'md' | 'lg';
-  as?: 'button' | 'a';
-  href?: string;
+  children: ReactNode;
+  loading?: boolean;
 }
 
-const baseStyles: React.CSSProperties = {
-  display: 'inline-flex',
-  alignItems: 'center',
-  justifyContent: 'center',
-  gap: '8px',
-  fontFamily: "'Jost', sans-serif",
-  fontWeight: 500,
-  fontSize: '0.78rem',
-  letterSpacing: '0.1em',
-  textTransform: 'uppercase' as const,
-  border: 'none',
-  cursor: 'pointer',
-  transition: 'all 0.2s ease',
-  textDecoration: 'none',
+const variantClasses = {
+  primary:
+    'bg-kore-ink text-kore-white hover:bg-kore-brass border-transparent shadow-sm active:shadow-none active:translate-y-[1px]',
+  secondary:
+    'bg-kore-white text-kore-ink border-kore-border hover:border-kore-brass hover:text-kore-brass shadow-sm',
+  ghost:
+    'bg-transparent text-kore-mid border-transparent hover:bg-kore-surface hover:text-kore-ink',
+  danger:
+    'bg-kore-error/10 text-kore-error border-kore-error/20 hover:bg-kore-error hover:text-white shadow-sm',
 };
 
-const variants: Record<string, React.CSSProperties> = {
-  primary: {
-    backgroundColor: 'var(--kore-ink)',
-    color: 'var(--kore-white)',
-    border: 'none',
-  },
-  secondary: {
-    backgroundColor: 'transparent',
-    color: 'var(--kore-ink)',
-    border: '1px solid var(--kore-ink)',
-  },
-  brass: {
-    backgroundColor: 'var(--kore-brass)',
-    color: 'var(--kore-white)',
-    border: 'none',
-  },
-};
-
-const sizes: Record<string, React.CSSProperties> = {
-  sm: { padding: '8px 20px', fontSize: '0.72rem' },
-  md: { padding: '12px 28px' },
-  lg: { padding: '16px 36px', fontSize: '0.82rem' },
+const sizeClasses = {
+  sm: 'px-md py-[6px] text-small gap-xs',
+  md: 'px-lg py-[10px] text-body gap-sm',
+  lg: 'px-xl py-md text-body gap-sm',
 };
 
 export function Button({
   variant = 'primary',
   size = 'md',
-  as = 'button',
-  href,
-  style,
   children,
+  loading,
+  disabled,
+  className = '',
   ...props
 }: ButtonProps) {
-  const combinedStyle: React.CSSProperties = {
-    ...baseStyles,
-    ...variants[variant],
-    ...sizes[size],
-    ...style,
-  };
-
-  if (as === 'a' && href) {
-    return (
-      <a href={href} style={combinedStyle}>
-        {children}
-      </a>
-    );
-  }
-
   return (
-    <button style={combinedStyle} {...props}>
+    <button
+      className={`inline-flex items-center justify-center font-body font-medium rounded-md border transition-all duration-200 ${variantClasses[variant]} ${sizeClasses[size]} ${
+        disabled || loading ? 'opacity-50 cursor-not-allowed' : ''
+      } ${className}`}
+      disabled={disabled || loading}
+      {...props}
+    >
+      {loading && (
+        <div className="w-4 h-4 border-2 border-current border-t-transparent rounded-full animate-spin" />
+      )}
       {children}
     </button>
   );
