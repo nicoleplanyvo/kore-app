@@ -47,7 +47,7 @@ export function AboutPage() {
                 <p className="label-default mb-3">Gründerin</p>
                 <h2 className="font-display text-h1 text-kore-ink">Nicole Muñoz Bonilla</h2>
                 <p className="font-body text-small text-kore-brass mt-2">
-                  Geschäftsführerin, planyvo GmbH
+                  Geschäftsführerin, Muñoz Bonilla GmbH
                 </p>
               </div>
 
@@ -115,7 +115,7 @@ export function AboutPage() {
         <div className="container-narrow">
           <p className="label-default mb-4">Unternehmen</p>
           <p className="font-body text-body text-kore-ink">
-            KORE ist eine Marke der planyvo GmbH mit Sitz in Meerbusch, Deutschland. Geschäftsführer: Nicole Muñoz Bonilla und Mathis Wienand. Wir beraten Retailer im gesamten DACH-Raum.
+            KORE ist eine Marke der Muñoz Bonilla GmbH mit Sitz in Düsseldorf, Deutschland. Geschäftsführer: Nicole Muñoz Bonilla. Wir beraten Retailer im gesamten DACH-Raum.
           </p>
         </div>
       </section>

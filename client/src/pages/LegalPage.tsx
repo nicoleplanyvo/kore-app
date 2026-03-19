@@ -4,8 +4,8 @@ import { usePageMeta } from '../hooks/usePageMeta';
 
 export function LegalPage() {
   usePageMeta({
-    title: 'Impressum, Datenschutz & AGB | KORE — planyvo GmbH',
-    description: 'Impressum, Datenschutzerklärung und Allgemeine Geschäftsbedingungen der planyvo GmbH (KORE). Rechtliche Informationen gemäß DSGVO.',
+    title: 'Impressum, Datenschutz & AGB | KORE — Muñoz Bonilla GmbH',
+    description: 'Impressum, Datenschutzerklärung und Allgemeine Geschäftsbedingungen der Muñoz Bonilla GmbH (KORE). Rechtliche Informationen gemäß DSGVO.',
   });
 
   const { hash } = useLocation();
@@ -29,26 +29,26 @@ export function LegalPage() {
 
           <div className="flex flex-col gap-6 font-body text-body text-kore-ink">
             <div>
-              <p className="font-medium text-kore-ink">planyvo GmbH</p>
-              <p>Rudolf-Diesel-Str. 5</p>
-              <p>40670 Meerbusch</p>
+              <p className="font-medium text-kore-ink">Muñoz Bonilla GmbH</p>
+              <p>Benediktusstraße 46</p>
+              <p>40549 Düsseldorf</p>
               <p>Deutschland</p>
             </div>
 
             <div>
               <p className="label-default mb-2">Kontakt</p>
               <p>Telefon: +49 211 97263420</p>
-              <p>E-Mail: hello@planyvo.com</p>
+              <p>E-Mail: hello@kore-retail.de</p>
             </div>
 
             <div>
               <p className="label-default mb-2">Vertretungsberechtigt</p>
-              <p>Geschäftsführer: Nicole Muñoz Bonilla, Mathis Wienand</p>
+              <p>Geschäftsführer: Nicole Muñoz Bonilla</p>
             </div>
 
             <div>
               <p className="label-default mb-2">Handelsregister</p>
-              <p>Amtsgericht Neuss, HRB 23921</p>
+              <p>Amtsgericht Düsseldorf, HRB 88958</p>
             </div>
 
             <div>
@@ -59,13 +59,13 @@ export function LegalPage() {
             <div>
               <p className="label-default mb-2">Verantwortlich für den Inhalt nach § 18 Abs. 2 MStV</p>
               <p>Nicole Muñoz Bonilla</p>
-              <p>Rudolf-Diesel-Str. 5, 40670 Meerbusch</p>
+              <p>Benediktusstraße 46, 40549 Düsseldorf</p>
             </div>
 
             <div>
               <p className="label-default mb-2">Hinweis</p>
               <p className="text-kore-mid">
-                KORE ist eine Marke der planyvo GmbH. Alle Inhalte dieser Website unterliegen dem deutschen Urheberrecht. Die Vervielfältigung, Bearbeitung, Verbreitung und jede Art der Verwertung außerhalb der Grenzen des Urheberrechts bedürfen der schriftlichen Zustimmung der planyvo GmbH.
+                KORE ist eine Marke der Muñoz Bonilla GmbH. Alle Inhalte dieser Website unterliegen dem deutschen Urheberrecht. Die Vervielfältigung, Bearbeitung, Verbreitung und jede Art der Verwertung außerhalb der Grenzen des Urheberrechts bedürfen der schriftlichen Zustimmung der Muñoz Bonilla GmbH.
               </p>
             </div>
           </div>
@@ -83,14 +83,14 @@ export function LegalPage() {
             <div>
               <h3 className="font-display text-h3 text-kore-ink mb-3">1. Verantwortlicher</h3>
               <p className="mb-2">
-                planyvo GmbH<br />
-                Rudolf-Diesel-Str. 5<br />
-                40670 Meerbusch<br />
+                Muñoz Bonilla GmbH<br />
+                Benediktusstraße 46<br />
+                40549 Düsseldorf<br />
                 Deutschland
               </p>
               <p>
-                Geschäftsführer: Nicole Muñoz Bonilla, Mathis Wienand<br />
-                E-Mail: hello@planyvo.com<br />
+                Geschäftsführer: Nicole Muñoz Bonilla<br />
+                E-Mail: hello@kore-retail.de<br />
                 Telefon: +49 211 97263420
               </p>
             </div>
@@ -198,7 +198,7 @@ export function LegalPage() {
                 <li><span className="font-medium text-kore-ink">Widerruf der Einwilligung (Art. 7 Abs. 3 DSGVO):</span> Widerruf einer erteilten Einwilligung mit Wirkung für die Zukunft.</li>
               </ul>
               <p className="mt-3">
-                Kontaktieren Sie uns unter hello@planyvo.com zur Ausübung Ihrer Rechte.
+                Kontaktieren Sie uns unter hello@kore-retail.de zur Ausübung Ihrer Rechte.
               </p>
             </div>
 
@@ -269,7 +269,7 @@ export function LegalPage() {
             <div>
               <h3 className="font-display text-h3 text-kore-ink mb-3">§ 1 Geltungsbereich</h3>
               <p className="mb-3">
-                Diese Allgemeinen Geschäftsbedingungen (AGB) gelten für alle Verträge zwischen der planyvo GmbH, Rudolf-Diesel-Str. 5, 40670 Meerbusch (nachfolgend „KORE" oder „Anbieter") und dem Kunden über die Erbringung von Beratungs-, Trainings- und Softwareentwicklungsleistungen im Bereich Retail.
+                Diese Allgemeinen Geschäftsbedingungen (AGB) gelten für alle Verträge zwischen der Muñoz Bonilla GmbH, Benediktusstraße 46, 40549 Düsseldorf (nachfolgend „KORE" oder „Anbieter") und dem Kunden über die Erbringung von Beratungs-, Trainings- und Softwareentwicklungsleistungen im Bereich Retail.
               </p>
               <p>
                 Abweichende Bedingungen des Kunden gelten nur, wenn der Anbieter diesen ausdrücklich schriftlich zugestimmt hat.
@@ -397,8 +397,8 @@ export function LegalPage() {
                 Es gilt das Recht der Bundesrepublik Deutschland unter Ausschluss des UN-Kaufrechts. Gerichtsstand ist Düsseldorf. Sollten einzelne Bestimmungen dieser AGB unwirksam sein oder werden, bleibt die Wirksamkeit der übrigen Bestimmungen unberührt.
               </p>
               <p className="text-kore-mid">
-                planyvo GmbH — Rudolf-Diesel-Str. 5, 40670 Meerbusch — hello@planyvo.com<br />
-                Geschäftsführer: Nicole Muñoz Bonilla, Mathis Wienand
+                Muñoz Bonilla GmbH — Benediktusstraße 46, 40549 Düsseldorf — hello@kore-retail.de<br />
+                Geschäftsführer: Nicole Muñoz Bonilla
               </p>
             </div>
           </div>

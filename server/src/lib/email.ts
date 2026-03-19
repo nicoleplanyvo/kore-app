@@ -103,8 +103,8 @@ function baseLayout(content: string): string {
     </div>
     <div class="footer">
       KORE — Retail Intelligence<br/>
-      Eine Marke der planyvo GmbH<br/>
-      Rudolf-Diesel-Str. 5, 40670 Meerbusch
+      Eine Marke der Muñoz Bonilla GmbH<br/>
+      Benediktusstraße 46, 40549 Düsseldorf
     </div>
   </div>
 </body>
