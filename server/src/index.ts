@@ -173,5 +173,5 @@ if (isProduction) {
 // ── Start ─────────────────────────────────────────
 app.listen(PORT, () => {
   console.log(`✓ KORE Server running on port ${PORT} (${NODE_ENV})`);
-  console.log(`  Resend: ${process.env['RESEND_API_KEY'] ? 'configured' : 'not configured (dev mode)'}`);
+  console.log(`  SMTP: ${process.env['SMTP_USER'] ? 'configured (Brevo)' : 'not configured (dev mode — mails logged only)'}`);
 });
