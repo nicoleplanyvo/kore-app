@@ -11,7 +11,7 @@ const TYPE_OPTIONS = [
 
 const MODE_OPTIONS = [
   { value: 'KPI', label: 'KPI-basiert', desc: 'Fortschritt wird anhand messbarer Werte erfasst' },
-  { value: 'VOTING', label: 'Voting / Kreativ', desc: 'Teilnehmer stimmen ueber die besten Beitraege ab' },
+  { value: 'VOTING', label: 'Voting / Kreativ', desc: 'Teilnehmer stimmen über die besten Beitraege ab' },
 ];
 
 export function CreatePage() {

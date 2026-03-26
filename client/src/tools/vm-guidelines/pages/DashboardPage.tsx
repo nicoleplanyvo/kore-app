@@ -6,16 +6,16 @@ export function DashboardPage() {
   const { data: dashboard, isLoading } = useVmGuidelinesDashboard();
 
   if (isLoading) return <div className="p-xl text-body text-kore-mid">Lade Dashboard...</div>;
-  if (!dashboard) return <div className="p-xl text-body text-kore-mid">Keine Daten verfuegbar.</div>;
+  if (!dashboard) return <div className="p-xl text-body text-kore-mid">Keine Daten verfügbar.</div>;
 
   return (
     <div className="p-xl max-w-5xl">
       <Link to="/app/tools/vm-guidelines" className="flex items-center gap-sm text-small text-kore-mid hover:text-kore-ink mb-xl">
-        <ArrowLeft size={16} /> Zurueck
+        <ArrowLeft size={16} /> Zurück
       </Link>
 
       <h1 className="font-display text-h1 text-kore-ink mb-sm">VM Guidelines Dashboard</h1>
-      <p className="text-body text-kore-mid mb-2xl">Uebersicht ueber den aktuellen Stand der VM-Richtlinien</p>
+      <p className="text-body text-kore-mid mb-2xl">Übersicht über den aktuellen Stand der VM-Richtlinien</p>
 
       {/* KPI Tiles */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-xl mb-2xl">
@@ -24,7 +24,7 @@ export function DashboardPage() {
           <div className="font-display text-h1 text-kore-ink mt-sm">{dashboard.totalDocs}</div>
         </div>
         <div className="bg-kore-white border border-kore-border p-xl">
-          <span className="text-caption text-kore-mid uppercase tracking-widest flex items-center gap-xs"><FileText size={14} /> Veroeffentlicht</span>
+          <span className="text-caption text-kore-mid uppercase tracking-widest flex items-center gap-xs"><FileText size={14} /> Veröffentlicht</span>
           <div className="font-display text-h1 text-emerald-600 mt-sm">{dashboard.published}</div>
         </div>
         <div className="bg-kore-white border border-kore-border p-xl">
@@ -62,9 +62,9 @@ export function DashboardPage() {
 
         {/* Recent Updates */}
         <div className="bg-kore-white border border-kore-border p-xl">
-          <h2 className="font-display text-h3 text-kore-ink mb-lg">Letzte Aenderungen</h2>
+          <h2 className="font-display text-h3 text-kore-ink mb-lg">Letzte Änderungen</h2>
           {(dashboard.recentUpdates ?? []).length === 0 ? (
-            <p className="text-small text-kore-mid">Keine Aenderungen.</p>
+            <p className="text-small text-kore-mid">Keine Änderungen.</p>
           ) : (
             <div className="space-y-md">
               {(dashboard.recentUpdates as any[]).map((doc: any) => (

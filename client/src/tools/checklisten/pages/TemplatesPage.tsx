@@ -14,7 +14,7 @@ export function TemplatesPage() {
     <div className="p-xl max-w-5xl">
       <Link to="/tools/checklisten" className="flex items-center gap-xs text-small text-kore-mid hover:text-kore-brass transition-colors mb-lg">
         <ArrowLeft size={14} />
-        Zurueck
+        Zurück
       </Link>
 
       <div className="flex items-center justify-between mb-2xl">
@@ -81,9 +81,9 @@ export function TemplatesPage() {
                           <Pencil size={14} />
                         </button>
                         <button
-                          onClick={() => { if (confirm('Vorlage wirklich loeschen?')) deleteTemplate.mutate(t.id); }}
+                          onClick={() => { if (confirm('Vorlage wirklich löschen?')) deleteTemplate.mutate(t.id); }}
                           className="p-xs text-kore-mid hover:text-red-600 transition-colors"
-                          title="Loeschen"
+                          title="Löschen"
                         >
                           <Trash2 size={14} />
                         </button>
@@ -208,7 +208,7 @@ function TemplateForm({ template, onClose }: { template?: any; onClose: () => vo
         {/* Name */}
         <div>
           <label className="text-caption text-kore-mid uppercase tracking-widest block mb-xs">Name</label>
-          <input value={name} onChange={e => setName(e.target.value)} placeholder="z.B. Taeglich Oeffnung" className="w-full border border-kore-border px-md py-sm text-small" />
+          <input value={name} onChange={e => setName(e.target.value)} placeholder="z.B. Täglich Öffnung" className="w-full border border-kore-border px-md py-sm text-small" />
         </div>
 
         {/* Description */}
@@ -222,7 +222,7 @@ function TemplateForm({ template, onClose }: { template?: any; onClose: () => vo
           <label className="text-caption text-kore-mid uppercase tracking-widest block mb-xs">Wiederholung</label>
           <select value={recurrence} onChange={e => setRecurrence(e.target.value)} className="w-full border border-kore-border px-md py-sm text-small">
             <option value="">Keine (einmalig)</option>
-            <option value="daily">Taeglich</option>
+            <option value="daily">Täglich</option>
             <option value="weekly">Woechentlich</option>
             <option value="monthly">Monatlich</option>
           </select>
@@ -248,7 +248,7 @@ function TemplateForm({ template, onClose }: { template?: any; onClose: () => vo
                 <input
                   value={item}
                   onChange={e => updateItem(si, ii, e.target.value)}
-                  placeholder={`Pruefpunkt ${ii + 1}`}
+                  placeholder={`Prüfpunkt ${ii + 1}`}
                   className="flex-1 border border-kore-border px-md py-xs text-small"
                 />
                 {sec.items.length > 1 && (
@@ -258,13 +258,13 @@ function TemplateForm({ template, onClose }: { template?: any; onClose: () => vo
             ))}
 
             <button onClick={() => addItem(si)} className="text-small text-kore-brass hover:text-kore-brass-dk transition-colors">
-              + Pruefpunkt
+              + Prüfpunkt
             </button>
           </div>
         ))}
 
         <button onClick={addSection} className="text-small text-kore-brass hover:text-kore-brass-dk transition-colors">
-          + Abschnitt hinzufuegen
+          + Abschnitt hinzufügen
         </button>
       </div>
 

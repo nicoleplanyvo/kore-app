@@ -20,7 +20,7 @@ const STATUS_LABELS: Record<string, string> = {
   OPEN: 'Offen',
   IN_PROGRESS: 'In Bearbeitung',
   COMPLETED: 'Erledigt',
-  OVERDUE: 'Ueberfaellig',
+  OVERDUE: 'Überfällig',
   REJECTED: 'Abgelehnt',
 };
 const STATUS_COLORS: Record<string, string> = {
@@ -82,7 +82,7 @@ export function TaskListPage() {
     { value: 'OPEN', label: 'Offen' },
     { value: 'IN_PROGRESS', label: 'In Bearbeitung' },
     { value: 'COMPLETED', label: 'Erledigt' },
-    { value: 'OVERDUE', label: 'Ueberfaellig' },
+    { value: 'OVERDUE', label: 'Überfällig' },
   ];
 
   return (
@@ -228,7 +228,7 @@ export function TaskListPage() {
                         <span className={`flex items-center gap-xs text-small ${isOverdue ? 'text-red-600' : 'text-kore-mid'}`}>
                           <Calendar size={12} />
                           {new Date(task.deadline).toLocaleDateString('de-DE')}
-                          {isOverdue && ' (ueberfaellig)'}
+                          {isOverdue && ' (überfällig)'}
                         </span>
                       )}
                       {task.tags?.length > 0 && (
@@ -245,7 +245,7 @@ export function TaskListPage() {
                   <div className="flex items-center gap-sm shrink-0">
                     <span className={`flex items-center gap-xs px-sm py-xs text-small ${STATUS_COLORS[isOverdue ? 'OVERDUE' : task.status] ?? 'bg-kore-bg text-kore-mid'}`}>
                       <StatusIcon size={14} />
-                      {isOverdue ? 'Ueberfaellig' : STATUS_LABELS[task.status] ?? task.status}
+                      {isOverdue ? 'Überfällig' : STATUS_LABELS[task.status] ?? task.status}
                     </span>
                     <ChevronRight size={16} className="text-kore-mid" />
                   </div>

@@ -55,7 +55,7 @@ export function DashboardPage() {
       {isLoading ? (
         <div className="text-body text-kore-mid">Lade Dashboard...</div>
       ) : !dashboard ? (
-        <div className="bg-kore-white border border-kore-border p-2xl text-center text-body text-kore-mid">Keine Daten verfuegbar.</div>
+        <div className="bg-kore-white border border-kore-border p-2xl text-center text-body text-kore-mid">Keine Daten verfügbar.</div>
       ) : (
         <>
           {/* Region Summary */}
@@ -117,7 +117,7 @@ export function DashboardPage() {
               <h2 className="font-display text-h3 text-kore-ink">Ranking nach Zielerreichung</h2>
             </div>
             {dashboard.ranking.length === 0 ? (
-              <div className="p-lg text-body text-kore-mid">Keine Stores mit Umsatzplan fuer diesen Monat.</div>
+              <div className="p-lg text-body text-kore-mid">Keine Stores mit Umsatzplan für diesen Monat.</div>
             ) : (
               <div className="overflow-x-auto">
                 <table className="w-full text-small">

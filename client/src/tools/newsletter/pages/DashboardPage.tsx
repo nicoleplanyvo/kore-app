@@ -94,7 +94,7 @@ export function DashboardPage() {
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-md mb-xl">
           {[
             { label: 'Gesamt', value: kpis.total, icon: FileText, color: 'text-kore-ink' },
-            { label: 'Veroeffentlicht', value: kpis.published, icon: Send, color: 'text-emerald-600' },
+            { label: 'Veröffentlicht', value: kpis.published, icon: Send, color: 'text-emerald-600' },
             { label: 'Entwuerfe', value: kpis.drafts, icon: Layers, color: 'text-amber-600' },
             { label: 'Archiviert', value: kpis.archived, icon: Archive, color: 'text-blue-600' },
             { label: 'Aufrufe gesamt', value: kpis.totalViews, icon: Eye, color: 'text-purple-600' },
@@ -162,7 +162,7 @@ export function DashboardPage() {
                 <div
                   key={i}
                   className="flex-1 flex flex-col items-center justify-end h-full"
-                  title={`${t.month}: ${t.created} erstellt, ${t.published} veroeffentlicht, ${t.views} Aufrufe`}
+                  title={`${t.month}: ${t.created} erstellt, ${t.published} veröffentlicht, ${t.views} Aufrufe`}
                 >
                   <span className="text-xs font-bold text-kore-ink mb-1">
                     {t.created > 0 ? t.created : ''}
@@ -187,7 +187,7 @@ export function DashboardPage() {
               <span className="w-3 h-3 rounded bg-kore-brass/30" /> Erstellt
             </span>
             <span className="flex items-center gap-1">
-              <span className="w-3 h-3 rounded bg-emerald-500" /> Veroeffentlicht
+              <span className="w-3 h-3 rounded bg-emerald-500" /> Veröffentlicht
             </span>
           </div>
         </div>
@@ -263,7 +263,7 @@ export function DashboardPage() {
                     <div className="flex-1 min-w-0">
                       <div className="font-medium text-kore-ink text-small">{a.name}</div>
                       <div className="text-xs text-kore-mid">
-                        {a.count} erstellt | {a.published} veroeffentlicht
+                        {a.count} erstellt | {a.published} veröffentlicht
                       </div>
                       <div className="h-2 bg-kore-bg rounded mt-1">
                         <div
@@ -286,7 +286,7 @@ export function DashboardPage() {
 
       {!kpis && (
         <div className="bg-kore-white border border-kore-border p-2xl text-center text-kore-mid">
-          Keine Daten fuer diesen Zeitraum vorhanden.
+          Keine Daten für diesen Zeitraum vorhanden.
         </div>
       )}
     </div>

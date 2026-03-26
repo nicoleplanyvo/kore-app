@@ -183,7 +183,7 @@ export function RequestDetailPage() {
             </span>
             {overdue && (
               <span className="flex items-center gap-xs px-sm py-xs text-small bg-red-50 text-red-700 border border-red-200">
-                <AlertTriangle size={12} /> Ueberfaellig
+                <AlertTriangle size={12} /> Überfällig
               </span>
             )}
           </div>
@@ -220,7 +220,7 @@ export function RequestDetailPage() {
           )}
         </div>
         <div className="bg-kore-white border border-kore-border p-md">
-          <div className="text-small text-kore-mid mb-xs">Prioritaet</div>
+          <div className="text-small text-kore-mid mb-xs">Priorität</div>
           {isEditing ? (
             <select
               value={editForm.priority}
@@ -409,7 +409,7 @@ export function RequestDetailPage() {
       {/* Status workflow buttons */}
       {req.status !== 'CLOSED' && !isEditing && (
         <div className="bg-kore-white border border-kore-border p-lg">
-          <h3 className="text-body font-medium text-kore-ink mb-md">Status aendern</h3>
+          <h3 className="text-body font-medium text-kore-ink mb-md">Status ändern</h3>
           <div className="flex gap-sm flex-wrap">
             {req.status === 'OPEN' && (
               <button
@@ -435,7 +435,7 @@ export function RequestDetailPage() {
                 disabled={update.isPending}
                 className="flex items-center gap-xs px-md py-sm bg-kore-ink text-kore-white text-small hover:bg-kore-dark disabled:opacity-50"
               >
-                <CircleDot size={14} /> Abschliessen (bestaetigen)
+                <CircleDot size={14} /> Abschließen (bestätigen)
               </button>
             )}
             {(req.status === 'IN_PROGRESS' || req.status === 'RESOLVED') && (
@@ -444,7 +444,7 @@ export function RequestDetailPage() {
                 disabled={update.isPending}
                 className="flex items-center gap-xs px-md py-sm border border-kore-border text-kore-ink text-small hover:bg-kore-bg disabled:opacity-50"
               >
-                <AlertTriangle size={14} /> Zurueck auf Offen
+                <AlertTriangle size={14} /> Zurück auf Offen
               </button>
             )}
           </div>

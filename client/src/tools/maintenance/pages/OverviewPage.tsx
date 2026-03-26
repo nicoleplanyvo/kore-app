@@ -215,7 +215,7 @@ export function OverviewPage() {
               </select>
             </div>
             <div>
-              <label className="block text-small text-kore-mid mb-xs">Prioritaet</label>
+              <label className="block text-small text-kore-mid mb-xs">Priorität</label>
               <select
                 value={form.priority}
                 onChange={(e) => setForm({ ...form, priority: e.target.value })}
@@ -292,13 +292,13 @@ export function OverviewPage() {
           </select>
         </div>
         <div>
-          <label className="block text-small text-kore-mid mb-xs">Prioritaet</label>
+          <label className="block text-small text-kore-mid mb-xs">Priorität</label>
           <select
             value={filterPriority}
             onChange={(e) => { setFilterPriority(e.target.value); setPage(1); }}
             className="border border-kore-border px-md py-sm text-small"
           >
-            <option value="">Alle Prioritaeten</option>
+            <option value="">Alle Prioritäten</option>
             {PRIORITY_OPTIONS.map((p) => (
               <option key={p.value} value={p.value}>{p.label}</option>
             ))}
@@ -309,7 +309,7 @@ export function OverviewPage() {
             onClick={() => { setFilterStatus(''); setFilterCategory(''); setFilterPriority(''); setPage(1); }}
             className="text-small text-kore-mid hover:text-kore-ink underline"
           >
-            Filter zuruecksetzen
+            Filter zurücksetzen
           </button>
         )}
       </div>
@@ -322,7 +322,7 @@ export function OverviewPage() {
           <Wrench size={48} className="text-kore-faint mb-lg" />
           <h2 className="font-display text-h2 text-kore-ink mb-md">Keine Meldungen vorhanden</h2>
           <p className="text-body text-kore-mid max-w-md mb-xl">
-            Erstellen Sie Ihre erste Stoerungsmeldung fuer diesen Store.
+            Erstellen Sie Ihre erste Stoerungsmeldung für diesen Store.
           </p>
           <button
             onClick={() => setShowForm(true)}

@@ -212,7 +212,7 @@ export function DashboardPage() {
       const data = await exportCsv(filters);
       if (!data?.length) return;
 
-      const headers = ['Titel', 'Beschreibung', 'Store', 'Kategorie', 'Prioritaet', 'Status', 'Gemeldet von', 'Zugewiesen an', 'Geschaetzte Kosten', 'Tatsaechliche Kosten', 'Erstellt am', 'Geloest am'];
+      const headers = ['Titel', 'Beschreibung', 'Store', 'Kategorie', 'Priorität', 'Status', 'Gemeldet von', 'Zugewiesen an', 'Geschaetzte Kosten', 'Tatsaechliche Kosten', 'Erstellt am', 'Geloest am'];
       const rows = data.map((r: any) => [
         (r.title ?? '').replace(/"/g, '""'),
         (r.description ?? '').replace(/"/g, '""'),
@@ -261,7 +261,7 @@ export function DashboardPage() {
             <BarChart3 size={24} /> Maintenance Dashboard
           </h1>
           <p className="text-body text-kore-mid mt-xs">
-            KPIs, Kategorien, Kosten und Trends im Ueberblick.
+            KPIs, Kategorien, Kosten und Trends im Überblick.
           </p>
         </div>
         <button
@@ -354,7 +354,7 @@ export function DashboardPage() {
               </div>
               <div className="font-display text-h1 text-amber-600">{kpis?.open ?? 0}</div>
               {(kpis?.overdueCount ?? 0) > 0 && (
-                <span className="text-small text-red-600">{kpis?.overdueCount} ueberfaellig</span>
+                <span className="text-small text-red-600">{kpis?.overdueCount} überfällig</span>
               )}
             </div>
 
@@ -432,7 +432,7 @@ export function DashboardPage() {
             </div>
 
             <div className="bg-kore-white border border-kore-border p-xl">
-              <h2 className="font-display text-h3 text-kore-ink mb-lg">Nach Prioritaet</h2>
+              <h2 className="font-display text-h3 text-kore-ink mb-lg">Nach Priorität</h2>
               {dashboard?.byPriority && Object.keys(dashboard.byPriority).length > 0 ? (
                 <div className="space-y-sm">
                   {['URGENT', 'HIGH', 'MEDIUM', 'LOW']

@@ -103,7 +103,7 @@ export function PlanDetailPage() {
   };
 
   const handleDeleteGoal = (goalId: string) => {
-    if (!confirm('Ziel wirklich loeschen?')) return;
+    if (!confirm('Ziel wirklich löschen?')) return;
     deleteGoal.mutate({ planId: plan.id, goalId });
   };
 
@@ -163,7 +163,7 @@ export function PlanDetailPage() {
               <Compass size={24} /> {plan.title}
             </h1>
             {isOverdue && (
-              <span className="text-red-500" title="Ueberfaellig">
+              <span className="text-red-500" title="Überfällig">
                 <AlertTriangle size={18} />
               </span>
             )}
@@ -195,7 +195,7 @@ export function PlanDetailPage() {
             {plan.targetDate ? new Date(plan.targetDate).toLocaleDateString('de-DE') : '---'}
             {daysRemaining !== null && plan.status === 'ACTIVE' && (
               <span className={`text-xs ml-1 ${daysRemaining < 0 ? 'text-red-500' : daysRemaining <= 7 ? 'text-amber-600' : 'text-kore-mid'}`}>
-                ({daysRemaining < 0 ? `${Math.abs(daysRemaining)}T ueberfaellig` : `${daysRemaining}T verbleibend`})
+                ({daysRemaining < 0 ? `${Math.abs(daysRemaining)}T überfällig` : `${daysRemaining}T verbleibend`})
               </span>
             )}
           </div>
@@ -225,7 +225,7 @@ export function PlanDetailPage() {
             className="flex items-center gap-xs px-md py-sm bg-emerald-600 text-white text-small hover:bg-emerald-700"
           >
             <CheckCircle size={14} />
-            {plan.type === 'PIP' ? 'PIP abschliessen' : 'Plan abschliessen'}
+            {plan.type === 'PIP' ? 'PIP abschließen' : 'Plan abschließen'}
           </button>
           <button
             onClick={handleCancelPlan}
@@ -247,7 +247,7 @@ export function PlanDetailPage() {
               onClick={() => setShowGoalForm(!showGoalForm)}
               className="flex items-center gap-xs px-sm py-xs bg-kore-ink text-kore-white text-small hover:opacity-90"
             >
-              <Plus size={14} /> Ziel hinzufuegen
+              <Plus size={14} /> Ziel hinzufügen
             </button>
           )}
         </div>
@@ -288,7 +288,7 @@ export function PlanDetailPage() {
                 disabled={createGoal.isPending}
                 className="px-md py-sm bg-kore-ink text-kore-white text-small hover:opacity-90 disabled:opacity-50"
               >
-                Hinzufuegen
+                Hinzufügen
               </button>
               <button
                 type="button"
@@ -303,7 +303,7 @@ export function PlanDetailPage() {
 
         {!goals.length ? (
           <p className="text-body text-kore-mid bg-kore-white border border-kore-border p-lg text-center">
-            Keine Ziele definiert. Fuegen Sie SMART-Ziele hinzu.
+            Keine Ziele definiert. Fügen Sie SMART-Ziele hinzu.
           </p>
         ) : (
           <div className="space-y-sm">
@@ -337,7 +337,7 @@ export function PlanDetailPage() {
                             {g.title}
                           </span>
                           {goalOverdue && (
-                            <span className="text-red-500" title="Ueberfaellig">
+                            <span className="text-red-500" title="Überfällig">
                               <AlertTriangle size={12} />
                             </span>
                           )}
@@ -409,7 +409,7 @@ export function PlanDetailPage() {
                         <button
                           onClick={() => handleDeleteGoal(g.id)}
                           className="text-kore-mid hover:text-red-500"
-                          title="Ziel loeschen"
+                          title="Ziel löschen"
                         >
                           <Trash2 size={14} />
                         </button>
@@ -427,14 +427,14 @@ export function PlanDetailPage() {
       <div className="mb-xl">
         <div className="flex items-center justify-between mb-md">
           <h2 className="font-display text-h3 text-kore-ink flex items-center gap-sm">
-            <MessageSquare size={18} /> Gespraeche / Reviews
+            <MessageSquare size={18} /> Gespräche / Reviews
           </h2>
           {plan.status === 'ACTIVE' && (
             <button
               onClick={() => setShowReviewForm(!showReviewForm)}
               className="flex items-center gap-xs px-sm py-xs bg-kore-ink text-kore-white text-small hover:opacity-90"
             >
-              <Plus size={14} /> Review hinzufuegen
+              <Plus size={14} /> Review hinzufügen
             </button>
           )}
         </div>
@@ -457,12 +457,12 @@ export function PlanDetailPage() {
               </div>
             </div>
             <div>
-              <label className="block text-small text-kore-mid mb-xs">Kommentare / Gespraechsnotiz</label>
+              <label className="block text-small text-kore-mid mb-xs">Kommentare / Gesprächsnotiz</label>
               <textarea
                 value={reviewForm.comments}
                 onChange={(e) => setReviewForm({ ...reviewForm, comments: e.target.value })}
                 rows={4}
-                placeholder="Fortschritt, Hindernisse, naechste Schritte..."
+                placeholder="Fortschritt, Hindernisse, nächste Schritte..."
                 className="w-full border border-kore-border px-md py-sm text-body"
               />
             </div>
@@ -530,7 +530,7 @@ export function PlanDetailPage() {
           <div className="bg-kore-white w-full max-w-md p-xl rounded-lg" onClick={(e) => e.stopPropagation()}>
             <div className="flex items-center justify-between mb-lg">
               <h2 className="font-display text-h3 text-kore-ink">
-                {plan.type === 'PIP' ? 'PIP abschliessen' : 'Plan abschliessen'}
+                {plan.type === 'PIP' ? 'PIP abschließen' : 'Plan abschließen'}
               </h2>
               <button onClick={() => setShowCompleteModal(false)} className="text-kore-mid hover:text-kore-ink">
                 <X size={20} />
@@ -576,7 +576,7 @@ export function PlanDetailPage() {
                 value={completionComments}
                 onChange={(e) => setCompletionComments(e.target.value)}
                 rows={3}
-                placeholder={plan.type === 'PIP' ? 'Begruendung des Ergebnisses...' : 'Zusammenfassung des Abschlussgespraechs...'}
+                placeholder={plan.type === 'PIP' ? 'Begruendung des Ergebnisses...' : 'Zusammenfassung des Abschlussgesprächs...'}
                 className="w-full border border-kore-border px-md py-sm text-body"
               />
             </div>
@@ -592,8 +592,8 @@ export function PlanDetailPage() {
             >
               <CheckCircle size={18} />
               {plan.type === 'PIP'
-                ? pipResult === 'COMPLETED' ? 'PIP als bestanden abschliessen' : 'PIP als nicht bestanden abschliessen'
-                : 'Plan abschliessen'}
+                ? pipResult === 'COMPLETED' ? 'PIP als bestanden abschließen' : 'PIP als nicht bestanden abschließen'
+                : 'Plan abschließen'}
             </button>
           </div>
         </div>

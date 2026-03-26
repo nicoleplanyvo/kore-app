@@ -248,7 +248,7 @@ export function DashboardPage() {
       {isLoading ? (
         <div className="text-body text-kore-mid py-xl">Lade Dashboard...</div>
       ) : !dashboard ? (
-        <div className="text-body text-kore-mid py-xl">Keine Daten verfuegbar.</div>
+        <div className="text-body text-kore-mid py-xl">Keine Daten verfügbar.</div>
       ) : (
         <>
           {/* KPI Tiles */}

@@ -17,7 +17,7 @@ const STATUS_COLORS: Record<string, string> = {
 };
 
 const RATING_LABELS: Record<number, string> = {
-  5: 'Uebertrifft',
+  5: 'Übertrifft',
   4: 'Erreicht voll',
   3: 'Erreicht',
   2: 'Teilweise',
@@ -41,7 +41,7 @@ export function OverviewPage() {
       <div className="flex items-center justify-between mb-2xl">
         <div>
           <h1 className="font-display text-h1 text-kore-ink">Mitarbeiterbeurteilungen</h1>
-          <p className="text-body text-kore-mid mt-xs">Beurteilungen verwalten, Selbsteinschaetzungen einholen und Gespraeche dokumentieren</p>
+          <p className="text-body text-kore-mid mt-xs">Beurteilungen verwalten, Selbsteinschaetzungen einholen und Gespräche dokumentieren</p>
         </div>
         <div className="flex gap-sm">
           <Link to="/tools/appraisals/dashboard" className="flex items-center gap-sm border border-kore-border px-lg py-md-sm text-small font-medium uppercase tracking-widest hover:bg-kore-bg transition-colors text-kore-ink">
@@ -61,7 +61,7 @@ export function OverviewPage() {
             <div className="font-display text-h1 text-kore-ink mt-sm">{dashboard.dueSoon?.length ?? 0}</div>
           </div>
           <div className="bg-kore-white border border-kore-border p-xl">
-            <span className="text-caption text-kore-mid uppercase tracking-widest">Ueberfaellige</span>
+            <span className="text-caption text-kore-mid uppercase tracking-widest">Überfällige</span>
             <div className={`font-display text-h1 mt-sm ${dashboard.overdue > 0 ? 'text-red-600' : 'text-kore-ink'}`}>{dashboard.overdue ?? 0}</div>
           </div>
           <div className="bg-kore-white border border-kore-border p-xl">

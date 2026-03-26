@@ -25,7 +25,7 @@ import { useAuthStore } from '../../../stores/authStore';
 const STATUS_LABELS: Record<string, string> = {
   DRAFT: 'Entwurf',
   SUBMITTED: 'Eingereicht',
-  ACKNOWLEDGED: 'Bestaetigt',
+  ACKNOWLEDGED: 'Bestätigt',
 };
 const STATUS_COLORS: Record<string, string> = {
   DRAFT: 'bg-kore-bg text-kore-mid border-kore-border',
@@ -34,9 +34,9 @@ const STATUS_COLORS: Record<string, string> = {
 };
 
 const SHIFT_LABELS: Record<string, string> = {
-  'FRUEH_SPAET': 'Frueh \u2192 Spaet',
-  'SPAET_NACHT': 'Spaet \u2192 Nacht',
-  'NACHT_FRUEH': 'Nacht \u2192 Frueh',
+  'FRUEH_SPAET': 'Früh \u2192 Spät',
+  'SPAET_NACHT': 'Spät \u2192 Nacht',
+  'NACHT_FRUEH': 'Nacht \u2192 Früh',
 };
 
 const SECTIONS = [
@@ -66,7 +66,7 @@ export function DetailPage() {
   );
 
   if (isLoading) return <div className="p-xl text-body text-kore-mid">Lade...</div>;
-  if (!handover) return <div className="p-xl text-body text-kore-mid">Uebergabe nicht gefunden.</div>;
+  if (!handover) return <div className="p-xl text-body text-kore-mid">Übergabe nicht gefunden.</div>;
 
   const isCreator = user?.id === handover.fromUserId;
   const isRecipient = user?.id === handover.toUserId;
@@ -124,7 +124,7 @@ export function DetailPage() {
         </Link>
         <div className="flex-1">
           <h1 className="font-display text-h1 text-kore-ink flex items-center gap-sm">
-            <ArrowRightLeft size={24} /> Schichtuebergabe
+            <ArrowRightLeft size={24} /> Schichtübergabe
           </h1>
           <div className="flex items-center gap-sm mt-xs flex-wrap">
             <span className="text-body text-kore-ink">
@@ -174,7 +174,7 @@ export function DetailPage() {
               disabled={acknowledge.isPending}
               className="flex items-center gap-xs px-md py-sm bg-emerald-600 text-kore-white text-small hover:opacity-90 disabled:opacity-50"
             >
-              <Check size={16} /> Bestaetigen
+              <Check size={16} /> Bestätigen
             </button>
           )}
         </div>
@@ -302,7 +302,7 @@ export function DetailPage() {
                   <h3 className="font-display text-body font-medium text-kore-ink">{label}</h3>
                   {hasPriority && (
                     <span className="flex items-center gap-xs text-small text-amber-600 bg-amber-50 px-sm py-xs">
-                      <AlertTriangle size={12} /> Prioritaet
+                      <AlertTriangle size={12} /> Priorität
                     </span>
                   )}
                 </div>
@@ -313,7 +313,7 @@ export function DetailPage() {
 
           {SECTIONS.every(({ key }) => !(handover as any)[key]) && (
             <div className="bg-kore-white border border-kore-border p-lg text-center text-body text-kore-mid">
-              Keine Notizen in dieser Uebergabe.
+              Keine Notizen in dieser Übergabe.
             </div>
           )}
         </div>

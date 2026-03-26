@@ -133,7 +133,7 @@ teamPushRouter.delete('/messages/:id', async (req, res) => {
   try {
     const message = await prisma.teamMessage.findUnique({ where: { id: req.params['id'] } });
     if (!message) return res.status(404).json({ error: 'Nachricht nicht gefunden.' });
-    if (message.sentBy !== req.user!.sub) return res.status(403).json({ error: 'Nur der Absender kann die Nachricht loeschen.' });
+    if (message.sentBy !== req.user!.sub) return res.status(403).json({ error: 'Nur der Absender kann die Nachricht löschen.' });
 
     // Delete reads first, then message
     await prisma.teamMessageRead.deleteMany({ where: { messageId: message.id } });

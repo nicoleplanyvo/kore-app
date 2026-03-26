@@ -30,12 +30,12 @@ export function AppTopBar({ onMenuToggle }: AppTopBarProps) {
   const effectiveRole = viewAsRole || user?.role;
 
   return (
-    <header className="h-[56px] bg-kore-white/80 backdrop-blur-md border-b border-kore-border/60 flex items-center justify-between px-md sm:px-xl flex-shrink-0 sticky top-0 z-30">
+    <header className="h-[56px] bg-kore-white border-b border-kore-border/60 flex items-center justify-between px-md sm:px-xl flex-shrink-0 relative z-10">
       {/* Left: Hamburger (desktop only, mobile uses bottom nav) */}
       <button
         onClick={onMenuToggle}
         className="hidden lg:flex w-[40px] h-[40px] items-center justify-center rounded-md hover:bg-kore-surface transition-colors"
-        aria-label="Menue oeffnen"
+        aria-label="Menü öffnen"
       >
         <Menu size={20} className="text-kore-ink" />
       </button>

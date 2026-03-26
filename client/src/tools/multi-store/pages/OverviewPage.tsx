@@ -90,7 +90,7 @@ export function OverviewPage() {
 
       {/* Store cards */}
       {isLoading ? (
-        <div className="text-body text-kore-mid py-2xl text-center">Lade Store-Uebersicht...</div>
+        <div className="text-body text-kore-mid py-2xl text-center">Lade Store-Übersicht...</div>
       ) : !filtered?.length ? (
         <div className="bg-kore-white border border-kore-border p-2xl text-center text-body text-kore-mid">
           Keine Stores zugewiesen.

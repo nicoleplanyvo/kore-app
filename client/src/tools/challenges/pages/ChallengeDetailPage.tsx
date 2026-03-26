@@ -41,7 +41,7 @@ export function ChallengeDetailPage() {
   const handleActivate = () => updateChallenge.mutate({ id: challenge.id, status: 'ACTIVE' });
   const handleComplete = () => updateChallenge.mutate({ id: challenge.id, status: 'COMPLETED' });
   const handleDelete = () => {
-    if (confirm('Challenge wirklich loeschen?')) deleteChallenge.mutate(challenge.id);
+    if (confirm('Challenge wirklich löschen?')) deleteChallenge.mutate(challenge.id);
   };
   const handleSubmitEntry = () => {
     const val = Number(entryValue);
@@ -129,7 +129,7 @@ export function ChallengeDetailPage() {
         )}
         {(isDraft || isCompleted) && (
           <button onClick={handleDelete} disabled={deleteChallenge.isPending} className="px-lg py-sm border border-red-300 text-red-600 text-small hover:bg-red-50 disabled:opacity-50 flex items-center gap-xs">
-            <Trash2 size={14} /> Loeschen
+            <Trash2 size={14} /> Löschen
           </button>
         )}
       </div>

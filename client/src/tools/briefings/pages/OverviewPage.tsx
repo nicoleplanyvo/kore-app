@@ -27,8 +27,8 @@ export function OverviewPage() {
       {/* Header */}
       <div className="flex items-center justify-between mb-2xl">
         <div>
-          <h1 className="font-display text-h1 text-kore-ink">Taegliches Store-Briefing</h1>
-          <p className="text-body text-kore-mid mt-xs">Strukturierte Tagesinformationen fuer das Team erstellen und lesen.</p>
+          <h1 className="font-display text-h1 text-kore-ink">Tägliches Store-Briefing</h1>
+          <p className="text-body text-kore-mid mt-xs">Strukturierte Tagesinformationen für das Team erstellen und lesen.</p>
         </div>
         <div className="flex items-center gap-md">
           <Link to="/tools/briefings/dashboard" className="flex items-center gap-xs px-md py-sm border border-kore-border text-kore-ink text-small hover:border-kore-ink transition-colors">
@@ -80,7 +80,7 @@ export function OverviewPage() {
               disabled={markRead.isPending}
               className="flex items-center gap-xs px-md py-sm bg-emerald-600 text-kore-white text-small hover:opacity-90 disabled:opacity-50"
             >
-              <CheckCircle size={16} /> Gelesen bestaetigen
+              <CheckCircle size={16} /> Gelesen bestätigen
             </button>
             <Link to={`/tools/briefings/${todayBriefing.id}`} className="px-md py-sm border border-kore-border text-kore-ink text-small hover:border-kore-ink transition-colors">
               Details ansehen
@@ -114,7 +114,7 @@ export function OverviewPage() {
         <div className="bg-kore-white border border-kore-border p-3xl flex flex-col items-center text-center">
           <FileText size={48} className="text-kore-faint mb-lg" />
           <h2 className="font-display text-h2 text-kore-ink mb-md">Noch keine Briefings</h2>
-          <p className="text-body text-kore-mid max-w-md mb-xl">Erstellen Sie das erste Tages-Briefing fuer Ihr Team.</p>
+          <p className="text-body text-kore-mid max-w-md mb-xl">Erstellen Sie das erste Tages-Briefing für Ihr Team.</p>
           <Link to="/tools/briefings/create" className="flex items-center gap-sm bg-kore-ink text-kore-white px-xl py-md-sm text-small font-medium uppercase tracking-widest hover:bg-kore-brass transition-colors">
             <Plus size={16} /> Briefing erstellen
           </Link>
@@ -146,7 +146,7 @@ export function OverviewPage() {
           {/* Pagination */}
           {totalPages > 1 && (
             <div className="flex items-center justify-center gap-md mt-xl">
-              <button onClick={() => setPage(Math.max(1, page - 1))} disabled={page <= 1} className="px-md py-sm border border-kore-border text-small disabled:opacity-30">Zurueck</button>
+              <button onClick={() => setPage(Math.max(1, page - 1))} disabled={page <= 1} className="px-md py-sm border border-kore-border text-small disabled:opacity-30">Zurück</button>
               <span className="text-small text-kore-mid">Seite {page} von {totalPages}</span>
               <button onClick={() => setPage(Math.min(totalPages, page + 1))} disabled={page >= totalPages} className="px-md py-sm border border-kore-border text-small disabled:opacity-30">Weiter</button>
             </div>

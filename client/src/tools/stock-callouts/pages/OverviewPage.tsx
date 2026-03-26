@@ -305,7 +305,7 @@ export function OverviewPage() {
                     onClick={() => handleTransfer(c.id)}
                     className="flex items-center gap-xs px-sm py-xs text-xs border border-purple-300 text-purple-700 hover:bg-purple-50"
                   >
-                    <Truck size={12} /> Transfer bestaetigen
+                    <Truck size={12} /> Transfer bestätigen
                   </button>
                 )}
                 {c.status === 'TRANSFER' && (
@@ -351,7 +351,7 @@ export function OverviewPage() {
               <div className="flex justify-between"><span className="text-kore-mid">Angefordert</span><span className="font-medium">{offerModal.requestedQty} Stk.</span></div>
               <div className="flex justify-between"><span className="text-kore-mid">Von Store</span><span className="font-medium">{offerModal.store?.name ?? ''}</span></div>
             </div>
-            <label className="block text-small text-kore-mid mb-xs">Verfuegbare Menge</label>
+            <label className="block text-small text-kore-mid mb-xs">Verfügbare Menge</label>
             <input type="number" min={1} value={offerQty} onChange={e => setOfferQty(Math.max(1, parseInt(e.target.value) || 1))} className="w-full border border-kore-border px-md py-sm text-body mb-md" />
             <label className="block text-small text-kore-mid mb-xs">Notiz (optional)</label>
             <input value={offerNotes} onChange={e => setOfferNotes(e.target.value)} placeholder="z.B. Kann morgen versendet werden..." className="w-full border border-kore-border px-md py-sm text-body mb-lg" />
@@ -398,7 +398,7 @@ export function OverviewPage() {
                     onClick={() => { handleTransfer(detailModal.id); setDetailModal(null); }}
                     className="flex items-center gap-xs px-md py-sm border border-purple-300 text-purple-700 hover:bg-purple-50 text-small"
                   >
-                    <Truck size={14} /> Transfer bestaetigen
+                    <Truck size={14} /> Transfer bestätigen
                   </button>
                 )}
                 {detailModal.status === 'TRANSFER' && (

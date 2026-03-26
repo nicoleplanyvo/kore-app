@@ -89,7 +89,7 @@ export function DashboardPage() {
             <BarChart3 size={24} /> Stock Callouts Dashboard
           </h1>
           <p className="text-body text-kore-mid mt-xs">
-            Aggregierte Uebersicht: fehlende Artikel, Store-Vergleich, Buying-Info
+            Aggregierte Übersicht: fehlende Artikel, Store-Vergleich, Buying-Info
           </p>
         </div>
       </div>
@@ -237,13 +237,13 @@ export function DashboardPage() {
             </div>
           </div>
 
-          {/* Buying-Info: Aggregierte Uebersicht fuer Buying/Allocation */}
+          {/* Buying-Info: Aggregierte Übersicht für Buying/Allocation */}
           <div className="bg-kore-white border border-kore-border p-lg mb-lg">
             <h2 className="font-display text-h3 text-kore-ink mb-md flex items-center gap-sm">
               <ShoppingCart size={18} /> Buying-Info: Offene Bedarfe
             </h2>
             <p className="text-small text-kore-mid mb-md">
-              Aggregierte Uebersicht welche Artikel in welchen Stores fehlen — fuer Buying und Allocation.
+              Aggregierte Übersicht welche Artikel in welchen Stores fehlen — für Buying und Allocation.
             </p>
             {dashboard.buyingInfo?.length ? (
               <div className="overflow-x-auto">
@@ -295,7 +295,7 @@ export function DashboardPage() {
         </>
       ) : (
         <div className="bg-kore-white border border-kore-border p-2xl text-center text-body text-kore-mid">
-          Keine Dashboard-Daten verfuegbar.
+          Keine Dashboard-Daten verfügbar.
         </div>
       )}
     </div>

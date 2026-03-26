@@ -27,7 +27,7 @@ export function ManagementPage() {
   return (
     <div className="p-xl max-w-5xl">
       <Link to="/tools/store-standards" className="flex items-center gap-xs text-small text-kore-mid hover:text-kore-ink mb-lg">
-        <ArrowLeft size={14} /> Zurueck zur Uebersicht
+        <ArrowLeft size={14} /> Zurück zur Übersicht
       </Link>
       <h1 className="font-display text-h1 text-kore-ink flex items-center gap-sm mb-xs">
         <Users size={24} /> Management
@@ -47,7 +47,7 @@ export function ManagementPage() {
 
       {/* Add Role */}
       <div className="bg-kore-white border border-kore-border p-lg mb-xl">
-        <h3 className="font-display text-h3 text-kore-ink mb-md">Rolle hinzufuegen</h3>
+        <h3 className="font-display text-h3 text-kore-ink mb-md">Rolle hinzufügen</h3>
         <div className="grid grid-cols-1 md:grid-cols-4 gap-md items-end">
           <div>
             <label className="block text-small text-kore-mid mb-xs">Rolle</label>
@@ -62,7 +62,7 @@ export function ManagementPage() {
             <input type="number" value={newRole.hoursPerWeek || ''} onChange={(e) => setNewRole({ ...newRole, hoursPerWeek: Number(e.target.value) })} className="w-full border border-kore-border px-md py-sm text-body text-right" />
           </div>
           <button onClick={handleAdd} className="flex items-center justify-center gap-xs px-md py-sm bg-kore-ink text-kore-white text-small hover:opacity-90 h-[42px]">
-            <Plus size={14} /> Hinzufuegen
+            <Plus size={14} /> Hinzufügen
           </button>
         </div>
       </div>

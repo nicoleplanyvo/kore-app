@@ -222,7 +222,7 @@ export function DashboardPage() {
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-xl mb-xl">
             {/* Priority Breakdown */}
             <div className="bg-kore-white border border-kore-border p-lg">
-              <h2 className="font-display text-h3 text-kore-ink mb-md">Nach Prioritaet</h2>
+              <h2 className="font-display text-h3 text-kore-ink mb-md">Nach Priorität</h2>
               <div className="space-y-md">
                 {[
                   { key: 'NORMAL', label: 'Normal', color: 'bg-kore-ink' },
@@ -323,7 +323,7 @@ export function DashboardPage() {
 
           {!kpis?.totalMessages && (
             <div className="bg-kore-white border border-kore-border p-2xl text-center text-kore-mid">
-              Keine Daten fuer diesen Zeitraum.
+              Keine Daten für diesen Zeitraum.
             </div>
           )}
         </>

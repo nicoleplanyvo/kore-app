@@ -306,7 +306,7 @@ stockCalloutsRouter.get('/dashboard', async (req, res) => {
     });
     const storeComparison = Array.from(storeMap.values()).sort((a, b) => b.open - a.open);
 
-    // Buying-Info: Aggregierte Uebersicht welche Artikel wo fehlen (nur offene)
+    // Buying-Info: Aggregierte Übersicht welche Artikel wo fehlen (nur offene)
     const buyingMap = new Map<string, { sku: string; productName: string; stores: { storeId: string; storeName: string; requestedQty: number; urgency: string }[] }>();
     callouts.filter(c => c.status === 'OPEN' || c.status === 'OFFERED').forEach(c => {
       const existing = buyingMap.get(c.sku) || { sku: c.sku, productName: c.productName, stores: [] };

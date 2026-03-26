@@ -106,7 +106,7 @@ export function CustomerDetailPage() {
           <p className="text-body text-red-600 mb-md">Alle Kundendaten, Interaktionen und Aufgaben werden unwiderruflich geloescht. Diese Aktion kann nicht rueckgaengig gemacht werden.</p>
           <div className="flex gap-sm">
             <button onClick={handleDelete} disabled={deleteCustomer.isPending} className="px-md py-sm bg-red-600 text-white text-small hover:bg-red-700 disabled:opacity-50">
-              {deleteCustomer.isPending ? 'Loesche...' : 'Endgueltig loeschen'}
+              {deleteCustomer.isPending ? 'Loesche...' : 'Endgueltig löschen'}
             </button>
             <button onClick={() => setShowDeleteConfirm(false)} className="px-md py-sm border border-kore-border text-small hover:border-kore-ink">Abbrechen</button>
           </div>
@@ -156,7 +156,7 @@ export function CustomerDetailPage() {
               <input type="number" value={editForm.loyaltyPoints} onChange={e => setEditForm({ ...editForm, loyaltyPoints: e.target.value })} className="w-full border border-kore-border px-md py-sm text-body" />
             </div>
             <div>
-              <label className="block text-small text-kore-mid mb-xs">Groessen</label>
+              <label className="block text-small text-kore-mid mb-xs">Größen</label>
               <input value={editForm.sizes} onChange={e => setEditForm({ ...editForm, sizes: e.target.value })} placeholder="z.B. 42, M, US 9" className="w-full border border-kore-border px-md py-sm text-body" />
             </div>
           </div>
@@ -231,7 +231,7 @@ export function CustomerDetailPage() {
             {customer.phone && <div className="flex items-center gap-sm"><Phone size={14} className="text-kore-mid" /> {customer.phone}</div>}
             {customer.whatsapp && <div className="flex items-center gap-sm text-green-700">WhatsApp: {customer.whatsapp}</div>}
             {customer.birthday && <div className="flex items-center gap-sm"><Gift size={14} className="text-kore-mid" /> {new Date(customer.birthday).toLocaleDateString('de-DE')}</div>}
-            {customer.sizes && <div><span className="text-kore-mid">Groessen:</span> {customer.sizes}</div>}
+            {customer.sizes && <div><span className="text-kore-mid">Größen:</span> {customer.sizes}</div>}
             {customer.preferences && <div><span className="text-kore-mid">Vorlieben:</span> {customer.preferences}</div>}
             {customer.notes && <div><span className="text-kore-mid">Notizen:</span> {customer.notes}</div>}
           </div>
@@ -350,9 +350,9 @@ export function CustomerDetailPage() {
       <div className="bg-kore-white border border-kore-border p-xl">
         <h2 className="font-display text-h3 text-kore-ink mb-md flex items-center gap-sm"><Award size={18} /> Empfehlungen</h2>
         <p className="text-body text-kore-mid">
-          Basierend auf der Kaufhistorie und den Vorlieben koennen hier manuell Produktempfehlungen hinterlegt werden.
+          Basierend auf der Kaufhistorie und den Vorlieben können hier manuell Produktempfehlungen hinterlegt werden.
           {customer.preferences && <><br />Aktuelle Vorlieben: <span className="text-kore-ink font-medium">{customer.preferences}</span></>}
-          {customer.sizes && <><br />Groessen: <span className="text-kore-ink font-medium">{customer.sizes}</span></>}
+          {customer.sizes && <><br />Größen: <span className="text-kore-ink font-medium">{customer.sizes}</span></>}
         </p>
       </div>
     </div>

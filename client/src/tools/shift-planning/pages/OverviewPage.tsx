@@ -89,10 +89,10 @@ export function OverviewPage() {
       <div className="flex items-center justify-between mb-xl">
         <div>
           <h1 className="font-display text-h1 text-kore-ink">Schichtplanung</h1>
-          <p className="text-body text-kore-mid mt-xs">Wochenplan: Schichten zuweisen, veroeffentlichen und verwalten</p>
+          <p className="text-body text-kore-mid mt-xs">Wochenplan: Schichten zuweisen, veröffentlichen und verwalten</p>
         </div>
         <div className="flex gap-sm">
-          <Link to="/tools/shift-planning/availability" className="px-md py-sm border border-kore-border text-small text-kore-mid hover:text-kore-ink transition-colors">Verfuegbarkeiten</Link>
+          <Link to="/tools/shift-planning/availability" className="px-md py-sm border border-kore-border text-small text-kore-mid hover:text-kore-ink transition-colors">Verfügbarkeiten</Link>
           <Link to="/tools/shift-planning/time-tracking" className="px-md py-sm border border-kore-border text-small text-kore-mid hover:text-kore-ink transition-colors">Zeiterfassung</Link>
           <Link to="/tools/shift-planning/dashboard" className="px-md py-sm border border-kore-border text-small text-kore-mid hover:text-kore-ink transition-colors">Dashboard</Link>
         </div>
@@ -118,7 +118,7 @@ export function OverviewPage() {
           </button>
           {selectedStore && (
             <button onClick={handlePublish} disabled={publishWeek.isPending} className="flex items-center gap-xs px-md py-sm bg-[#9E8460] text-white text-small hover:opacity-90 transition-opacity disabled:opacity-50">
-              <Send size={16} /> Veroeffentlichen
+              <Send size={16} /> Veröffentlichen
             </button>
           )}
         </div>
@@ -132,7 +132,7 @@ export function OverviewPage() {
             <div>
               <label className="block text-small text-kore-mid mb-xs">Mitarbeiter</label>
               <select value={form.userId} onChange={e => setForm({ ...form, userId: e.target.value })} className="w-full border border-kore-border px-md py-sm text-body" required>
-                <option value="">-- Waehlen --</option>
+                <option value="">-- Wählen --</option>
                 {users?.map((u: any) => <option key={u.id} value={u.id}>{u.name}</option>)}
               </select>
             </div>
@@ -188,7 +188,7 @@ export function OverviewPage() {
                 <tr>
                   <td colSpan={8} className="p-2xl text-center text-body text-kore-mid">
                     <Calendar size={32} className="mx-auto mb-md text-kore-faint" />
-                    Keine Schichten fuer diese Woche geplant.
+                    Keine Schichten für diese Woche geplant.
                   </td>
                 </tr>
               ) : (

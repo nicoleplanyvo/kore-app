@@ -8,13 +8,13 @@ myDayRouter.use(authenticate);
 /**
  * GET /api/tools/my-day
  *
- * "Mein Tag" — Die Startseite fuer Store Manager.
+ * "Mein Tag" — Die Startseite für Store Manager.
  * Buendelt alle relevanten Infos in einem Aufruf:
  * - Heutige Checklisten (offen / erledigt)
- * - Ueberfaellige Checklisten
+ * - Überfällige Checklisten
  * - KPI-Zahlen von gestern
  * - Heutige Schichten + wer ist da
- * - Offene Handovers zum Bestaetigen
+ * - Offene Handovers zum Bestätigen
  * - Ungelesene Briefings
  * - Anstehende Coaching-Sessions
  * - Live Floor Status

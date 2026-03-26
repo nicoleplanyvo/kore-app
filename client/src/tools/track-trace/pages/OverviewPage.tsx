@@ -248,7 +248,7 @@ export function OverviewPage() {
                   value={form.customerEmail}
                   onChange={(e) => setForm({ ...form, customerEmail: e.target.value })}
                   className="w-full border border-kore-border px-md py-sm text-body"
-                  placeholder="fuer Benachrichtigung"
+                  placeholder="für Benachrichtigung"
                 />
               </div>
             )}
@@ -268,7 +268,7 @@ export function OverviewPage() {
                 onChange={(e) => setForm({ ...form, carrier: e.target.value })}
                 className="w-full border border-kore-border px-md py-sm text-body"
               >
-                <option value="">-- Waehlen --</option>
+                <option value="">-- Wählen --</option>
                 <option value="DHL">DHL</option>
                 <option value="UPS">UPS</option>
                 <option value="DPD">DPD</option>

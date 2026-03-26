@@ -45,7 +45,7 @@ export function OverviewPage() {
         <div>
           <h1 className="font-display text-h1 text-kore-ink">Store Excellence Audit</h1>
           <p className="text-body text-kore-mid mt-xs">
-            Interne Audits durchfuehren, Scores vergleichen und Massnahmen verfolgen
+            Interne Audits durchführen, Scores vergleichen und Maßnahmen verfolgen
           </p>
         </div>
         <div className="flex gap-md">
@@ -168,7 +168,7 @@ export function OverviewPage() {
               </span>
               <div className="flex gap-sm">
                 <button onClick={() => setPage((p) => Math.max(1, p - 1))} disabled={page <= 1}
-                  className="px-md py-xs border border-kore-border text-small hover:bg-kore-bg disabled:opacity-40 transition-colors">Zurueck</button>
+                  className="px-md py-xs border border-kore-border text-small hover:bg-kore-bg disabled:opacity-40 transition-colors">Zurück</button>
                 <button onClick={() => setPage((p) => Math.min(totalPages, p + 1))} disabled={page >= totalPages}
                   className="px-md py-xs border border-kore-border text-small hover:bg-kore-bg disabled:opacity-40 transition-colors">Weiter</button>
               </div>

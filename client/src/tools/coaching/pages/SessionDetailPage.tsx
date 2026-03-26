@@ -73,7 +73,7 @@ export function SessionDetailPage() {
   };
 
   const handleDelete = () => {
-    if (!confirm('Session wirklich loeschen?')) return;
+    if (!confirm('Session wirklich löschen?')) return;
     remove.mutate(session.id, { onSuccess: () => navigate('/tools/coaching') });
   };
 

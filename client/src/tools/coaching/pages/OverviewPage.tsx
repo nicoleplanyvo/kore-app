@@ -31,7 +31,7 @@ export function OverviewPage() {
             <MessageSquare size={24} /> Coaching
           </h1>
           <p className="text-body text-kore-mid mt-xs">
-            Coaching-Sessions planen, strukturiert durchfuehren und dokumentieren
+            Coaching-Sessions planen, strukturiert durchführen und dokumentieren
           </p>
         </div>
         <div className="flex items-center gap-sm">

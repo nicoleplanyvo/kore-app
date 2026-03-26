@@ -16,7 +16,7 @@ import {
 
 const STATUS_LABELS: Record<string, string> = {
   DRAFT: 'Entwurf',
-  PUBLISHED: 'Veroeffentlicht',
+  PUBLISHED: 'Veröffentlicht',
   ARCHIVED: 'Archiviert',
 };
 const STATUS_COLORS: Record<string, string> = {
@@ -96,7 +96,7 @@ export function EditorPage() {
   };
 
   const handleDeleteSection = (sectionId: string) => {
-    if (!confirm('Abschnitt wirklich loeschen?')) return;
+    if (!confirm('Abschnitt wirklich löschen?')) return;
     deleteSection.mutate(sectionId);
   };
 
@@ -110,7 +110,7 @@ export function EditorPage() {
   };
 
   const handlePublish = () => {
-    if (!confirm('Newsletter jetzt veroeffentlichen?')) return;
+    if (!confirm('Newsletter jetzt veröffentlichen?')) return;
     publish.mutate(newsletter.id);
   };
 
@@ -148,7 +148,7 @@ export function EditorPage() {
           </div>
           <p className="text-small text-kore-mid mt-xs">
             {newsletter.creator?.name ?? '--'}
-            {newsletter.publishedAt && ` | Veroeffentlicht: ${new Date(newsletter.publishedAt).toLocaleDateString('de-DE')}`}
+            {newsletter.publishedAt && ` | Veröffentlicht: ${new Date(newsletter.publishedAt).toLocaleDateString('de-DE')}`}
             {` | ${newsletter._count?.views ?? 0} Aufrufe`}
             {` | ${sections.length} Abschnitte`}
           </p>
@@ -160,7 +160,7 @@ export function EditorPage() {
               disabled={publish.isPending}
               className="flex items-center gap-xs px-md py-sm bg-emerald-600 text-kore-white text-small hover:opacity-90 disabled:opacity-50"
             >
-              <Send size={14} /> {publish.isPending ? 'Wird veroeffentlicht...' : 'Veroeffentlichen'}
+              <Send size={14} /> {publish.isPending ? 'Wird veröffentlicht...' : 'Veröffentlichen'}
             </button>
           )}
           <button
@@ -273,7 +273,7 @@ export function EditorPage() {
             onClick={() => setShowSectionForm(!showSectionForm)}
             className="flex items-center gap-xs px-md py-sm bg-kore-ink text-kore-white text-small hover:opacity-90"
           >
-            <Plus size={14} /> Abschnitt hinzufuegen
+            <Plus size={14} /> Abschnitt hinzufügen
           </button>
         )}
       </div>
@@ -308,7 +308,7 @@ export function EditorPage() {
               disabled={addSection.isPending}
               className="flex items-center gap-xs px-md py-sm bg-kore-ink text-kore-white text-small hover:opacity-90 disabled:opacity-50"
             >
-              <Plus size={14} /> Hinzufuegen
+              <Plus size={14} /> Hinzufügen
             </button>
             <button
               type="button"
@@ -325,7 +325,7 @@ export function EditorPage() {
       {!sections.length ? (
         <div className="bg-kore-white border border-kore-border p-xl text-center text-kore-mid mb-lg">
           Noch keine Abschnitte vorhanden.
-          {isDraft && ' Fuegen Sie den ersten Abschnitt hinzu.'}
+          {isDraft && ' Fügen Sie den ersten Abschnitt hinzu.'}
         </div>
       ) : (
         <div className="space-y-md mb-lg">
@@ -417,7 +417,7 @@ export function EditorPage() {
                         <button
                           onClick={() => handleDeleteSection(s.id)}
                           className="p-sm text-kore-mid hover:text-red-600"
-                          title="Loeschen"
+                          title="Löschen"
                         >
                           <Trash2 size={14} />
                         </button>
@@ -435,9 +435,9 @@ export function EditorPage() {
       <div className="bg-kore-bg border border-kore-border p-lg text-center">
         <p className="text-small text-kore-mid">
           {isDraft
-            ? 'Dieser Newsletter ist noch ein Entwurf. Fuegen Sie Abschnitte hinzu und veroeffentlichen Sie ihn, wenn er fertig ist.'
+            ? 'Dieser Newsletter ist noch ein Entwurf. Fügen Sie Abschnitte hinzu und veröffentlichen Sie ihn, wenn er fertig ist.'
             : newsletter.status === 'PUBLISHED'
-              ? 'Dieser Newsletter wurde veroeffentlicht und ist fuer alle Teammitglieder sichtbar.'
+              ? 'Dieser Newsletter wurde veröffentlicht und ist für alle Teammitglieder sichtbar.'
               : 'Dieser Newsletter wurde archiviert.'}
         </p>
       </div>

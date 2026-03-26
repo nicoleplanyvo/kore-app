@@ -18,12 +18,12 @@ export function MonthlyPage() {
   return (
     <div className="p-xl max-w-5xl">
       <Link to="/tools/store-standards" className="flex items-center gap-xs text-small text-kore-mid hover:text-kore-ink mb-lg">
-        <ArrowLeft size={14} /> Zurueck zur Uebersicht
+        <ArrowLeft size={14} /> Zurück zur Übersicht
       </Link>
       <div className="flex items-center justify-between mb-2xl">
         <div>
           <h1 className="font-display text-h1 text-kore-ink flex items-center gap-sm"><Calendar size={24} /> Monatsverteilung</h1>
-          <p className="text-body text-kore-mid mt-xs">Gewichtung der 12 Monate fuer Budget-Verteilung.</p>
+          <p className="text-body text-kore-mid mt-xs">Gewichtung der 12 Monate für Budget-Verteilung.</p>
         </div>
         <button onClick={distributeEvenly} className="flex items-center gap-xs px-md py-sm border border-kore-border text-small text-kore-mid hover:text-kore-ink">
           <Scale size={16} /> Gleichmaessig verteilen

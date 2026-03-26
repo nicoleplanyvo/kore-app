@@ -3,7 +3,7 @@ import { useParams, Link, useNavigate } from 'react-router-dom';
 import { ArrowLeft, Clock, ArrowRightLeft, Save, Trash2 } from 'lucide-react';
 import { useShifts, useUpdateShift, useDeleteShift, useCreateSwapRequest, useUpdateSwapRequest, useShiftUsers } from '../../../hooks/useShiftPlanning';
 
-const STATUS_LABELS: Record<string, string> = { PLANNED: 'Geplant', CONFIRMED: 'Bestaetigt', SWAPPED: 'Getauscht', CANCELLED: 'Storniert' };
+const STATUS_LABELS: Record<string, string> = { PLANNED: 'Geplant', CONFIRMED: 'Bestätigt', SWAPPED: 'Getauscht', CANCELLED: 'Storniert' };
 const STATUS_COLORS: Record<string, string> = { PLANNED: 'bg-blue-100 text-blue-700', CONFIRMED: 'bg-emerald-100 text-emerald-700', SWAPPED: 'bg-amber-100 text-amber-700', CANCELLED: 'bg-red-100 text-red-700' };
 const SWAP_LABELS: Record<string, string> = { PENDING: 'Ausstehend', APPROVED: 'Genehmigt', REJECTED: 'Abgelehnt' };
 const SWAP_COLORS: Record<string, string> = { PENDING: 'bg-amber-100 text-amber-700', APPROVED: 'bg-emerald-100 text-emerald-700', REJECTED: 'bg-red-100 text-red-700' };
@@ -36,7 +36,7 @@ export function ShiftDetailPage() {
   };
 
   const handleDelete = () => {
-    if (!confirm('Schicht wirklich loeschen?')) return;
+    if (!confirm('Schicht wirklich löschen?')) return;
     deleteShift.mutate(id!, { onSuccess: () => navigate('/tools/shift-planning') });
   };
 
@@ -47,7 +47,7 @@ export function ShiftDetailPage() {
   if (isLoading) return <div className="p-xl text-body text-kore-mid">Lade...</div>;
   if (!shift) return (
     <div className="p-xl max-w-3xl">
-      <Link to="/tools/shift-planning" className="flex items-center gap-xs text-kore-mid hover:text-kore-ink text-small mb-lg"><ArrowLeft size={16} /> Zurueck</Link>
+      <Link to="/tools/shift-planning" className="flex items-center gap-xs text-kore-mid hover:text-kore-ink text-small mb-lg"><ArrowLeft size={16} /> Zurück</Link>
       <div className="bg-kore-white border border-kore-border p-2xl text-center text-body text-kore-mid">Schicht nicht gefunden.</div>
     </div>
   );
@@ -56,7 +56,7 @@ export function ShiftDetailPage() {
 
   return (
     <div className="p-xl max-w-3xl">
-      <Link to="/tools/shift-planning" className="flex items-center gap-xs text-kore-mid hover:text-kore-ink text-small mb-lg"><ArrowLeft size={16} /> Zurueck zum Wochenplan</Link>
+      <Link to="/tools/shift-planning" className="flex items-center gap-xs text-kore-mid hover:text-kore-ink text-small mb-lg"><ArrowLeft size={16} /> Zurück zum Wochenplan</Link>
 
       <div className="bg-kore-white border border-kore-border p-xl mb-lg">
         <div className="flex items-start justify-between mb-lg">
@@ -121,7 +121,7 @@ export function ShiftDetailPage() {
             <div className="flex gap-sm pt-md border-t border-kore-border">
               <button onClick={startEditing} className="flex items-center gap-xs px-md py-sm bg-kore-ink text-kore-white text-small hover:opacity-90"><Save size={14} /> Bearbeiten</button>
               <button onClick={() => setShowSwapForm(!showSwapForm)} className="flex items-center gap-xs px-md py-sm border border-[#9E8460] text-[#9E8460] text-small hover:bg-[#9E8460] hover:text-white transition-colors"><ArrowRightLeft size={14} /> Tausch anfragen</button>
-              <button onClick={handleDelete} className="flex items-center gap-xs px-md py-sm border border-red-300 text-red-600 text-small hover:bg-red-50"><Trash2 size={14} /> Loeschen</button>
+              <button onClick={handleDelete} className="flex items-center gap-xs px-md py-sm border border-red-300 text-red-600 text-small hover:bg-red-50"><Trash2 size={14} /> Löschen</button>
             </div>
           </div>
         )}
@@ -134,7 +134,7 @@ export function ShiftDetailPage() {
           <div className="mb-md">
             <label className="block text-small text-kore-mid mb-xs">Tauschen mit (optional)</label>
             <select value={swapUserId} onChange={e => setSwapUserId(e.target.value)} className="w-full border border-kore-border px-md py-sm text-body">
-              <option value="">-- Offen fuer alle --</option>
+              <option value="">-- Offen für alle --</option>
               {users?.filter((u: any) => u.id !== shift.userId).map((u: any) => <option key={u.id} value={u.id}>{u.name}</option>)}
             </select>
           </div>

@@ -94,7 +94,7 @@ export function SopDetailPage() {
               disabled={acknowledgeMutation.isPending}
               className="flex items-center gap-xs px-md py-sm bg-kore-ink text-kore-white text-small hover:bg-kore-brass transition-colors disabled:opacity-50"
             >
-              <CheckCircle size={14} /> {acknowledgeMutation.isPending ? 'Wird bestaetigt...' : 'Gelesen bestaetigen'}
+              <CheckCircle size={14} /> {acknowledgeMutation.isPending ? 'Wird bestätigt...' : 'Gelesen bestätigen'}
             </button>
             <button
               onClick={handleArchive}
@@ -145,7 +145,7 @@ export function SopDetailPage() {
                 <span>{new Date(sop.createdAt).toLocaleDateString('de-DE')}</span>
               </div>
               <div className="flex justify-between">
-                <span>Letzte Aenderung</span>
+                <span>Letzte Änderung</span>
                 <span>{new Date(sop.updatedAt).toLocaleDateString('de-DE')}</span>
               </div>
               {sop.publishedAt && (
@@ -160,7 +160,7 @@ export function SopDetailPage() {
           {/* Acknowledgments */}
           <div className="bg-kore-white border border-kore-border p-lg">
             <h3 className="text-body font-medium text-kore-ink mb-md flex items-center gap-xs">
-              <Users size={16} /> Lesebestaetigung ({sop._count?.acknowledgments ?? 0})
+              <Users size={16} /> Lesebestätigung ({sop._count?.acknowledgments ?? 0})
             </h3>
             {acknowledgments && acknowledgments.length > 0 ? (
               <div className="space-y-sm max-h-64 overflow-y-auto">
@@ -174,7 +174,7 @@ export function SopDetailPage() {
                 ))}
               </div>
             ) : (
-              <p className="text-small text-kore-faint">Noch keine Lesebestaetigung vorhanden.</p>
+              <p className="text-small text-kore-faint">Noch keine Lesebestätigung vorhanden.</p>
             )}
           </div>
         </div>

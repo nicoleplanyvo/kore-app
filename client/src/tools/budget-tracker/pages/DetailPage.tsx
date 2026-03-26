@@ -156,7 +156,7 @@ export function DetailPage() {
       {/* Target Form */}
       {showTargetForm && (
         <div className="bg-kore-white border border-kore-border p-xl mb-xl">
-          <h3 className="font-display text-h3 text-kore-ink mb-md">Soll-Ziel fuer {month}</h3>
+          <h3 className="font-display text-h3 text-kore-ink mb-md">Soll-Ziel für {month}</h3>
           <form onSubmit={handleSetTarget} className="flex flex-wrap items-end gap-md">
             <div>
               <label className="block text-caption text-kore-mid uppercase tracking-widest mb-xs">Umsatzziel (EUR)</label>
@@ -224,7 +224,7 @@ export function DetailPage() {
       {isLoading ? (
         <div className="text-body text-kore-mid">Lade Daten...</div>
       ) : !forecast ? (
-        <div className="text-body text-kore-mid">Keine Daten fuer diesen Monat.</div>
+        <div className="text-body text-kore-mid">Keine Daten für diesen Monat.</div>
       ) : (
         <>
           {/* Cumulative Chart (Soll-Linie vs Ist-Balken) */}
@@ -343,7 +343,7 @@ export function DetailPage() {
 
           {/* Add Entry */}
           <div className="bg-kore-white border border-kore-border p-xl">
-            <h2 className="font-display text-h3 text-kore-ink mb-lg">Ist-Wert hinzufuegen</h2>
+            <h2 className="font-display text-h3 text-kore-ink mb-lg">Ist-Wert hinzufügen</h2>
             <form onSubmit={handleAddActual} className="flex flex-wrap items-end gap-md">
               <div>
                 <label className="block text-caption text-kore-mid uppercase tracking-widest mb-xs">Datum</label>

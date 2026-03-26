@@ -6,12 +6,12 @@ export function DashboardPage() {
   const { data: dashboard, isLoading } = useFrTrackingDashboard();
 
   if (isLoading) return <div className="p-xl text-body text-kore-mid">Lade Dashboard...</div>;
-  if (!dashboard) return <div className="p-xl text-body text-kore-mid">Keine Daten verfuegbar.</div>;
+  if (!dashboard) return <div className="p-xl text-body text-kore-mid">Keine Daten verfügbar.</div>;
 
   return (
     <div className="p-xl max-w-5xl">
       <Link to="/app/tools/fr-tracking" className="flex items-center gap-sm text-small text-kore-mid hover:text-kore-ink mb-xl">
-        <ArrowLeft size={16} /> Zurueck
+        <ArrowLeft size={16} /> Zurück
       </Link>
 
       <h1 className="font-display text-h1 text-kore-ink mb-sm">FR Tracking Dashboard</h1>

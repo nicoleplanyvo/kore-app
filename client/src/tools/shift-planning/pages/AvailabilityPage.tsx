@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import { ArrowLeft, ChevronLeft, ChevronRight, Check, X, Sun, Umbrella, Heart } from 'lucide-react';
 import { useAvailability, useSetAvailability, useShiftStores, useShiftUsers } from '../../../hooks/useShiftPlanning';
 
-const TYPE_LABELS: Record<string, string> = { AVAILABLE: 'Verfuegbar', UNAVAILABLE: 'Nicht verfuegbar', WISH: 'Wunsch', VACATION: 'Urlaub', SICK: 'Krank' };
+const TYPE_LABELS: Record<string, string> = { AVAILABLE: 'Verfügbar', UNAVAILABLE: 'Nicht verfügbar', WISH: 'Wunsch', VACATION: 'Urlaub', SICK: 'Krank' };
 const TYPE_COLORS: Record<string, string> = {
   AVAILABLE: 'bg-emerald-100 text-emerald-700 border-emerald-200',
   UNAVAILABLE: 'bg-red-100 text-red-700 border-red-200',
@@ -93,19 +93,19 @@ export function AvailabilityPage() {
 
   return (
     <div className="p-xl max-w-5xl">
-      <Link to="/tools/shift-planning" className="flex items-center gap-xs text-kore-mid hover:text-kore-ink text-small mb-lg"><ArrowLeft size={16} /> Zurueck zum Wochenplan</Link>
+      <Link to="/tools/shift-planning" className="flex items-center gap-xs text-kore-mid hover:text-kore-ink text-small mb-lg"><ArrowLeft size={16} /> Zurück zum Wochenplan</Link>
 
-      <h1 className="font-display text-h1 text-kore-ink mb-xs">Verfuegbarkeiten</h1>
-      <p className="text-body text-kore-mid mb-xl">Tage markieren: verfuegbar, nicht verfuegbar, Wunsch-Schichten, Urlaub oder krank.</p>
+      <h1 className="font-display text-h1 text-kore-ink mb-xs">Verfügbarkeiten</h1>
+      <p className="text-body text-kore-mid mb-xl">Tage markieren: verfügbar, nicht verfügbar, Wunsch-Schichten, Urlaub oder krank.</p>
 
       {/* Filters */}
       <div className="flex items-center gap-md mb-lg flex-wrap">
         <select value={selectedStore} onChange={e => setSelectedStore(e.target.value)} className="border border-kore-border px-md py-sm text-body">
-          <option value="">Store waehlen</option>
+          <option value="">Store wählen</option>
           {stores?.map((s: any) => <option key={s.id} value={s.id}>{s.name}</option>)}
         </select>
         <select value={selectedUser} onChange={e => setSelectedUser(e.target.value)} className="border border-kore-border px-md py-sm text-body">
-          <option value="">Mitarbeiter waehlen</option>
+          <option value="">Mitarbeiter wählen</option>
           {users?.map((u: any) => <option key={u.id} value={u.id}>{u.name}</option>)}
         </select>
       </div>
@@ -143,7 +143,7 @@ export function AvailabilityPage() {
 
       {/* Calendar Grid */}
       {isLoading ? (
-        <div className="text-body text-kore-mid py-xl text-center">Lade Verfuegbarkeiten...</div>
+        <div className="text-body text-kore-mid py-xl text-center">Lade Verfügbarkeiten...</div>
       ) : (
         <div className="bg-kore-white border border-kore-border">
           <div className="grid grid-cols-7">
@@ -180,7 +180,7 @@ export function AvailabilityPage() {
 
       {!selectedStore || !selectedUser ? (
         <div className="mt-lg p-lg bg-kore-bg border border-kore-border text-center text-body text-kore-mid">
-          Bitte Store und Mitarbeiter waehlen, um Verfuegbarkeiten zu bearbeiten.
+          Bitte Store und Mitarbeiter wählen, um Verfügbarkeiten zu bearbeiten.
         </div>
       ) : null}
     </div>

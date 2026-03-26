@@ -13,7 +13,7 @@ import {
 
 const STATUS_LABELS: Record<string, string> = {
   DRAFT: 'Entwurf',
-  PUBLISHED: 'Veroeffentlicht',
+  PUBLISHED: 'Veröffentlicht',
   ARCHIVED: 'Archiviert',
 };
 const STATUS_COLORS: Record<string, string> = {
@@ -69,7 +69,7 @@ export function OverviewPage() {
             <Newspaper size={24} /> Team Newsletter
           </h1>
           <p className="text-body text-kore-mid mt-xs">
-            Interne Newsletter erstellen, verwalten und veroeffentlichen
+            Interne Newsletter erstellen, verwalten und veröffentlichen
           </p>
         </div>
         <div className="flex items-center gap-sm">
@@ -148,7 +148,7 @@ export function OverviewPage() {
           {[
             { key: '', label: 'Alle' },
             { key: 'DRAFT', label: 'Entwuerfe' },
-            { key: 'PUBLISHED', label: 'Veroeffentlicht' },
+            { key: 'PUBLISHED', label: 'Veröffentlicht' },
             { key: 'ARCHIVED', label: 'Archiviert' },
           ].map((f) => (
             <button
@@ -174,7 +174,7 @@ export function OverviewPage() {
       ) : !newsletters.length ? (
         <div className="bg-kore-white border border-kore-border p-2xl text-center text-body text-kore-mid">
           {search || statusFilter
-            ? 'Keine Newsletter fuer diese Filter gefunden.'
+            ? 'Keine Newsletter für diese Filter gefunden.'
             : 'Noch keine Newsletter vorhanden. Erstellen Sie den ersten Newsletter.'}
         </div>
       ) : (
@@ -215,7 +215,7 @@ export function OverviewPage() {
                     </span>
                     {n.publishedAt && (
                       <span className="text-emerald-600">
-                        Veroeffentlicht: {new Date(n.publishedAt).toLocaleDateString('de-DE')}
+                        Veröffentlicht: {new Date(n.publishedAt).toLocaleDateString('de-DE')}
                       </span>
                     )}
                   </div>
@@ -226,7 +226,7 @@ export function OverviewPage() {
                   {n.status === 'DRAFT' && (
                     <button
                       onClick={() => publish.mutate(n.id)}
-                      title="Veroeffentlichen"
+                      title="Veröffentlichen"
                       className="p-sm text-emerald-600 hover:bg-emerald-50 border border-transparent hover:border-emerald-200"
                     >
                       <Send size={14} />

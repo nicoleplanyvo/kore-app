@@ -50,7 +50,7 @@ export function DashboardPage() {
 
   const exportCSV = () => {
     if (!dashboard?.sessions?.length) return;
-    let csv = 'Datum,Uhrzeit,Kabine,Mitarbeiter,Teile rein,Zurueck,Gekauft,Schwund,Conversion,Dauer (Min)\n';
+    let csv = 'Datum,Uhrzeit,Kabine,Mitarbeiter,Teile rein,Zurück,Gekauft,Schwund,Conversion,Dauer (Min)\n';
     dashboard.sessions.forEach((s: any) => {
       const d = new Date(s.checkInAt);
       const dur = s.checkOutAt ? Math.round((new Date(s.checkOutAt).getTime() - d.getTime()) / 60000) : 0;

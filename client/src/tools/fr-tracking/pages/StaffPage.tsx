@@ -16,7 +16,7 @@ export function StaffPage() {
   return (
     <div className="p-xl max-w-5xl">
       <Link to="/app/tools/fr-tracking" className="flex items-center gap-sm text-small text-kore-mid hover:text-kore-ink mb-xl">
-        <ArrowLeft size={16} /> Zurueck
+        <ArrowLeft size={16} /> Zurück
       </Link>
 
       <h1 className="font-display text-h1 text-kore-ink mb-sm">Mitarbeiter-Performance</h1>
@@ -73,7 +73,7 @@ export function StaffPage() {
                   <div className="flex items-center gap-md">
                     <div className="text-right">
                       <div className={`font-display text-h2 ${aboveAvg ? 'text-emerald-600' : 'text-amber-600'}`}>{s.conversionRate.toFixed(1)}%</div>
-                      <span className="text-caption text-kore-faint">{aboveAvg ? 'ueber' : 'unter'} Durchschnitt</span>
+                      <span className="text-caption text-kore-faint">{aboveAvg ? 'über' : 'unter'} Durchschnitt</span>
                     </div>
                     {i === 0 && <Award size={20} className="text-kore-brass" />}
                   </div>

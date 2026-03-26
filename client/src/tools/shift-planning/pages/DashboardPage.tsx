@@ -16,12 +16,12 @@ export function DashboardPage() {
 
   return (
     <div className="p-xl max-w-5xl">
-      <Link to="/tools/shift-planning" className="flex items-center gap-xs text-kore-mid hover:text-kore-ink text-small mb-lg"><ArrowLeft size={16} /> Zurueck zum Wochenplan</Link>
+      <Link to="/tools/shift-planning" className="flex items-center gap-xs text-kore-mid hover:text-kore-ink text-small mb-lg"><ArrowLeft size={16} /> Zurück zum Wochenplan</Link>
 
       <div className="flex items-center justify-between mb-xl">
         <div>
           <h1 className="font-display text-h1 text-kore-ink">Dashboard</h1>
-          <p className="text-body text-kore-mid mt-xs">Wochenueberblick, Stunden-Saldo und Besetzung</p>
+          <p className="text-body text-kore-mid mt-xs">Wochenüberblick, Stunden-Saldo und Besetzung</p>
         </div>
         <select value={selectedStore} onChange={e => setSelectedStore(e.target.value)} className="border border-kore-border px-md py-sm text-body">
           <option value="">Alle Stores</option>
@@ -32,7 +32,7 @@ export function DashboardPage() {
       {isLoading ? (
         <div className="text-body text-kore-mid py-xl text-center">Lade Dashboard...</div>
       ) : !dashboard ? (
-        <div className="bg-kore-white border border-kore-border p-2xl text-center text-body text-kore-mid">Keine Daten verfuegbar.</div>
+        <div className="bg-kore-white border border-kore-border p-2xl text-center text-body text-kore-mid">Keine Daten verfügbar.</div>
       ) : (
         <>
           {/* KPI Cards */}
@@ -74,7 +74,7 @@ export function DashboardPage() {
                         <span className="text-small text-kore-mid">Geplant: {e.plannedHours}h</span>
                         <span className="text-small text-kore-mid">Gearbeitet: {e.workedHours}h</span>
                         {e.overtimeMin > 0 && (
-                          <span className="text-small text-amber-600 font-medium">+{(e.overtimeMin / 60).toFixed(1)}h Ueberstunden</span>
+                          <span className="text-small text-amber-600 font-medium">+{(e.overtimeMin / 60).toFixed(1)}h Überstunden</span>
                         )}
                       </div>
                     </div>
@@ -90,7 +90,7 @@ export function DashboardPage() {
               <div className="flex gap-lg mt-md pt-md border-t border-kore-border">
                 <div className="flex items-center gap-xs"><div className="w-4 h-3 bg-blue-200" /><span className="text-small text-kore-mid">Geplant</span></div>
                 <div className="flex items-center gap-xs"><div className="w-4 h-3 bg-emerald-400" /><span className="text-small text-kore-mid">Gearbeitet</span></div>
-                <div className="flex items-center gap-xs"><div className="w-4 h-3 bg-amber-400" /><span className="text-small text-kore-mid">Ueberstunden</span></div>
+                <div className="flex items-center gap-xs"><div className="w-4 h-3 bg-amber-400" /><span className="text-small text-kore-mid">Überstunden</span></div>
               </div>
             </div>
           )}

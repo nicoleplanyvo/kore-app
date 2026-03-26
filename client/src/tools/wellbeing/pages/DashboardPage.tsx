@@ -80,7 +80,7 @@ function scoreBg(val: number | null, inverted?: boolean): string {
 
 /* SVG Trend Line */
 function TrendLineChart({ data }: { data: { date: string; avgMood: number; checkIns: number }[] }) {
-  if (data.length < 2) return <div className="text-small text-kore-mid py-lg text-center">Nicht genug Daten fuer Trendlinie</div>;
+  if (data.length < 2) return <div className="text-small text-kore-mid py-lg text-center">Nicht genug Daten für Trendlinie</div>;
 
   const chartWidth = Math.max(400, data.length * 30 + 80);
   const chartHeight = 160;

@@ -52,7 +52,7 @@ export function OverviewPage() {
         <div className="bg-kore-white border border-kore-border p-3xl flex flex-col items-center text-center">
           <Camera size={48} className="text-kore-faint mb-lg" />
           <h2 className="font-display text-h2 text-kore-ink mb-md">Noch keine Checks</h2>
-          <p className="text-body text-kore-mid mb-xl max-w-md">Reichen Sie den ersten VM-Compliance-Check ein, um die Einhaltung der Visual-Merchandising-Standards zu pruefen.</p>
+          <p className="text-body text-kore-mid mb-xl max-w-md">Reichen Sie den ersten VM-Compliance-Check ein, um die Einhaltung der Visual-Merchandising-Standards zu prüfen.</p>
           <Link to="submit" className="flex items-center gap-sm bg-kore-ink text-kore-white px-xl py-md-sm text-small font-medium uppercase tracking-widest hover:bg-kore-brass transition-colors">
             <Plus size={16} /> Ersten Check einreichen
           </Link>
@@ -84,7 +84,7 @@ export function OverviewPage() {
 
           {total > 20 && (
             <div className="flex justify-center gap-md mt-xl">
-              <button onClick={() => setPage(Math.max(1, page - 1))} disabled={page <= 1} className="px-md py-sm border border-kore-border text-small disabled:opacity-40 hover:bg-kore-bg transition-colors">Zurueck</button>
+              <button onClick={() => setPage(Math.max(1, page - 1))} disabled={page <= 1} className="px-md py-sm border border-kore-border text-small disabled:opacity-40 hover:bg-kore-bg transition-colors">Zurück</button>
               <span className="text-small text-kore-mid self-center">Seite {page} von {Math.ceil(total / 20)}</span>
               <button onClick={() => setPage(page + 1)} disabled={page * 20 >= total} className="px-md py-sm border border-kore-border text-small disabled:opacity-40 hover:bg-kore-bg transition-colors">Weiter</button>
             </div>

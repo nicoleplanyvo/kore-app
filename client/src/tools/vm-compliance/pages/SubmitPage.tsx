@@ -41,11 +41,11 @@ export function SubmitPage() {
   return (
     <div className="p-xl max-w-3xl">
       <Link to="/app/tools/vm-compliance" className="flex items-center gap-sm text-small text-kore-mid hover:text-kore-ink mb-xl">
-        <ArrowLeft size={16} /> Zurueck
+        <ArrowLeft size={16} /> Zurück
       </Link>
 
       <h1 className="font-display text-h1 text-kore-ink mb-sm">Neuen Check einreichen</h1>
-      <p className="text-body text-kore-mid mb-2xl">Laden Sie ein Foto hoch und waehlen Sie den Bereich fuer den VM-Compliance-Check.</p>
+      <p className="text-body text-kore-mid mb-2xl">Laden Sie ein Foto hoch und wählen Sie den Bereich für den VM-Compliance-Check.</p>
 
       <form onSubmit={handleSubmit} className="space-y-xl">
         <div className="bg-kore-white border border-kore-border p-xl">
@@ -54,14 +54,14 @@ export function SubmitPage() {
             <div>
               <label className="text-small text-kore-mid block mb-sm">Store *</label>
               <select value={storeId} onChange={(e) => setStoreId(e.target.value)} className="w-full border border-kore-border px-md py-sm text-small bg-kore-white" required>
-                <option value="">Store waehlen...</option>
+                <option value="">Store wählen...</option>
                 {(stores ?? []).map((s: any) => <option key={s.id} value={s.id}>{s.name} {s.city ? `(${s.city})` : ''}</option>)}
               </select>
             </div>
             <div>
               <label className="text-small text-kore-mid block mb-sm">Bereich / Guideline *</label>
               <select value={guidelineId} onChange={(e) => setGuidelineId(e.target.value)} className="w-full border border-kore-border px-md py-sm text-small bg-kore-white" required>
-                <option value="">Bereich waehlen...</option>
+                <option value="">Bereich wählen...</option>
                 {(guidelines ?? []).map((g: any) => <option key={g.id} value={g.id}>{g.name} {g.category ? `(${g.category})` : ''}</option>)}
               </select>
             </div>

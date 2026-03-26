@@ -20,7 +20,7 @@ export function CreateAuditPage() {
     setError('');
 
     if (!storeId || !templateId) {
-      setError('Bitte Store und Template auswaehlen.');
+      setError('Bitte Store und Template auswählen.');
       return;
     }
 
@@ -47,7 +47,7 @@ export function CreateAuditPage() {
         </button>
         <div>
           <h1 className="font-display text-h1 text-kore-ink">Neues Audit starten</h1>
-          <p className="text-body text-kore-mid mt-xs">Store auswaehlen und Audit-Template festlegen</p>
+          <p className="text-body text-kore-mid mt-xs">Store auswählen und Audit-Template festlegen</p>
         </div>
       </div>
 
@@ -69,7 +69,7 @@ export function CreateAuditPage() {
               onChange={(e) => setStoreId(e.target.value)}
               className="w-full border border-kore-border px-md py-sm text-body bg-kore-white focus:outline-none focus:border-kore-brass"
             >
-              <option value="">Store auswaehlen...</option>
+              <option value="">Store auswählen...</option>
               {(stores ?? []).map((s) => (
                 <option key={s.id} value={s.id}>{s.name}{s.city ? ` (${s.city})` : ''}</option>
               ))}
@@ -88,7 +88,7 @@ export function CreateAuditPage() {
               onChange={(e) => setTemplateId(e.target.value)}
               className="w-full border border-kore-border px-md py-sm text-body bg-kore-white focus:outline-none focus:border-kore-brass"
             >
-              <option value="">Template auswaehlen...</option>
+              <option value="">Template auswählen...</option>
               {(templates ?? []).map((t: any) => (
                 <option key={t.id} value={t.id}>
                   {t.name} {t.isDefault ? '(KORE Standard)' : ''} — {t.categories?.length ?? 0} Kategorien

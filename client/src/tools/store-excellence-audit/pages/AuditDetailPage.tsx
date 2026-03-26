@@ -59,7 +59,7 @@ export function AuditDetailPage() {
   };
 
   const handleComplete = async () => {
-    if (!confirm('Audit wirklich abschliessen? Der Score wird berechnet.')) return;
+    if (!confirm('Audit wirklich abschließen? Der Score wird berechnet.')) return;
     await completeMutation.mutateAsync(session.id);
   };
 
@@ -99,7 +99,7 @@ export function AuditDetailPage() {
             disabled={completeMutation.isPending}
             className="flex items-center gap-xs px-md py-sm bg-emerald-600 text-kore-white text-small hover:bg-emerald-700 transition-colors disabled:opacity-50"
           >
-            <Send size={14} /> {completeMutation.isPending ? 'Wird abgeschlossen...' : 'Audit abschliessen'}
+            <Send size={14} /> {completeMutation.isPending ? 'Wird abgeschlossen...' : 'Audit abschließen'}
           </button>
           <button
             onClick={handleCancel}

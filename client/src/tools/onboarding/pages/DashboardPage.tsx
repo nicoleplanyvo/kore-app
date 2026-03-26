@@ -37,7 +37,7 @@ export function DashboardPage() {
             <BarChart3 size={24} /> Onboarding Dashboard
           </h1>
           <p className="text-body text-kore-mid mt-xs">
-            Statistiken, Fortschritt und Mentor-Uebersicht
+            Statistiken, Fortschritt und Mentor-Übersicht
           </p>
         </div>
       </div>
@@ -195,7 +195,7 @@ export function DashboardPage() {
           {/* Mentor overview */}
           <div className="bg-kore-white border border-kore-border p-xl mb-xl">
             <h2 className="font-display text-h3 text-kore-ink mb-lg flex items-center gap-sm">
-              <Users size={18} /> Buddy / Mentor Uebersicht
+              <Users size={18} /> Buddy / Mentor Übersicht
             </h2>
             {dashboard?.byMentor?.length ? (
               <div className="space-y-sm">

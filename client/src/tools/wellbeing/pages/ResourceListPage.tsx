@@ -86,7 +86,7 @@ export function ResourceListPage() {
                 onChange={(e) => setForm({ ...form, category: e.target.value })}
                 className="w-full border border-kore-border px-md py-sm text-body"
               >
-                <option value="">-- Waehlen --</option>
+                <option value="">-- Wählen --</option>
                 {CATEGORY_OPTIONS.map((c) => (
                   <option key={c} value={c}>{c}</option>
                 ))}
@@ -141,7 +141,7 @@ export function ResourceListPage() {
           <BookOpen size={48} className="text-kore-faint mb-lg" />
           <h2 className="font-display text-h2 text-kore-ink mb-md">Noch keine Ressourcen vorhanden</h2>
           <p className="text-body text-kore-mid max-w-md mb-xl">
-            Legen Sie hilfreiche Materialien und externe Hilfsangebote fuer Ihr Team an.
+            Legen Sie hilfreiche Materialien und externe Hilfsangebote für Ihr Team an.
           </p>
           <button
             onClick={() => setShowForm(true)}
@@ -173,7 +173,7 @@ export function ResourceListPage() {
                           rel="noopener noreferrer"
                           className="flex items-center gap-xs text-small text-kore-brass hover:text-kore-ink"
                         >
-                          <ExternalLink size={14} /> Oeffnen
+                          <ExternalLink size={14} /> Öffnen
                         </a>
                       )}
                       <button
@@ -207,7 +207,7 @@ export function ResourceListPage() {
                     rel="noopener noreferrer"
                     className="flex items-center gap-xs text-small text-kore-brass hover:text-kore-ink"
                   >
-                    <ExternalLink size={14} /> Oeffnen
+                    <ExternalLink size={14} /> Öffnen
                   </a>
                 )}
                 <button

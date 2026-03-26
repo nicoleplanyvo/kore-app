@@ -93,7 +93,7 @@ export function TrendsPage() {
           <h1 className="font-display text-h1 text-kore-ink flex items-center gap-sm">
             <TrendingUp size={24} /> Trends
           </h1>
-          <p className="text-body text-kore-mid mt-xs">Woechentliche Entwicklung ueber alle Stores.</p>
+          <p className="text-body text-kore-mid mt-xs">Woechentliche Entwicklung über alle Stores.</p>
         </div>
         <div className="flex gap-sm">
           <select

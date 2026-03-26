@@ -29,7 +29,7 @@ export function OverviewPage() {
         <Link to="/tools" className="text-kore-mid hover:text-kore-ink transition-colors"><ArrowLeft size={20} /></Link>
         <div className="flex-1">
           <h1 className="font-display text-h1 text-kore-ink">Challenges</h1>
-          <p className="text-body text-kore-mid mt-xs">Wettbewerbe und Gamification fuer Ihr Team</p>
+          <p className="text-body text-kore-mid mt-xs">Wettbewerbe und Gamification für Ihr Team</p>
         </div>
         <Link to="/tools/challenges/dashboard" className="flex items-center gap-sm border border-kore-border px-lg py-md-sm text-small text-kore-ink hover:bg-kore-bg transition-colors">
           <Medal size={16} /> Dashboard
@@ -135,7 +135,7 @@ export function OverviewPage() {
           {/* Pagination */}
           {data.total > data.pageSize && (
             <div className="flex gap-sm mt-xl items-center justify-center">
-              <button disabled={page <= 1} onClick={() => setPage(page - 1)} className="px-md py-sm border border-kore-border text-small disabled:opacity-40">Zurueck</button>
+              <button disabled={page <= 1} onClick={() => setPage(page - 1)} className="px-md py-sm border border-kore-border text-small disabled:opacity-40">Zurück</button>
               <span className="px-md py-sm text-small text-kore-mid">Seite {data.page} / {Math.ceil(data.total / data.pageSize)}</span>
               <button disabled={page * data.pageSize >= data.total} onClick={() => setPage(page + 1)} className="px-md py-sm border border-kore-border text-small disabled:opacity-40">Weiter</button>
             </div>

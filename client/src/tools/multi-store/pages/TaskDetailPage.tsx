@@ -32,7 +32,7 @@ const STATUS_LABELS: Record<string, string> = {
   OPEN: 'Offen',
   IN_PROGRESS: 'In Bearbeitung',
   COMPLETED: 'Erledigt',
-  OVERDUE: 'Ueberfaellig',
+  OVERDUE: 'Überfällig',
   REJECTED: 'Abgelehnt',
 };
 const STATUS_COLORS: Record<string, string> = {
@@ -129,7 +129,7 @@ export function TaskDetailPage() {
   };
 
   const handleDelete = async () => {
-    if (!confirm('Aufgabe wirklich loeschen?')) return;
+    if (!confirm('Aufgabe wirklich löschen?')) return;
     await deleteTask.mutateAsync(task.id);
     window.location.href = '/tools/multi-store/tasks';
   };
@@ -154,7 +154,7 @@ export function TaskDetailPage() {
           <div className="flex items-center gap-sm mt-xs flex-wrap">
             <span className="text-small text-kore-brass">{TYPE_LABELS[task.type] ?? task.type}</span>
             <span className={`px-sm py-xs text-small border ${STATUS_COLORS[isOverdue ? 'OVERDUE' : task.status] ?? 'bg-kore-bg text-kore-mid border-kore-border'}`}>
-              {isOverdue ? 'Ueberfaellig' : STATUS_LABELS[task.status] ?? task.status}
+              {isOverdue ? 'Überfällig' : STATUS_LABELS[task.status] ?? task.status}
             </span>
             <span className={`text-small font-medium ${PRIORITY_COLORS[task.priority] ?? 'text-kore-mid'}`}>
               {PRIORITY_LABELS[task.priority] ?? task.priority}
@@ -169,7 +169,7 @@ export function TaskDetailPage() {
               disabled={deleteTask.isPending}
               className="px-md py-sm border border-red-200 text-red-600 text-small hover:bg-red-50 disabled:opacity-50 transition-colors"
             >
-              Loeschen
+              Löschen
             </button>
           )}
         </div>
@@ -192,7 +192,7 @@ export function TaskDetailPage() {
             </span>
             <p className={`text-body ${isOverdue ? 'text-red-600 font-medium' : 'text-kore-ink'}`}>
               {task.deadline ? new Date(task.deadline).toLocaleDateString('de-DE') : 'Keine'}
-              {isOverdue && ' (ueberfaellig)'}
+              {isOverdue && ' (überfällig)'}
             </p>
           </div>
           <div>

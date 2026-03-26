@@ -200,7 +200,7 @@ export function MyDayPage() {
           ) : (
             <div className="flex items-center gap-sm text-small text-emerald-600">
               <CheckCircle2 size={16} />
-              Alles bestaetigt
+              Alles bestätigt
             </div>
           )}
         </DayCard>

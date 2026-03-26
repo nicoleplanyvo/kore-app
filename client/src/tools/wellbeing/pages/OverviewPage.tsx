@@ -102,7 +102,7 @@ export function OverviewPage() {
           <Heart size={48} className="text-kore-faint mb-lg" />
           <h2 className="font-display text-h2 text-kore-ink mb-md">Noch keine Check-In-Daten vorhanden</h2>
           <p className="text-body text-kore-mid max-w-md mb-xl">
-            Starten Sie den ersten Stimmungs-Check-In fuer Ihr Team.
+            Starten Sie den ersten Stimmungs-Check-In für Ihr Team.
           </p>
           <Link
             to="/tools/wellbeing/checkin"

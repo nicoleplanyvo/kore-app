@@ -20,7 +20,7 @@ const PRIORITY_COLORS: Record<string, string> = {
 };
 const TARGET_LABELS: Record<string, string> = { ALL: 'Alle', STORE: 'Store', ROLE: 'Rolle' };
 const PRIORITY_OPTIONS = [
-  { value: '', label: 'Alle Prioritaeten' },
+  { value: '', label: 'Alle Prioritäten' },
   { value: 'NORMAL', label: 'Normal' },
   { value: 'HIGH', label: 'Hoch' },
   { value: 'URGENT', label: 'Dringend' },
@@ -135,7 +135,7 @@ export function OverviewPage() {
               </div>
               <div className="grid grid-cols-2 gap-md">
                 <div>
-                  <label className="block text-small text-kore-mid mb-xs">Prioritaet</label>
+                  <label className="block text-small text-kore-mid mb-xs">Priorität</label>
                   <select
                     value={form.priority}
                     onChange={e => setForm({ ...form, priority: e.target.value })}
@@ -162,13 +162,13 @@ export function OverviewPage() {
 
               {form.targetType === 'STORE' && stores && stores.length > 0 && (
                 <div>
-                  <label className="block text-small text-kore-mid mb-xs">Store waehlen</label>
+                  <label className="block text-small text-kore-mid mb-xs">Store wählen</label>
                   <select
                     value={form.targetStoreIds}
                     onChange={e => setForm({ ...form, targetStoreIds: e.target.value })}
                     className="w-full border border-kore-border px-md py-sm text-body"
                   >
-                    <option value="">-- Store waehlen --</option>
+                    <option value="">-- Store wählen --</option>
                     {stores.map(s => <option key={s.id} value={s.id}>{s.name}{s.city ? ` (${s.city})` : ''}</option>)}
                   </select>
                 </div>
@@ -176,7 +176,7 @@ export function OverviewPage() {
 
               {form.priority === 'URGENT' && (
                 <div className="bg-red-50 border border-red-200 p-md text-small text-red-700">
-                  Dringende Nachrichten werden hervorgehoben dargestellt und erfordern eine Lesebestaetigung.
+                  Dringende Nachrichten werden hervorgehoben dargestellt und erfordern eine Lesebestätigung.
                 </div>
               )}
 

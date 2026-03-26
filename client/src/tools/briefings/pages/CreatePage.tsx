@@ -85,7 +85,7 @@ export function CreatePage() {
         <Link to="/tools/briefings" className="text-kore-mid hover:text-kore-ink transition-colors"><ArrowLeft size={20} /></Link>
         <div className="flex-1">
           <h1 className="font-display text-h1 text-kore-ink">Neues Briefing erstellen</h1>
-          <p className="text-body text-kore-mid mt-xs">Sektionen hinzufuegen, anordnen und planen.</p>
+          <p className="text-body text-kore-mid mt-xs">Sektionen hinzufügen, anordnen und planen.</p>
         </div>
         <button onClick={handleCopyLast} disabled={copyLast.isFetching} className="flex items-center gap-xs px-md py-sm border border-kore-border text-small text-kore-ink hover:border-kore-ink transition-colors disabled:opacity-50">
           <Copy size={16} /> Letztes kopieren
@@ -104,7 +104,7 @@ export function CreatePage() {
               <label className="block text-small text-kore-mid mb-xs">Store</label>
               {stores && stores.length > 1 ? (
                 <select value={storeId} onChange={(e) => setStoreId(e.target.value)} className="w-full border border-kore-border px-md py-sm text-body" required>
-                  <option value="">Store waehlen...</option>
+                  <option value="">Store wählen...</option>
                   {stores.map((s: any) => (
                     <option key={s.id} value={s.id}>{s.name}{s.city ? ` (${s.city})` : ''}</option>
                   ))}
@@ -130,7 +130,7 @@ export function CreatePage() {
               </select>
             </div>
             <div>
-              <label className="block text-small text-kore-mid mb-xs">Geplante Veroeffentlichung</label>
+              <label className="block text-small text-kore-mid mb-xs">Geplante Veröffentlichung</label>
               <input type="datetime-local" value={scheduledFor} onChange={(e) => setScheduledFor(e.target.value)} className="w-full border border-kore-border px-md py-sm text-body" placeholder="Sofort" />
               <span className="text-caption text-kore-faint mt-xs block">Leer = sofort sichtbar</span>
             </div>
@@ -142,7 +142,7 @@ export function CreatePage() {
           <div className="flex items-center justify-between mb-md">
             <h2 className="font-display text-h3 text-kore-ink">Sektionen</h2>
             <button type="button" onClick={addSection} className="flex items-center gap-xs px-md py-sm border border-kore-border text-small text-kore-ink hover:border-kore-ink transition-colors">
-              <Plus size={16} /> Sektion hinzufuegen
+              <Plus size={16} /> Sektion hinzufügen
             </button>
           </div>
           <div className="space-y-md">
@@ -180,7 +180,7 @@ export function CreatePage() {
         {/* Submit */}
         <div className="flex items-center gap-md">
           <button type="submit" disabled={create.isPending} className="px-xl py-md-sm bg-kore-ink text-kore-white text-small font-medium uppercase tracking-widest hover:bg-kore-brass transition-colors disabled:opacity-50">
-            {create.isPending ? 'Wird erstellt...' : scheduledFor ? 'Briefing planen' : 'Briefing veroeffentlichen'}
+            {create.isPending ? 'Wird erstellt...' : scheduledFor ? 'Briefing planen' : 'Briefing veröffentlichen'}
           </button>
           <Link to="/tools/briefings" className="px-xl py-md-sm border border-kore-border text-small text-kore-ink hover:border-kore-ink transition-colors">Abbrechen</Link>
         </div>

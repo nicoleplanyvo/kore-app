@@ -59,7 +59,7 @@ export function DashboardPage() {
               <div className="font-display text-h2 text-kore-ink mt-sm">{dashboard.pending + dashboard.selfReview + dashboard.managerReview}</div>
             </div>
             <div className="bg-kore-white border border-kore-border p-lg">
-              <span className="text-caption text-kore-mid uppercase tracking-widest">Ueberfaellig</span>
+              <span className="text-caption text-kore-mid uppercase tracking-widest">Überfällig</span>
               <div className={`font-display text-h2 mt-sm ${dashboard.overdue > 0 ? 'text-red-600' : 'text-kore-ink'}`}>{dashboard.overdue}</div>
             </div>
             <div className="bg-kore-white border border-kore-border p-lg">
@@ -97,7 +97,7 @@ export function DashboardPage() {
           {dashboard.trends?.length > 0 && (
             <div className="bg-kore-white border border-kore-border p-xl mb-xl">
               <h2 className="font-display text-h3 text-kore-ink mb-lg flex items-center gap-sm">
-                <TrendingUp size={18} /> Trend ueber Zyklen
+                <TrendingUp size={18} /> Trend über Zyklen
               </h2>
               <div className="space-y-md">
                 {dashboard.trends.map((t: any) => (
@@ -122,7 +122,7 @@ export function DashboardPage() {
           {dashboard.dueSoon?.length > 0 && (
             <div className="bg-kore-white border border-kore-border p-xl mb-xl">
               <h2 className="font-display text-h3 text-kore-ink mb-lg flex items-center gap-sm">
-                <AlertTriangle size={18} /> Faellige Beurteilungen (naechste 7 Tage)
+                <AlertTriangle size={18} /> Faellige Beurteilungen (nächste 7 Tage)
               </h2>
               <div className="space-y-sm">
                 {dashboard.dueSoon.map((item: any) => (

@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 360 60">
+  <!-- KORE RETAIL horizontal logo — brass accent variant -->
+  <rect x="0" y="8" width="44" height="44" rx="8" fill="#1C1A17"/>
+  <text x="22" y="36" dominant-baseline="middle" text-anchor="middle" fill="#FDFCFA" font-family="'Cormorant Garamond', Georgia, serif" font-size="26" font-weight="300" letter-spacing="1">K</text>
+  <text x="60" y="38" fill="#1C1A17" font-family="'Cormorant Garamond', Georgia, serif" font-size="32" font-weight="300" letter-spacing="8">KORE</text>
+  <line x1="60" y1="46" x2="180" y2="46" stroke="#9E8460" stroke-width="0.5"/>
+  <text x="60" y="56" fill="#9E8460" font-family="'Jost', Helvetica, sans-serif" font-size="10" font-weight="300" letter-spacing="5">RETAIL</text>
+</svg>

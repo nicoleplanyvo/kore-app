@@ -135,7 +135,7 @@ export function AllToolsPage() {
                           )}
                           {!route && (
                             <span className="inline-block mt-sm px-sm py-[2px] bg-kore-brass/10 text-kore-brass font-body text-caption rounded-sm">
-                              Bald verfuegbar
+                              Bald verfügbar
                             </span>
                           )}
                         </div>

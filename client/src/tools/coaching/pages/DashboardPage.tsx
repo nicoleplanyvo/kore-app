@@ -6,7 +6,7 @@ export function DashboardPage() {
   const { data: db, isLoading } = useCoachingDashboard();
 
   if (isLoading) return <div className="p-xl text-body text-kore-mid">Lade Dashboard...</div>;
-  if (!db) return <div className="p-xl text-body text-kore-mid">Keine Daten verfuegbar.</div>;
+  if (!db) return <div className="p-xl text-body text-kore-mid">Keine Daten verfügbar.</div>;
 
   const maxTrend = Math.max(...(db.trend ?? []).map((t: any) => t.total), 1);
   const maxCoach = Math.max(...(db.coachRanking ?? []).map((c: any) => c.count), 1);
@@ -22,7 +22,7 @@ export function DashboardPage() {
           <h1 className="font-display text-h1 text-kore-ink flex items-center gap-sm">
             <BarChart3 size={24} /> Coaching Dashboard
           </h1>
-          <p className="text-body text-kore-mid mt-xs">Coaching-Quote, Trends und Aktivitaeten im Ueberblick</p>
+          <p className="text-body text-kore-mid mt-xs">Coaching-Quote, Trends und Aktivitäten im Überblick</p>
         </div>
       </div>
 
@@ -112,7 +112,7 @@ export function DashboardPage() {
         {/* Coach Activity Ranking */}
         <div className="bg-kore-white border border-kore-border p-xl">
           <h2 className="font-display text-h3 text-kore-ink mb-lg flex items-center gap-sm">
-            <Users size={18} /> Coach-Aktivitaet
+            <Users size={18} /> Coach-Aktivität
           </h2>
           {(db.coachRanking ?? []).length > 0 ? (
             <div className="space-y-md">

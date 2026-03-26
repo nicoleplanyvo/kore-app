@@ -9,7 +9,7 @@ export function DashboardPage() {
   const { data: dashboard, isLoading } = useClientelingDashboard(storeId || undefined);
 
   if (isLoading) return <div className="p-xl text-body text-kore-mid">Lade Dashboard...</div>;
-  if (!dashboard) return <div className="p-xl text-body text-kore-mid">Keine Daten verfuegbar.</div>;
+  if (!dashboard) return <div className="p-xl text-body text-kore-mid">Keine Daten verfügbar.</div>;
 
   return (
     <div className="p-xl max-w-6xl">
@@ -18,7 +18,7 @@ export function DashboardPage() {
         <Link to="/tools/clienteling" className="text-kore-mid hover:text-kore-ink transition-colors"><ArrowLeft size={20} /></Link>
         <div className="flex-1">
           <h1 className="font-display text-h1 text-kore-ink">Clienteling Dashboard</h1>
-          <p className="text-body text-kore-mid mt-xs">Kennzahlen, Top-Kunden und aktuelle Aktivitaeten</p>
+          <p className="text-body text-kore-mid mt-xs">Kennzahlen, Top-Kunden und aktuelle Aktivitäten</p>
         </div>
         {stores && stores.length > 1 && (
           <select value={storeId} onChange={e => setStoreId(e.target.value)} className="border border-kore-border px-md py-sm text-body">
@@ -94,7 +94,7 @@ export function DashboardPage() {
 
         {/* Upcoming Appointments */}
         <div className="bg-kore-white border border-kore-border p-xl">
-          <h2 className="font-display text-h3 text-kore-ink mb-lg flex items-center gap-sm"><Calendar size={18} /> Naechste Termine</h2>
+          <h2 className="font-display text-h3 text-kore-ink mb-lg flex items-center gap-sm"><Calendar size={18} /> Nächste Termine</h2>
           {!dashboard.upcomingAppointmentsList?.length ? (
             <p className="text-body text-kore-mid">Keine bevorstehenden Termine.</p>
           ) : (

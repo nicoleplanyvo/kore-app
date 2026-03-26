@@ -94,7 +94,7 @@ export function CreateEditPage() {
               onChange={(e) => setCategoryId(e.target.value)}
               className="w-full border border-kore-border px-md py-sm text-body bg-kore-white focus:outline-none focus:border-kore-brass"
             >
-              <option value="">Kategorie waehlen...</option>
+              <option value="">Kategorie wählen...</option>
               {(categories ?? []).map((c) => (
                 <option key={c.id} value={c.id}>{c.name}</option>
               ))}

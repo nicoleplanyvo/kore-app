@@ -44,7 +44,7 @@ export function TimeTrackingPage() {
 
   return (
     <div className="p-xl max-w-5xl">
-      <Link to="/tools/shift-planning" className="flex items-center gap-xs text-kore-mid hover:text-kore-ink text-small mb-lg"><ArrowLeft size={16} /> Zurueck zum Wochenplan</Link>
+      <Link to="/tools/shift-planning" className="flex items-center gap-xs text-kore-mid hover:text-kore-ink text-small mb-lg"><ArrowLeft size={16} /> Zurück zum Wochenplan</Link>
 
       <h1 className="font-display text-h1 text-kore-ink mb-xs">Zeiterfassung</h1>
       <p className="text-body text-kore-mid mb-xl">Ein-/Ausstempeln, Pausen erfassen und Wochenstunden einsehen.</p>
@@ -52,7 +52,7 @@ export function TimeTrackingPage() {
       {/* Store Select */}
       <div className="mb-xl">
         <select value={selectedStore} onChange={e => setSelectedStore(e.target.value)} className="border border-kore-border px-md py-sm text-body">
-          <option value="">Store waehlen</option>
+          <option value="">Store wählen</option>
           {stores?.map((s: any) => <option key={s.id} value={s.id}>{s.name}</option>)}
         </select>
       </div>
@@ -107,7 +107,7 @@ export function TimeTrackingPage() {
       )}
 
       {/* Weekly Hours Summary */}
-      <h2 className="font-display text-h3 text-kore-ink mb-md">Wochenuebersicht ({from} bis {to})</h2>
+      <h2 className="font-display text-h3 text-kore-ink mb-md">Wochenübersicht ({from} bis {to})</h2>
       {isLoading ? (
         <div className="text-body text-kore-mid">Lade Zeiteintraege...</div>
       ) : !entries.length ? (

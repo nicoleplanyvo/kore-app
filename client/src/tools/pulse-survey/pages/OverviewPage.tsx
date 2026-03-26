@@ -33,7 +33,7 @@ export function OverviewPage() {
   const handleDelete = (e: React.MouseEvent, id: string) => {
     e.preventDefault();
     e.stopPropagation();
-    if (!confirm('Umfrage wirklich loeschen? Alle Fragen und Antworten werden entfernt.')) return;
+    if (!confirm('Umfrage wirklich löschen? Alle Fragen und Antworten werden entfernt.')) return;
     deleteSurvey.mutate(id);
   };
 
@@ -216,13 +216,13 @@ export function OverviewPage() {
                       onClick={e => handleStatusChange(e, s.id, 'CLOSED')}
                       className="px-sm py-xs text-xs bg-blue-100 text-blue-700 hover:bg-blue-200"
                     >
-                      Schliessen
+                      Schließen
                     </button>
                   )}
                   <button
                     onClick={e => handleDelete(e, s.id)}
                     className="text-kore-mid hover:text-red-600 p-xs"
-                    title="Loeschen"
+                    title="Löschen"
                   >
                     <Trash2 size={14} />
                   </button>

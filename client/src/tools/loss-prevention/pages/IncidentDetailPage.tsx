@@ -353,7 +353,7 @@ export function IncidentDetailPage() {
                 className="flex items-center gap-sm bg-kore-ink text-kore-white px-lg py-md-sm text-small font-medium uppercase tracking-widest hover:bg-kore-brass transition-colors disabled:opacity-40"
               >
                 <XCircle size={16} />
-                {updateMutation.isPending ? 'Wird geschlossen...' : 'Schliessen'}
+                {updateMutation.isPending ? 'Wird geschlossen...' : 'Schließen'}
               </button>
             )}
           </div>
@@ -370,7 +370,7 @@ export function IncidentDetailPage() {
                   onChange={(e) => setAssignUserId(e.target.value)}
                   className="flex-1 border border-kore-border px-md py-sm text-body bg-kore-white focus:outline-none focus:border-kore-brass"
                 >
-                  <option value="">Mitarbeiter waehlen...</option>
+                  <option value="">Mitarbeiter wählen...</option>
                   {(users ?? []).map((u: any) => (
                     <option key={u.id} value={u.id}>{u.name}</option>
                   ))}
@@ -396,7 +396,7 @@ export function IncidentDetailPage() {
                 value={resolution}
                 onChange={(e) => setResolution(e.target.value)}
                 className="w-full border border-kore-border px-md py-sm text-body bg-kore-white focus:outline-none focus:border-kore-brass min-h-[100px] resize-y mb-md"
-                placeholder="Beschreiben Sie die Massnahmen und das Ergebnis..."
+                placeholder="Beschreiben Sie die Maßnahmen und das Ergebnis..."
               />
               <button
                 onClick={handleResolve}

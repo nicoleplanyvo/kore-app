@@ -11,7 +11,7 @@ const STATUS_LABELS: Record<string, string> = {
 };
 
 const RATING_LABELS: Record<number, string> = {
-  5: 'Uebertrifft Erwartungen',
+  5: 'Übertrifft Erwartungen',
   4: 'Erreicht voll',
   3: 'Erreicht',
   2: 'Teilweise erreicht',
@@ -88,7 +88,7 @@ export function AppraisalDetailPage() {
   };
 
   const handleComplete = () => {
-    if (confirm('Beurteilung abschliessen? Dies kann nicht rueckgaengig gemacht werden.')) {
+    if (confirm('Beurteilung abschließen? Dies kann nicht rueckgaengig gemacht werden.')) {
       complete.mutate(appraisal.id);
     }
   };
@@ -169,7 +169,7 @@ export function AppraisalDetailPage() {
             </button>
             {appraisal.status === 'MANAGER_REVIEW' && (
               <button onClick={handleComplete} className="flex items-center gap-xs px-md py-sm bg-emerald-600 text-kore-white text-small hover:bg-emerald-700 transition-colors">
-                <CheckCircle2 size={14} /> Abschliessen
+                <CheckCircle2 size={14} /> Abschließen
               </button>
             )}
           </div>
@@ -300,7 +300,7 @@ export function AppraisalDetailPage() {
             </h2>
             {editing && (
               <button onClick={addGoal} className="flex items-center gap-xs text-small text-kore-ink hover:text-kore-brass transition-colors">
-                <Plus size={14} /> Ziel hinzufuegen
+                <Plus size={14} /> Ziel hinzufügen
               </button>
             )}
           </div>

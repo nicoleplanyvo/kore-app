@@ -36,7 +36,7 @@ export function SummaryPage() {
   return (
     <div className="p-xl max-w-5xl">
       <Link to="/tools/store-standards" className="flex items-center gap-xs text-small text-kore-mid hover:text-kore-ink mb-lg print:hidden">
-        <ArrowLeft size={14} /> Zurueck zur Uebersicht
+        <ArrowLeft size={14} /> Zurück zur Übersicht
       </Link>
 
       <div className="flex items-center justify-between mb-2xl">
@@ -44,7 +44,7 @@ export function SummaryPage() {
           <h1 className="font-display text-h1 text-kore-ink flex items-center gap-sm">
             <FileText size={24} /> Zusammenfassung
           </h1>
-          <p className="text-body text-kore-mid mt-xs">Gesamtuebersicht aller Budget-Parameter.</p>
+          <p className="text-body text-kore-mid mt-xs">Gesamtübersicht aller Budget-Parameter.</p>
         </div>
         <button onClick={handlePrint} className="flex items-center gap-xs px-md py-sm bg-kore-ink text-kore-white text-small hover:opacity-90 print:hidden">
           <FileText size={16} /> PDF / Drucken
@@ -56,7 +56,7 @@ export function SummaryPage() {
         <div className={`flex items-center gap-sm p-md mb-xl border ${overUnder >= 0 ? 'bg-green-50 border-green-300 text-green-800' : 'bg-red-50 border-red-300 text-red-800'}`}>
           {overUnder >= 0 ? <CheckCircle size={18} /> : <AlertTriangle size={18} />}
           <span className="text-body font-medium">
-            {overUnder >= 0 ? `Unter Budget: ${fmt(overUnder)} ${cur} verbleibend` : `Ueber Budget: ${fmt(Math.abs(overUnder))} ${cur} Ueberschreitung`}
+            {overUnder >= 0 ? `Unter Budget: ${fmt(overUnder)} ${cur} verbleibend` : `Über Budget: ${fmt(Math.abs(overUnder))} ${cur} Überschreitung`}
           </span>
         </div>
       )}
@@ -155,7 +155,7 @@ export function SummaryPage() {
       </div>
 
       {/* Monthly Overview */}
-      <h2 className="font-display text-h3 text-kore-ink mb-md flex items-center gap-sm"><Calendar size={18} /> Monatsuebersicht</h2>
+      <h2 className="font-display text-h3 text-kore-ink mb-md flex items-center gap-sm"><Calendar size={18} /> Monatsübersicht</h2>
       <div className="overflow-x-auto mb-xl">
         <table className="w-full border-collapse">
           <thead>

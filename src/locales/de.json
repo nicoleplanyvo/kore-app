@@ -1,0 +1,103 @@
+{
+  "app": {
+    "title": "KORE",
+    "subtitle": "Retail Excellence"
+  },
+  "nav": {
+    "home": "Home",
+    "tools": "Tools",
+    "training": "Training",
+    "profile": "Profil"
+  },
+  "login": {
+    "title": "Anmelden",
+    "subtitle": "Melde dich an, um fortzufahren",
+    "email": "E-Mail",
+    "password": "Passwort",
+    "submit": "Anmelden",
+    "error": "Anmeldung fehlgeschlagen. Bitte versuche es erneut."
+  },
+  "home": {
+    "greeting": "Hallo",
+    "quickActions": "Schnellstart",
+    "recentActivity": "Letzte Aktivitaet",
+    "newAudit": "Neues Audit starten",
+    "viewTools": "Alle Tools ansehen",
+    "noActivity": "Noch keine Aktivitaet vorhanden"
+  },
+  "tools": {
+    "title": "Meine Tools",
+    "noTools": "Noch keine Tools zugewiesen",
+    "comingSoon": "Demnachst verfuegbar",
+    "openTool": "Oeffnen"
+  },
+  "audit": {
+    "title": "Store Excellence Audit",
+    "overview": "Uebersicht",
+    "newSession": "Neues Audit",
+    "sessions": "Audit-Historie",
+    "conduct": "Audit durchfuehren",
+    "complete": "Audit abschliessen",
+    "completing": "Wird abgeschlossen...",
+    "selectStore": "Store waehlen",
+    "selectTemplate": "Template waehlen",
+    "location": "Standort (optional)",
+    "start": "Audit starten",
+    "score": "Score",
+    "passRate": "Bestanden",
+    "totalAudits": "Audits gesamt",
+    "trend": "Trend",
+    "pass": "Bestanden",
+    "fail": "Nicht bestanden",
+    "photo": "Foto",
+    "comment": "Kommentar",
+    "required": "Pflicht",
+    "previous": "Zurueck",
+    "next": "Weiter",
+    "rated": "bewertet",
+    "saving": "Speichern...",
+    "loading": "Lade Audit..."
+  },
+  "training": {
+    "title": "KORE Train",
+    "comingSoon": "Kommt bald",
+    "description": "Hier findest du bald Schulungen und Trainings fuer dein Team."
+  },
+  "profile": {
+    "title": "Profil",
+    "logout": "Abmelden",
+    "stores": "Meine Stores",
+    "role": "Rolle",
+    "email": "E-Mail",
+    "settings": "Einstellungen",
+    "version": "App-Version"
+  },
+  "notifications": {
+    "title": "Benachrichtigungen",
+    "empty": "Keine neuen Benachrichtigungen"
+  },
+  "common": {
+    "loading": "Laden...",
+    "error": "Ein Fehler ist aufgetreten.",
+    "retry": "Erneut versuchen",
+    "back": "Zurueck",
+    "save": "Speichern",
+    "cancel": "Abbrechen",
+    "delete": "Loeschen",
+    "confirm": "Bestaetigen"
+  },
+  "roles": {
+    "kore_admin": "KORE Admin",
+    "tenant_admin": "Administrator",
+    "regional_manager": "Regionalleiter",
+    "multisite_manager": "Gebietsleiter",
+    "store_manager": "Store Manager",
+    "learner": "Mitarbeiter"
+  },
+  "status": {
+    "DRAFT": "Entwurf",
+    "IN_PROGRESS": "Laufend",
+    "COMPLETED": "Abgeschlossen",
+    "CANCELLED": "Abgebrochen"
+  }
+}

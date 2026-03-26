@@ -172,7 +172,7 @@ export function OverviewPage() {
           <BarChart3 size={20} className="text-kore-brass mb-sm" />
           <h3 className="font-medium text-kore-ink mb-xs">Dashboard</h3>
           <p className="text-small text-kore-mid">
-            Statistiken, Mentor-Uebersicht und Store-Vergleich
+            Statistiken, Mentor-Übersicht und Store-Vergleich
           </p>
         </Link>
       </div>

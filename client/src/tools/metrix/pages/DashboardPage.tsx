@@ -38,7 +38,7 @@ export function DashboardPage() {
   return (
     <div style={{ padding: '1.5rem', maxWidth: 1060, margin: '0 auto' }}>
       <button onClick={() => navigate('..')} style={{ display: 'flex', alignItems: 'center', gap: '0.375rem', background: 'none', border: 'none', color: '#9E8460', cursor: 'pointer', fontFamily: 'Jost, sans-serif', marginBottom: '1rem' }}>
-        <ArrowLeft size={18} /> Zurueck
+        <ArrowLeft size={18} /> Zurück
       </button>
 
       <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', marginBottom: '1.5rem' }}>
@@ -172,7 +172,7 @@ export function DashboardPage() {
         <div style={{ background: '#fff', border: '1px solid #e5e7eb', borderRadius: 12, padding: '1.5rem' }}>
           <h2 style={{ fontFamily: 'Cormorant Garamond, serif', fontSize: '1.25rem', margin: '0 0 1rem' }}>Store-Vergleich ({compare.period})</h2>
           {compare.stores.length === 0 && (
-            <p style={{ color: '#6b7280', fontFamily: 'Jost, sans-serif' }}>Keine Daten verfuegbar.</p>
+            <p style={{ color: '#6b7280', fontFamily: 'Jost, sans-serif' }}>Keine Daten verfügbar.</p>
           )}
           {compare.stores.map((s: any, i: number) => (
             <div key={`${s.storeId}-${s.configId}`} style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', padding: '0.75rem 0', borderBottom: '1px solid #f3f4f6' }}>

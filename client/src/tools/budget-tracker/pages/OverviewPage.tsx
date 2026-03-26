@@ -106,7 +106,7 @@ export function OverviewPage() {
           <Target size={48} className="text-kore-faint mb-lg" />
           <h2 className="font-display text-h2 text-kore-ink mb-md">Kein Umsatzplan vorhanden</h2>
           <p className="text-body text-kore-mid max-w-md mb-xl">
-            Erfassen Sie zuerst ein Soll-Ziel fuer diesen Monat in der Detailansicht.
+            Erfassen Sie zuerst ein Soll-Ziel für diesen Monat in der Detailansicht.
           </p>
           <Link
             to="/tools/budget/detail"
@@ -209,7 +209,7 @@ export function OverviewPage() {
           {/* Weekly Overview */}
           {forecast.weeklyData && forecast.weeklyData.length > 0 && (
             <div className="bg-kore-white border border-kore-border p-xl mb-xl">
-              <h2 className="font-display text-h3 text-kore-ink mb-lg">Wochen-Ueberblick</h2>
+              <h2 className="font-display text-h3 text-kore-ink mb-lg">Wochen-Überblick</h2>
               <div className="space-y-md">
                 {forecast.weeklyData.map((w: { week: number; soll: number; ist: number }) => {
                   const pct = w.soll > 0 ? Math.min(100, (w.ist / w.soll) * 100) : 0;

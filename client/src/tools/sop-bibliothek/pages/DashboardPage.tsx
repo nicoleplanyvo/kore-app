@@ -25,7 +25,7 @@ export function DashboardPage() {
         </Link>
         <div>
           <h1 className="font-display text-h1 text-kore-ink">SOP Dashboard</h1>
-          <p className="text-body text-kore-mid mt-xs">Statistiken und Lesebestaetigung im Ueberblick</p>
+          <p className="text-body text-kore-mid mt-xs">Statistiken und Lesebestätigung im Überblick</p>
         </div>
       </div>
 
@@ -74,10 +74,10 @@ export function DashboardPage() {
 
       {/* Acknowledgment Status */}
       {isLoading ? (
-        <div className="text-body text-kore-mid">Lade Lesebestaetigung...</div>
+        <div className="text-body text-kore-mid">Lade Lesebestätigung...</div>
       ) : ackStatus && ackStatus.length > 0 ? (
         <div className="bg-kore-white border border-kore-border p-xl">
-          <h2 className="font-display text-h3 text-kore-ink mb-lg">Lesebestaetigung pro SOP</h2>
+          <h2 className="font-display text-h3 text-kore-ink mb-lg">Lesebestätigung pro SOP</h2>
           <div className="space-y-md">
             {ackStatus.map((item) => (
               <div key={item.sopId} className="space-y-xs">
@@ -101,7 +101,7 @@ export function DashboardPage() {
         </div>
       ) : (
         <div className="bg-kore-white border border-kore-border p-xl text-center text-body text-kore-mid">
-          Noch keine veroeffentlichten SOPs fuer die Lesebestaetigung vorhanden.
+          Noch keine veröffentlichten SOPs für die Lesebestätigung vorhanden.
         </div>
       )}
     </div>

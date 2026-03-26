@@ -49,7 +49,7 @@ export function DashboardPage() {
             <BarChart3 size={24} /> Multi-Store Dashboard
           </h1>
           <p className="text-body text-kore-mid mt-xs">
-            Compliance-Uebersicht, Trends und Problemstores.
+            Compliance-Übersicht, Trends und Problemstores.
           </p>
         </div>
       </div>
@@ -57,7 +57,7 @@ export function DashboardPage() {
       {isLoading ? (
         <div className="text-body text-kore-mid py-2xl text-center">Lade Dashboard...</div>
       ) : !dashboard ? (
-        <div className="text-body text-kore-mid py-2xl text-center">Keine Daten verfuegbar.</div>
+        <div className="text-body text-kore-mid py-2xl text-center">Keine Daten verfügbar.</div>
       ) : (
         <>
           {/* KPI Tiles */}
@@ -88,7 +88,7 @@ export function DashboardPage() {
             />
             <KPITile
               icon={AlertTriangle}
-              label="Ueberfaellig"
+              label="Überfällig"
               value={dashboard.kpis.overdueTasks}
               color="text-red-600"
             />
@@ -151,7 +151,7 @@ export function DashboardPage() {
             {/* By priority */}
             <div className="bg-kore-white border border-kore-border p-lg">
               <h3 className="font-display text-body font-medium text-kore-ink mb-md">
-                Nach Prioritaet
+                Nach Priorität
               </h3>
               <div className="space-y-sm">
                 {Object.entries(dashboard.byPriority).map(([prio, count]) => (

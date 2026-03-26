@@ -16,7 +16,7 @@ import { useAuthStore } from '../../../stores/authStore';
 const STATUS_LABELS: Record<string, string> = {
   DRAFT: 'Entwurf',
   SUBMITTED: 'Eingereicht',
-  ACKNOWLEDGED: 'Bestaetigt',
+  ACKNOWLEDGED: 'Bestätigt',
 };
 const STATUS_COLORS: Record<string, string> = {
   DRAFT: 'bg-kore-bg text-kore-mid',
@@ -30,9 +30,9 @@ const STATUS_ICONS: Record<string, typeof FileText> = {
 };
 
 const SHIFT_LABELS: Record<string, string> = {
-  'FRUEH_SPAET': 'Frueh \u2192 Spaet',
-  'SPAET_NACHT': 'Spaet \u2192 Nacht',
-  'NACHT_FRUEH': 'Nacht \u2192 Frueh',
+  'FRUEH_SPAET': 'Früh \u2192 Spät',
+  'SPAET_NACHT': 'Spät \u2192 Nacht',
+  'NACHT_FRUEH': 'Nacht \u2192 Früh',
 };
 
 type StatusFilter = '' | 'DRAFT' | 'SUBMITTED' | 'ACKNOWLEDGED';
@@ -61,7 +61,7 @@ export function OverviewPage() {
     { value: '', label: 'Alle' },
     { value: 'DRAFT', label: 'Entwurf' },
     { value: 'SUBMITTED', label: 'Eingereicht' },
-    { value: 'ACKNOWLEDGED', label: 'Bestaetigt' },
+    { value: 'ACKNOWLEDGED', label: 'Bestätigt' },
   ];
 
   return (
@@ -70,10 +70,10 @@ export function OverviewPage() {
       <div className="flex items-center justify-between mb-lg">
         <div>
           <h1 className="font-display text-h1 text-kore-ink flex items-center gap-sm">
-            <ArrowRightLeft size={24} /> Schichtuebergabe
+            <ArrowRightLeft size={24} /> Schichtübergabe
           </h1>
           <p className="text-body text-kore-mid mt-xs">
-            Schichtuebergaben dokumentieren und nachverfolgen.
+            Schichtübergaben dokumentieren und nachverfolgen.
           </p>
         </div>
         <div className="flex items-center gap-sm">
@@ -87,7 +87,7 @@ export function OverviewPage() {
             to="/tools/handover/create"
             className="flex items-center gap-xs px-md py-sm bg-kore-ink text-kore-white text-small hover:opacity-90"
           >
-            <Plus size={16} /> Neue Uebergabe
+            <Plus size={16} /> Neue Übergabe
           </Link>
         </div>
       </div>
@@ -134,16 +134,16 @@ export function OverviewPage() {
 
       {/* List */}
       {isLoading ? (
-        <div className="text-body text-kore-mid py-2xl text-center">Lade Uebergaben...</div>
+        <div className="text-body text-kore-mid py-2xl text-center">Lade Übergaben...</div>
       ) : handovers.length === 0 ? (
         <div className="bg-kore-white border border-kore-border p-2xl text-center">
           <ArrowRightLeft size={32} className="mx-auto text-kore-mid mb-md" />
-          <p className="text-body text-kore-mid">Noch keine Uebergaben vorhanden.</p>
+          <p className="text-body text-kore-mid">Noch keine Übergaben vorhanden.</p>
           <Link
             to="/tools/handover/create"
             className="inline-flex items-center gap-xs mt-md px-md py-sm bg-kore-ink text-kore-white text-small hover:opacity-90"
           >
-            <Plus size={16} /> Erste Uebergabe erstellen
+            <Plus size={16} /> Erste Übergabe erstellen
           </Link>
         </div>
       ) : (
@@ -217,7 +217,7 @@ export function OverviewPage() {
                         disabled={acknowledge.isPending}
                         className="flex items-center gap-xs px-sm py-xs bg-emerald-600 text-kore-white text-small hover:opacity-90 disabled:opacity-50"
                       >
-                        <Check size={14} /> Bestaetigen
+                        <Check size={14} /> Bestätigen
                       </button>
                     )}
                     <span
@@ -240,7 +240,7 @@ export function OverviewPage() {
       {result && result.total > result.pageSize && (
         <div className="mt-lg text-small text-kore-mid text-center">
           Seite {result.page} von {Math.ceil(result.total / result.pageSize)} ({result.total}{' '}
-          Uebergaben gesamt)
+          Übergaben gesamt)
         </div>
       )}
     </div>

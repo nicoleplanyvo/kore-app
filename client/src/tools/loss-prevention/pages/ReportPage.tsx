@@ -135,7 +135,7 @@ export function ReportPage() {
             className={inputClass}
             required
           >
-            <option value="">Store waehlen...</option>
+            <option value="">Store wählen...</option>
             {(stores ?? []).map((s: any) => (
               <option key={s.id} value={s.id}>
                 {s.name} {s.city ? `(${s.city})` : ''}
@@ -157,7 +157,7 @@ export function ReportPage() {
               className={inputClass}
               required
             >
-              <option value="">Kategorie waehlen...</option>
+              <option value="">Kategorie wählen...</option>
               {CATEGORIES.map((c) => (
                 <option key={c.value} value={c.value}>{c.label}</option>
               ))}
@@ -210,7 +210,7 @@ export function ReportPage() {
             onChange={(e) => setArea(e.target.value)}
             className={inputClass}
           >
-            <option value="">Bereich waehlen...</option>
+            <option value="">Bereich wählen...</option>
             {(areas ?? []).map((a: string) => (
               <option key={a} value={a}>{a}</option>
             ))}
@@ -235,7 +235,7 @@ export function ReportPage() {
             <div className="mt-xs flex items-center gap-sm">
               <AlertTriangle size={14} className={SEVERITY_COLORS[autoSeverity]} />
               <span className={`text-small ${SEVERITY_COLORS[autoSeverity]}`}>
-                Automatische Prioritaet: {SEVERITY_LABELS[autoSeverity]}
+                Automatische Priorität: {SEVERITY_LABELS[autoSeverity]}
                 {amountNum >= 2000 && ' (Sofort-Eskalation)'}
               </span>
             </div>

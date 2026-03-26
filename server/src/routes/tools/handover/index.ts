@@ -220,7 +220,7 @@ handoverRouter.put('/:id', async (req, res) => {
     const userId = req.user!.sub;
     const existing = await prisma.handover.findUnique({ where: { id: req.params['id'] } });
     if (!existing) return res.status(404).json({ error: 'Handover nicht gefunden.' });
-    if (existing.status !== 'DRAFT') return res.status(400).json({ error: 'Nur Entwuerfe koennen bearbeitet werden.' });
+    if (existing.status !== 'DRAFT') return res.status(400).json({ error: 'Nur Entwuerfe können bearbeitet werden.' });
     if (existing.fromUserId !== userId) return res.status(403).json({ error: 'Nur der Ersteller kann bearbeiten.' });
 
     const parsed = handoverUpdateSchema.safeParse(req.body);
@@ -244,7 +244,7 @@ handoverRouter.post('/:id/submit', async (req, res) => {
     const userId = req.user!.sub;
     const existing = await prisma.handover.findUnique({ where: { id: req.params['id'] } });
     if (!existing) return res.status(404).json({ error: 'Handover nicht gefunden.' });
-    if (existing.status !== 'DRAFT') return res.status(400).json({ error: 'Nur Entwuerfe koennen eingereicht werden.' });
+    if (existing.status !== 'DRAFT') return res.status(400).json({ error: 'Nur Entwuerfe können eingereicht werden.' });
     if (existing.fromUserId !== userId) return res.status(403).json({ error: 'Nur der Ersteller kann einreichen.' });
 
     const handover = await prisma.handover.update({
@@ -265,13 +265,13 @@ handoverRouter.post('/:id/acknowledge', async (req, res) => {
     const userId = req.user!.sub;
     const existing = await prisma.handover.findUnique({ where: { id: req.params['id'] } });
     if (!existing) return res.status(404).json({ error: 'Handover nicht gefunden.' });
-    if (existing.status !== 'SUBMITTED') return res.status(400).json({ error: 'Nur eingereichte Handovers koennen bestaetigt werden.' });
+    if (existing.status !== 'SUBMITTED') return res.status(400).json({ error: 'Nur eingereichte Handovers können bestätigt werden.' });
 
     // Only recipient or store managers can acknowledge
     if (existing.toUserId && existing.toUserId !== userId) {
       const userRole = req.user!.role;
       if (!['kore_admin', 'tenant_admin', 'regional_manager', 'multisite_manager', 'store_manager'].includes(userRole)) {
-        return res.status(403).json({ error: 'Nur der Empfaenger oder Manager koennen bestaetigen.' });
+        return res.status(403).json({ error: 'Nur der Empfänger oder Manager können bestätigen.' });
       }
     }
 

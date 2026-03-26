@@ -13,7 +13,7 @@ export function AnalysisPage() {
   return (
     <div className="p-xl max-w-5xl">
       <Link to="/app/tools/fr-tracking" className="flex items-center gap-sm text-small text-kore-mid hover:text-kore-ink mb-xl">
-        <ArrowLeft size={16} /> Zurueck
+        <ArrowLeft size={16} /> Zurück
       </Link>
 
       <h1 className="font-display text-h1 text-kore-ink mb-sm">FR Analyse</h1>
@@ -31,7 +31,7 @@ export function AnalysisPage() {
       {isLoading ? (
         <div className="text-body text-kore-mid">Lade Analyse...</div>
       ) : !analysis ? (
-        <div className="text-body text-kore-mid">Keine Daten verfuegbar.</div>
+        <div className="text-body text-kore-mid">Keine Daten verfügbar.</div>
       ) : (
         <>
           {/* Summary */}

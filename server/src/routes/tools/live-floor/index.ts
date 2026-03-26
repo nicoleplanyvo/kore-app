@@ -27,7 +27,7 @@ liveFloorRouter.get('/stores', async (req, res) => {
   } catch (err) { console.error(err); res.status(500).json({ error: 'Interner Serverfehler.' }); }
 });
 
-// ── GET /users — Mitarbeiter fuer Zuweisung ──────────
+// ── GET /users — Mitarbeiter für Zuweisung ──────────
 liveFloorRouter.get('/users', async (req, res) => {
   try {
     const tenantId = (req as any).tenantId as string;
@@ -88,7 +88,7 @@ liveFloorRouter.put('/zones/:id', async (req, res) => {
   } catch (err) { console.error(err); res.status(500).json({ error: 'Interner Serverfehler.' }); }
 });
 
-// ── DELETE /zones/:id — Zone loeschen ────────────────
+// ── DELETE /zones/:id — Zone löschen ────────────────
 liveFloorRouter.delete('/zones/:id', async (req, res) => {
   try {
     // Soft delete — deactivate instead of hard delete
@@ -283,7 +283,7 @@ liveFloorRouter.get('/dashboard', async (req, res) => {
     const totalCustomers = zones.reduce((s, z) => s + z.customerCount, 0);
     const activeZones = zones.filter((z) => z.positions.length > 0).length;
 
-    // Stundenaggregation fuer Peak-Analyse
+    // Stundenaggregation für Peak-Analyse
     const hourlyMap: Record<number, { customers: number; staff: number; count: number }> = {};
     for (const l of logs) {
       if (!hourlyMap[l.hour]) hourlyMap[l.hour] = { customers: 0, staff: 0, count: 0 };
@@ -302,7 +302,7 @@ liveFloorRouter.get('/dashboard', async (req, res) => {
       }))
       .sort((a, b) => b.avgCustomers - a.avgCustomers);
 
-    // Tagesaggregation fuer Trend
+    // Tagesaggregation für Trend
     const dailyMap: Record<string, { customers: number; staff: number; count: number }> = {};
     for (const l of logs) {
       if (!dailyMap[l.date]) dailyMap[l.date] = { customers: 0, staff: 0, count: 0 };

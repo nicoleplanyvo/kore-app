@@ -2,7 +2,7 @@ import { useParams, Link } from 'react-router-dom';
 import { ArrowLeft, BookOpen, Calendar, Layers, CheckCircle } from 'lucide-react';
 import { useVmGuidelineDoc, useConfirmReadGuideline, usePublishVmGuidelineDoc, useArchiveVmGuidelineDoc } from '../../../hooks/useVmGuidelines';
 
-const STATUS_LABELS: Record<string, string> = { DRAFT: 'Entwurf', PUBLISHED: 'Veroeffentlicht', ARCHIVED: 'Archiviert' };
+const STATUS_LABELS: Record<string, string> = { DRAFT: 'Entwurf', PUBLISHED: 'Veröffentlicht', ARCHIVED: 'Archiviert' };
 
 export function GuidelineDetailPage() {
   const { id } = useParams<{ id: string }>();
@@ -17,7 +17,7 @@ export function GuidelineDetailPage() {
   return (
     <div className="p-xl max-w-4xl">
       <Link to="/app/tools/vm-guidelines" className="flex items-center gap-sm text-small text-kore-mid hover:text-kore-ink mb-xl">
-        <ArrowLeft size={16} /> Zurueck zur Bibliothek
+        <ArrowLeft size={16} /> Zurück zur Bibliothek
       </Link>
 
       <div className="flex items-center justify-between mb-2xl">
@@ -33,7 +33,7 @@ export function GuidelineDetailPage() {
         <div className="flex gap-sm">
           {doc.status === 'DRAFT' && (
             <button onClick={() => publishMutation.mutate(doc.id)} disabled={publishMutation.isPending} className="px-lg py-md-sm border border-emerald-600 text-emerald-600 text-small font-medium uppercase tracking-widest hover:bg-emerald-50 transition-colors disabled:opacity-50">
-              Veroeffentlichen
+              Veröffentlichen
             </button>
           )}
           {doc.status === 'PUBLISHED' && (
@@ -96,7 +96,7 @@ export function GuidelineDetailPage() {
             disabled={confirmRead.isPending || confirmRead.isSuccess}
             className="flex items-center gap-sm bg-kore-ink text-kore-white px-xl py-md-sm text-small font-medium uppercase tracking-widest hover:bg-kore-brass transition-colors disabled:opacity-50"
           >
-            <CheckCircle size={16} /> {confirmRead.isSuccess ? 'Gelesen bestaetigt' : 'Als gelesen markieren'}
+            <CheckCircle size={16} /> {confirmRead.isSuccess ? 'Gelesen bestätigt' : 'Als gelesen markieren'}
           </button>
         </div>
       )}

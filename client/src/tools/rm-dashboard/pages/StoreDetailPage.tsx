@@ -149,7 +149,7 @@ export function StoreDetailPage() {
         <div className="text-body text-kore-mid">Lade Store-Daten...</div>
       ) : !detail ? (
         <div className="bg-kore-white border border-kore-border p-2xl text-center text-body text-kore-mid">
-          Store-Daten nicht verfuegbar.
+          Store-Daten nicht verfügbar.
         </div>
       ) : (
         <>

@@ -12,13 +12,13 @@ export function DashboardPage() {
     <div className="p-xl max-w-5xl">
       <Link to="/tools/checklisten" className="flex items-center gap-xs text-small text-kore-mid hover:text-kore-brass transition-colors mb-lg">
         <ArrowLeft size={14} />
-        Zurueck
+        Zurück
       </Link>
 
       <div className="flex items-center justify-between mb-2xl">
         <div>
           <h1 className="font-display text-h1 text-kore-ink">Dashboard</h1>
-          <p className="text-body text-kore-mid mt-xs">Tagesfortschritt, ueberfaellige Checklisten und Historie</p>
+          <p className="text-body text-kore-mid mt-xs">Tagesfortschritt, überfällige Checklisten und Historie</p>
         </div>
 
         {stores && stores.length > 1 && (
@@ -50,7 +50,7 @@ export function DashboardPage() {
 
             {/* Overdue */}
             <div className="bg-kore-white border border-kore-border p-xl">
-              <span className="text-caption text-kore-mid uppercase tracking-widest">Ueberfaellig</span>
+              <span className="text-caption text-kore-mid uppercase tracking-widest">Überfällig</span>
               <div className={`font-display text-h1 mt-sm ${dashboard.overdue.length > 0 ? 'text-red-600' : 'text-emerald-600'}`}>
                 {dashboard.overdue.length}
               </div>
@@ -66,7 +66,7 @@ export function DashboardPage() {
 
             {/* Avg Completion */}
             <div className="bg-kore-white border border-kore-border p-xl">
-              <span className="text-caption text-kore-mid uppercase tracking-widest">Ø Erfuellungsgrad</span>
+              <span className="text-caption text-kore-mid uppercase tracking-widest">Ø Erfüllungsgrad</span>
               <div className="font-display text-h1 text-kore-ink mt-sm">{dashboard.avgCompletionRate}%</div>
               <p className="text-small text-kore-mid mt-xs">Alle Checklisten</p>
             </div>
@@ -77,7 +77,7 @@ export function DashboardPage() {
             <div className="bg-kore-white border border-red-200 p-xl mb-xl">
               <div className="flex items-center gap-sm mb-lg">
                 <AlertTriangle size={18} className="text-red-500" />
-                <h2 className="font-display text-h3 text-kore-ink">Ueberfaellige Checklisten</h2>
+                <h2 className="font-display text-h3 text-kore-ink">Überfällige Checklisten</h2>
               </div>
               <div className="space-y-sm">
                 {dashboard.overdue.map((item: any) => (
@@ -101,7 +101,7 @@ export function DashboardPage() {
           <div className="bg-kore-white border border-kore-border p-xl">
             <div className="flex items-center gap-sm mb-lg">
               <Calendar size={18} className="text-kore-brass" />
-              <h2 className="font-display text-h3 text-kore-ink">Letzte Aktivitaeten</h2>
+              <h2 className="font-display text-h3 text-kore-ink">Letzte Aktivitäten</h2>
             </div>
 
             {dashboard.recentHistory.length > 0 ? (
@@ -134,7 +134,7 @@ export function DashboardPage() {
           </div>
         </>
       ) : (
-        <div className="text-body text-kore-mid">Keine Daten verfuegbar.</div>
+        <div className="text-body text-kore-mid">Keine Daten verfügbar.</div>
       )}
     </div>
   );

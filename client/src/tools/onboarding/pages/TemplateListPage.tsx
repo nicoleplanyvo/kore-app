@@ -83,7 +83,7 @@ export function TemplateListPage() {
         <div className="flex-1">
           <h1 className="font-display text-h1 text-kore-ink">Onboarding Templates</h1>
           <p className="text-body text-kore-mid mt-xs">
-            Vorlagen fuer Einarbeitungsplaene erstellen und verwalten
+            Vorlagen für Einarbeitungsplaene erstellen und verwalten
           </p>
         </div>
         <button

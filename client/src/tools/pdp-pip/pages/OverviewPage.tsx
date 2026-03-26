@@ -153,7 +153,7 @@ export function OverviewPage() {
                 className="w-full border border-kore-border px-md py-sm text-body"
                 required
               >
-                <option value="">-- Mitarbeiter waehlen --</option>
+                <option value="">-- Mitarbeiter wählen --</option>
                 {users?.map((u: any) => (
                   <option key={u.id} value={u.id}>{u.name} ({u.role})</option>
                 ))}
@@ -260,7 +260,7 @@ export function OverviewPage() {
                 onClick={() => { setFilterType(''); setFilterStatus(''); setFilterUserId(''); setPage(1); }}
                 className="px-md py-sm text-small text-kore-brass hover:underline"
               >
-                Zuruecksetzen
+                Zurücksetzen
               </button>
             )}
           </div>
@@ -319,7 +319,7 @@ export function OverviewPage() {
                     <div className="flex items-center gap-sm">
                       <span className="font-medium text-kore-ink">{p.title}</span>
                       {isOverdue(p) && (
-                        <span className="text-red-500" title="Ueberfaellig">
+                        <span className="text-red-500" title="Überfällig">
                           <AlertTriangle size={14} />
                         </span>
                       )}
@@ -376,7 +376,7 @@ export function OverviewPage() {
             disabled={page <= 1}
             className="px-md py-sm border border-kore-border text-small disabled:opacity-30"
           >
-            Zurueck
+            Zurück
           </button>
           <span className="text-small text-kore-mid">
             Seite {page} von {totalPages}

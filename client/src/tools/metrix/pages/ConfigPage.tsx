@@ -89,7 +89,7 @@ export function ConfigPage() {
   return (
     <div style={{ padding: '1.5rem', maxWidth: 800, margin: '0 auto' }}>
       <button onClick={() => navigate('..')} style={{ display: 'flex', alignItems: 'center', gap: '0.375rem', background: 'none', border: 'none', color: '#9E8460', cursor: 'pointer', fontFamily: 'Jost, sans-serif', marginBottom: '1rem' }}>
-        <ArrowLeft size={18} /> Zurueck
+        <ArrowLeft size={18} /> Zurück
       </button>
 
       <h1 style={{ fontFamily: 'Cormorant Garamond, serif', fontSize: '1.5rem', margin: '0 0 1.5rem' }}>

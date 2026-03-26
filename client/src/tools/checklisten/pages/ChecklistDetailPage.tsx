@@ -28,7 +28,7 @@ export function ChecklistDetailPage() {
       {/* Back + Header */}
       <Link to="/tools/checklisten" className="flex items-center gap-xs text-small text-kore-mid hover:text-kore-brass transition-colors mb-lg">
         <ArrowLeft size={14} />
-        Zurueck
+        Zurück
       </Link>
 
       <div className="flex items-start justify-between mb-2xl">
@@ -40,7 +40,7 @@ export function ChecklistDetailPage() {
           {dueDate && (
             <p className={`text-small mt-xs ${isOverdue ? 'text-red-600 font-medium' : 'text-kore-mid'}`}>
               Frist: {new Date(dueDate).toLocaleDateString('de-DE')}
-              {isOverdue ? ' (ueberfaellig)' : ''}
+              {isOverdue ? ' (überfällig)' : ''}
             </p>
           )}
         </div>
@@ -48,7 +48,7 @@ export function ChecklistDetailPage() {
         <div className="text-right">
           <div className={`inline-flex items-center gap-sm px-md py-xs text-small font-medium ${isComplete ? 'bg-emerald-50 text-emerald-700' : isOverdue ? 'bg-red-50 text-red-700' : 'bg-amber-50 text-amber-700'}`}>
             {isComplete ? <CheckCircle2 size={14} /> : isOverdue ? <AlertTriangle size={14} /> : <Clock size={14} />}
-            {isComplete ? 'Abgeschlossen' : isOverdue ? 'Ueberfaellig' : 'In Bearbeitung'}
+            {isComplete ? 'Abgeschlossen' : isOverdue ? 'Überfällig' : 'In Bearbeitung'}
           </div>
           <div className="mt-sm">
             <span className="font-display text-h2 text-kore-ink">{progress}%</span>

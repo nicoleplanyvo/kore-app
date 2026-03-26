@@ -309,7 +309,7 @@ export function OverviewPage() {
             onClick={() => { setFilterType(''); setFilterFrom(''); setFilterTo(''); setPage(1); }}
             className="text-small text-kore-mid hover:text-kore-ink underline"
           >
-            Filter zuruecksetzen
+            Filter zurücksetzen
           </button>
         )}
       </div>
@@ -322,7 +322,7 @@ export function OverviewPage() {
           <TrendingUp size={48} className="text-kore-faint mb-lg" />
           <h2 className="font-display text-h2 text-kore-ink mb-md">Keine Prognosen vorhanden</h2>
           <p className="text-body text-kore-mid max-w-md mb-xl">
-            Erstellen Sie Ihre erste Prognose fuer diesen Store.
+            Erstellen Sie Ihre erste Prognose für diesen Store.
           </p>
           <button
             onClick={() => setShowForm(true)}
@@ -454,7 +454,7 @@ export function OverviewPage() {
                             onClick={() => handleDelete(f.id)}
                             disabled={deleteForecast.isPending}
                             className="text-kore-mid hover:text-red-600"
-                            title="Loeschen"
+                            title="Löschen"
                           >
                             <Trash2 size={14} />
                           </button>

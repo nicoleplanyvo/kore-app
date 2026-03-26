@@ -81,7 +81,7 @@ export function DashboardPage() {
       {isLoading ? (
         <div className="text-body text-kore-mid">Lade Daten...</div>
       ) : !dashboard ? (
-        <div className="text-body text-kore-mid">Keine Daten verfuegbar.</div>
+        <div className="text-body text-kore-mid">Keine Daten verfügbar.</div>
       ) : (
         <>
           {/* KPI Tiles */}

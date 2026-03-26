@@ -239,7 +239,7 @@ export function OverviewPage() {
               }}
               className="text-small text-kore-mid hover:text-kore-ink underline"
             >
-              Zuruecksetzen
+              Zurücksetzen
             </button>
           )}
         </div>

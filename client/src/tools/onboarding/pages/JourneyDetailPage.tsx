@@ -37,7 +37,7 @@ const STEP_STATUS_LABELS: Record<string, string> = {
   PENDING: 'Ausstehend',
   IN_PROGRESS: 'In Bearbeitung',
   COMPLETED: 'Erledigt',
-  SKIPPED: 'Uebersprungen',
+  SKIPPED: 'Übersprungen',
 };
 
 export function JourneyDetailPage() {
@@ -195,7 +195,7 @@ export function JourneyDetailPage() {
             }}
             className="text-small text-kore-brass hover:text-kore-ink underline"
           >
-            {journey.mentor ? 'Aendern' : 'Zuweisen'}
+            {journey.mentor ? 'Ändern' : 'Zuweisen'}
           </button>
         </div>
         {showMentorSelect && (
@@ -230,7 +230,7 @@ export function JourneyDetailPage() {
               disabled={updateStatus.isPending}
               className="flex items-center gap-xs px-md py-sm bg-blue-600 text-kore-white text-small hover:opacity-90 disabled:opacity-50"
             >
-              <Shield size={14} /> Manager-Bestaetigung
+              <Shield size={14} /> Manager-Bestätigung
             </button>
             <button
               onClick={handleCancelJourney}
@@ -335,7 +335,7 @@ export function JourneyDetailPage() {
                             Erledigt: {new Date(p.completedAt).toLocaleDateString('de-DE')}
                           </span>
                         )}
-                        {p.verifiedBy && <span>Bestaetigt</span>}
+                        {p.verifiedBy && <span>Bestätigt</span>}
                       </div>
                       {p.notes && (
                         <p className="text-small text-kore-mid mt-xs italic">{p.notes}</p>
@@ -393,7 +393,7 @@ export function JourneyDetailPage() {
                             onClick={() => handleSkipStep(p.step.id)}
                             disabled={updateStep.isPending}
                             className="px-sm py-xs bg-kore-mid text-kore-white text-small hover:opacity-90 disabled:opacity-50"
-                            title="Ueberspringen"
+                            title="Überspringen"
                           >
                             <SkipForward size={14} />
                           </button>

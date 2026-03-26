@@ -109,7 +109,7 @@ export function OverviewPage() {
             <LayoutDashboard size={24} /> RM Dashboard
           </h1>
           <p className="text-body text-kore-mid mt-xs">
-            Executive-Ueberblick ueber alle Stores der Region.
+            Executive-Überblick über alle Stores der Region.
           </p>
         </div>
         <div className="flex gap-sm">
@@ -193,7 +193,7 @@ export function OverviewPage() {
         <div className="text-body text-kore-mid">Lade Dashboard...</div>
       ) : !summary ? (
         <div className="bg-kore-white border border-kore-border p-2xl text-center text-body text-kore-mid">
-          Keine Daten verfuegbar.
+          Keine Daten verfügbar.
         </div>
       ) : (
         <>

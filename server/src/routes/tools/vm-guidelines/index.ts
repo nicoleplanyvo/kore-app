@@ -133,7 +133,7 @@ vmGuidelinesRouter.put('/:id', async (req, res) => {
   } catch (err) { console.error(err); res.status(500).json({ error: 'Interner Serverfehler.' }); }
 });
 
-// DELETE /:id — Guideline loeschen (archivieren)
+// DELETE /:id — Guideline löschen (archivieren)
 vmGuidelinesRouter.delete('/:id', async (req, res) => {
   try {
     await prisma.vmGuidelineDoc.update({
@@ -144,7 +144,7 @@ vmGuidelinesRouter.delete('/:id', async (req, res) => {
   } catch (err) { console.error(err); res.status(500).json({ error: 'Interner Serverfehler.' }); }
 });
 
-// POST /:id/read — Lesebestaetigung
+// POST /:id/read — Lesebestätigung
 vmGuidelinesRouter.post('/:id/read', async (req, res) => {
   try {
     const userId = req.user!.sub;
@@ -163,7 +163,7 @@ vmGuidelinesRouter.get('/:id/readers', async (_req, res) => {
   } catch (err) { console.error(err); res.status(500).json({ error: 'Interner Serverfehler.' }); }
 });
 
-// POST /:id/publish — Veroeffentlichen
+// POST /:id/publish — Veröffentlichen
 vmGuidelinesRouter.post('/:id/publish', async (req, res) => {
   try {
     const doc = await prisma.vmGuidelineDoc.update({
@@ -185,7 +185,7 @@ vmGuidelinesRouter.post('/:id/archive', async (req, res) => {
   } catch (err) { console.error(err); res.status(500).json({ error: 'Interner Serverfehler.' }); }
 });
 
-// POST /:id/images — Bild zur Guideline hinzufuegen
+// POST /:id/images — Bild zur Guideline hinzufügen
 vmGuidelinesRouter.post('/:id/images', async (req, res) => {
   try {
     const { imagePath, caption, sortOrder } = req.body;

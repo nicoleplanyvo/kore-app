@@ -130,7 +130,7 @@ export function DashboardPage() {
             <BarChart3 size={24} /> Track & Trace Dashboard
           </h1>
           <p className="text-body text-kore-mid mt-xs">
-            Transfers, Click & Collect und Differenzen im Ueberblick.
+            Transfers, Click & Collect und Differenzen im Überblick.
           </p>
         </div>
       </div>

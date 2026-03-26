@@ -53,7 +53,7 @@ export function SurveyDetailPage() {
   };
 
   const handleDeleteQuestion = (questionId: string) => {
-    if (!confirm('Frage wirklich loeschen?')) return;
+    if (!confirm('Frage wirklich löschen?')) return;
     deleteQuestion.mutate({ surveyId: survey.id, questionId });
   };
 
@@ -123,7 +123,7 @@ export function SurveyDetailPage() {
                 onClick={() => handleStatusChange('CLOSED')}
                 className="px-md py-sm text-small bg-blue-600 text-kore-white hover:opacity-90"
               >
-                Schliessen
+                Schließen
               </button>
             </>
           )}
@@ -148,7 +148,7 @@ export function SurveyDetailPage() {
             onClick={() => setShowForm(!showForm)}
             className="flex items-center gap-xs px-sm py-xs bg-kore-ink text-kore-white text-small hover:opacity-90"
           >
-            <Plus size={14} /> Frage hinzufuegen
+            <Plus size={14} /> Frage hinzufügen
           </button>
         )}
       </div>
@@ -195,7 +195,7 @@ export function SurveyDetailPage() {
               disabled={addQuestion.isPending}
               className="px-md py-sm bg-kore-ink text-kore-white text-small hover:opacity-90 disabled:opacity-50"
             >
-              Frage hinzufuegen
+              Frage hinzufügen
             </button>
             <button
               type="button"
@@ -211,7 +211,7 @@ export function SurveyDetailPage() {
       {/* Question List */}
       {!survey.questions?.length ? (
         <div className="bg-kore-white border border-kore-border p-2xl text-center text-body text-kore-mid mb-xl">
-          Noch keine Fragen definiert. Fuegen Sie Fragen hinzu, um die Umfrage nutzen zu koennen.
+          Noch keine Fragen definiert. Fügen Sie Fragen hinzu, um die Umfrage nutzen zu können.
         </div>
       ) : (
         <div className="space-y-sm mb-xl">
@@ -293,7 +293,7 @@ export function SurveyDetailPage() {
                       <button
                         onClick={() => handleDeleteQuestion(q.id)}
                         className="text-kore-mid hover:text-red-600 p-xs"
-                        title="Loeschen"
+                        title="Löschen"
                       >
                         <Trash2 size={14} />
                       </button>
@@ -315,7 +315,7 @@ export function SurveyDetailPage() {
             <div className="font-medium text-kore-ink mt-xs">{STATUS_LABELS[survey.status] ?? survey.status}</div>
           </div>
           <div>
-            <span className="text-kore-mid">Anonymitaet</span>
+            <span className="text-kore-mid">Anonymität</span>
             <div className="font-medium text-kore-ink mt-xs">{survey.isAnonymous ? 'Ja' : 'Nein'}</div>
           </div>
           <div>

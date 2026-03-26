@@ -38,7 +38,7 @@ export function TrendsPage() {
             <TrendingUp size={24} /> Wellbeing-Trends
           </h1>
           <p className="text-body text-kore-mid mt-xs">
-            Entwicklung der Teamstimmung ueber die letzten Wochen.
+            Entwicklung der Teamstimmung über die letzten Wochen.
           </p>
         </div>
       </div>
@@ -86,7 +86,7 @@ export function TrendsPage() {
         <div className="text-body text-kore-mid">Lade Trends...</div>
       ) : !trends?.length ? (
         <div className="bg-kore-white border border-kore-border p-2xl text-center text-body text-kore-mid">
-          Noch nicht genuegend Daten fuer Trends.
+          Noch nicht genügend Daten für Trends.
         </div>
       ) : (
         <div className="space-y-xl">

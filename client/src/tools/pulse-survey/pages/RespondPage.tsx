@@ -29,7 +29,7 @@ export function RespondPage() {
         </div>
         <div className="bg-kore-white border border-kore-border p-2xl text-center">
           <Lock size={48} className="text-kore-faint mx-auto mb-lg" />
-          <h2 className="font-display text-h2 text-kore-ink mb-md">Umfrage nicht verfuegbar</h2>
+          <h2 className="font-display text-h2 text-kore-ink mb-md">Umfrage nicht verfügbar</h2>
           <p className="text-body text-kore-mid">Diese Umfrage ist derzeit nicht aktiv und kann nicht beantwortet werden.</p>
         </div>
       </div>
@@ -67,14 +67,14 @@ export function RespondPage() {
           </div>
           <h2 className="font-display text-h2 text-kore-ink mb-md">Vielen Dank!</h2>
           <p className="text-body text-kore-mid mb-xl">
-            Ihre Antworten wurden erfolgreich uebermittelt.
+            Ihre Antworten wurden erfolgreich übermittelt.
             {survey.isAnonymous && ' Die Teilnahme war anonym.'}
           </p>
           <Link
             to="/tools/pulse-survey"
             className="px-lg py-sm bg-kore-ink text-kore-white text-small hover:opacity-90"
           >
-            Zurueck zur Uebersicht
+            Zurück zur Übersicht
           </Link>
         </div>
       </div>

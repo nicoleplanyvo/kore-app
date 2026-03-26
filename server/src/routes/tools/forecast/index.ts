@@ -98,7 +98,7 @@ forecastRouter.get('/dashboard', async (req, res) => {
       where['period'] = periodFilter;
     }
 
-    // Alle Forecasts fuer den Zeitraum
+    // Alle Forecasts für den Zeitraum
     const forecasts = await prisma.forecast.findMany({
       where,
       include: {
@@ -340,7 +340,7 @@ forecastRouter.post('/', async (req, res) => {
     });
     res.status(201).json(forecast);
   } catch (err: any) {
-    if (err.code === 'P2002') return res.status(409).json({ error: 'Forecast fuer diese Periode existiert bereits.' });
+    if (err.code === 'P2002') return res.status(409).json({ error: 'Forecast für diese Periode existiert bereits.' });
     console.error(err);
     res.status(500).json({ error: 'Interner Serverfehler.' });
   }
@@ -401,7 +401,7 @@ forecastRouter.put('/:id', async (req, res) => {
 });
 
 /* ──────────────────────────────────────────────
-   DELETE /:id — Forecast loeschen
+   DELETE /:id — Forecast löschen
    ────────────────────────────────────────────── */
 forecastRouter.delete('/:id', async (req, res) => {
   try {

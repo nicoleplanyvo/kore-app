@@ -53,8 +53,8 @@ const statusDot: Record<string, string> = {
 const statusLabel: Record<string, string> = {
   ACTIVE: 'Aktiv',
   TRIALING: 'Testphase',
-  PAST_DUE: 'Ueberfaellig',
-  CANCELED: 'Gekuendigt',
+  PAST_DUE: 'Überfällig',
+  CANCELED: 'Gekündigt',
 };
 
 /* ═══════════════════════════════════════════════
@@ -156,7 +156,7 @@ function AdminDashboard() {
             />
             <ActivityItem
               dotColor="bg-kore-warning"
-              text={<>Angebot <strong>#A-2024-018</strong> an Modehouse — wartet auf Rueckmeldung</>}
+              text={<>Angebot <strong>#A-2024-018</strong> an Modehouse — wartet auf Rückmeldung</>}
               meta="2.340 EUR/Monat — gesendet vor 3 Tagen"
             />
             <ActivityItem
@@ -200,7 +200,7 @@ function AdminDashboard() {
                 </tr>
               </thead>
               <tbody>
-                <InvoiceRow nr="#R-2024-042" kunde="Modehouse AG" betrag="2.340" variant="error" status="Ueberfaellig" />
+                <InvoiceRow nr="#R-2024-042" kunde="Modehouse AG" betrag="2.340" variant="error" status="Überfällig" />
                 <InvoiceRow nr="#R-2024-041" kunde="FashionFirst" betrag="1.560" variant="warning" status="Offen" />
                 <InvoiceRow nr="#R-2024-040" kunde="LuxRetail" betrag="890" variant="success" status="Bezahlt" />
               </tbody>

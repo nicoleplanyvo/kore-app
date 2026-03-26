@@ -78,9 +78,9 @@ export function OverviewPage() {
       ) : (
         <div className="bg-kore-white border border-kore-border p-3xl flex flex-col items-center text-center">
           <ClipboardCheck size={48} className="text-kore-faint mb-lg" />
-          <h2 className="font-display text-h2 text-kore-ink mb-md">Keine Checklisten fuer heute</h2>
+          <h2 className="font-display text-h2 text-kore-ink mb-md">Keine Checklisten für heute</h2>
           <p className="text-body text-kore-mid max-w-md mb-xl">
-            Erstellen Sie eine neue Checkliste oder warten Sie auf die naechste wiederkehrende Checkliste.
+            Erstellen Sie eine neue Checkliste oder warten Sie auf die nächste wiederkehrende Checkliste.
           </p>
           <button
             onClick={() => setShowCreate(true)}
@@ -159,7 +159,7 @@ function ChecklistCard({ checklist, onToggle }: { checklist: any; onToggle: (v: 
           {/* We show a summary since list endpoint doesn't include full items */}
           <div className="flex items-center gap-md">
             <span className={`text-small font-medium ${isComplete ? 'text-emerald-600' : isOverdue ? 'text-red-600' : 'text-kore-ink'}`}>
-              {isComplete ? 'Abgeschlossen' : isOverdue ? 'Ueberfaellig' : 'In Bearbeitung'}
+              {isComplete ? 'Abgeschlossen' : isOverdue ? 'Überfällig' : 'In Bearbeitung'}
             </span>
             <span className="text-small text-kore-mid">
               {progress}% erledigt
@@ -220,7 +220,7 @@ function CreateChecklistDialog({ stores, onClose }: { stores: any[]; onClose: ()
               onChange={e => setSelectedStore(e.target.value)}
               className="w-full border border-kore-border px-md py-sm text-small"
             >
-              <option value="">Store waehlen...</option>
+              <option value="">Store wählen...</option>
               {stores.map(s => (
                 <option key={s.id} value={s.id}>{s.name}{s.city ? ` (${s.city})` : ''}</option>
               ))}
@@ -251,7 +251,7 @@ function CreateChecklistDialog({ stores, onClose }: { stores: any[]; onClose: ()
                 onChange={e => setSelectedTemplate(e.target.value)}
                 className="w-full border border-kore-border px-md py-sm text-small"
               >
-                <option value="">Vorlage waehlen...</option>
+                <option value="">Vorlage wählen...</option>
                 {templates?.map(t => (
                   <option key={t.id} value={t.id}>{t.name}{t.isDefault ? ' (Standard)' : ''}</option>
                 ))}
@@ -269,7 +269,7 @@ function CreateChecklistDialog({ stores, onClose }: { stores: any[]; onClose: ()
                 />
               </div>
               <div>
-                <label className="text-caption text-kore-mid uppercase tracking-widest block mb-xs">Pruefpunkte</label>
+                <label className="text-caption text-kore-mid uppercase tracking-widest block mb-xs">Prüfpunkte</label>
                 {items.map((item, i) => (
                   <div key={i} className="flex gap-sm mb-sm">
                     <input
@@ -292,7 +292,7 @@ function CreateChecklistDialog({ stores, onClose }: { stores: any[]; onClose: ()
                   onClick={() => setItems([...items, ''])}
                   className="text-small text-kore-brass hover:text-kore-brass-dk transition-colors"
                 >
-                  + Punkt hinzufuegen
+                  + Punkt hinzufügen
                 </button>
               </div>
             </>

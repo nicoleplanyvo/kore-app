@@ -14,7 +14,7 @@ export function DashboardPage() {
   const dailyTrend = dashboard?.dailyTrend ?? [];
   const zoneUtilization = dashboard?.zoneUtilization ?? [];
 
-  // Max-Werte fuer Balkenberechnung
+  // Max-Werte für Balkenberechnung
   const maxPeakCustomers = Math.max(1, ...peakHours.map((p: any) => p.avgCustomers));
   const maxDailyCustomers = Math.max(1, ...dailyTrend.map((d: any) => d.avgCustomers));
 
@@ -55,7 +55,7 @@ export function DashboardPage() {
       {isLoading ? (
         <div className="text-body text-kore-mid">Lade Dashboard...</div>
       ) : !dashboard ? (
-        <div className="text-body text-kore-mid">Keine Daten verfuegbar.</div>
+        <div className="text-body text-kore-mid">Keine Daten verfügbar.</div>
       ) : (
         <>
           {/* Live-KPIs */}

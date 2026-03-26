@@ -72,7 +72,7 @@ export function App() {
           <Route path="/login" element={<LoginPage />} />
         </Route>
 
-        {/* Geschuetzter App-Bereich */}
+        {/* Geschützter App-Bereich */}
         <Route element={<ProtectedRoute />}>
           <Route element={<AppLayout />}>
             {/* Home — rollenspezifisches Dashboard */}

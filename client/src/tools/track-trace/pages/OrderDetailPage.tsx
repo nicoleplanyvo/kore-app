@@ -152,7 +152,7 @@ export function OrderDetailPage() {
         <div className="flex items-center gap-sm">
           {isOverdue && (
             <span className="flex items-center gap-xs px-sm py-xs bg-red-50 text-red-700 text-small">
-              <AlertTriangle size={14} /> Ueberfaellig
+              <AlertTriangle size={14} /> Überfällig
             </span>
           )}
           <span className={`px-md py-sm text-small ${STATUS_COLORS[order.status] ?? 'bg-kore-bg text-kore-mid'}`}>
@@ -281,7 +281,7 @@ export function OrderDetailPage() {
                   className="w-full border border-kore-border px-md py-sm text-body"
                   required
                 >
-                  <option value="">-- Status waehlen --</option>
+                  <option value="">-- Status wählen --</option>
                   {statusOptions.map((s) => (
                     <option key={s.value} value={s.value}>{s.label}</option>
                   ))}
@@ -296,7 +296,7 @@ export function OrderDetailPage() {
                     className="w-full border border-kore-border px-md py-sm text-body"
                     required
                   >
-                    <option value="">-- Grund waehlen --</option>
+                    <option value="">-- Grund wählen --</option>
                     {DIFFERENCE_REASONS.map((r) => (
                       <option key={r} value={r}>{r}</option>
                     ))}

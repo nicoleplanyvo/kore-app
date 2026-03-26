@@ -260,7 +260,7 @@ challengesRouter.put('/:id', async (req, res) => {
   } catch (err) { console.error(err); res.status(500).json({ error: 'Interner Serverfehler.' }); }
 });
 
-// ── DELETE /:id — Challenge loeschen ─────────────────
+// ── DELETE /:id — Challenge löschen ─────────────────
 challengesRouter.delete('/:id', async (req, res) => {
   try {
     const tenantId = (req as any).tenantId as string;

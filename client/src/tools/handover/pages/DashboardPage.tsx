@@ -21,9 +21,9 @@ const STATUS_COLORS: Record<string, string> = {
 };
 
 const SHIFT_LABELS: Record<string, string> = {
-  'FRUEH_SPAET': 'Frueh \u2192 Spaet',
-  'SPAET_NACHT': 'Spaet \u2192 Nacht',
-  'NACHT_FRUEH': 'Nacht \u2192 Frueh',
+  'FRUEH_SPAET': 'Früh \u2192 Spät',
+  'SPAET_NACHT': 'Spät \u2192 Nacht',
+  'NACHT_FRUEH': 'Nacht \u2192 Früh',
 };
 
 export function DashboardPage() {
@@ -58,10 +58,10 @@ export function DashboardPage() {
         </Link>
         <div>
           <h1 className="font-display text-h1 text-kore-ink flex items-center gap-sm">
-            <BarChart3 size={24} /> Uebergabe-Dashboard
+            <BarChart3 size={24} /> Übergabe-Dashboard
           </h1>
           <p className="text-body text-kore-mid mt-xs">
-            Ueberblick ueber Uebergabe-Compliance und Aktivitaet.
+            Überblick über Übergabe-Compliance und Aktivität.
           </p>
         </div>
       </div>
@@ -110,7 +110,7 @@ export function DashboardPage() {
       {isLoading ? (
         <div className="text-body text-kore-mid py-2xl text-center">Lade Dashboard...</div>
       ) : !dashboard ? (
-        <div className="text-body text-kore-mid py-2xl text-center">Keine Daten verfuegbar.</div>
+        <div className="text-body text-kore-mid py-2xl text-center">Keine Daten verfügbar.</div>
       ) : (
         <>
           {/* KPI Tiles */}
@@ -129,7 +129,7 @@ export function DashboardPage() {
             />
             <KPITile
               icon={Check}
-              label="Bestaetigt"
+              label="Bestätigt"
               value={dashboard.acknowledged}
               color="text-emerald-600"
             />
@@ -141,7 +141,7 @@ export function DashboardPage() {
             />
             <KPITile
               icon={TrendingUp}
-              label="Durchschn. Bestaetigungszeit"
+              label="Durchschn. Bestätigungszeit"
               value={formatMinutes(dashboard.avgAckTimeMinutes || 0)}
               color="text-kore-brass"
             />
@@ -152,14 +152,14 @@ export function DashboardPage() {
             {/* Overall compliance */}
             <div className="bg-kore-white border border-kore-border p-lg">
               <h3 className="font-display text-body font-medium text-kore-ink mb-md">
-                Bestaetigungs-Quote
+                Bestätigungs-Quote
               </h3>
               <div className="flex items-end gap-md">
                 <span className="font-display text-h1 text-kore-ink">
                   {dashboard.complianceRate}%
                 </span>
                 <span className="text-small text-kore-mid mb-xs">
-                  {dashboard.acknowledged} von {dashboard.total} bestaetigt
+                  {dashboard.acknowledged} von {dashboard.total} bestätigt
                 </span>
               </div>
               <div className="mt-md h-3 bg-kore-bg rounded-sm overflow-hidden">
@@ -173,14 +173,14 @@ export function DashboardPage() {
             {/* Fast ack rate */}
             <div className="bg-kore-white border border-kore-border p-lg">
               <h3 className="font-display text-body font-medium text-kore-ink mb-md">
-                Schnelle Bestaetigungen (innerhalb 2 Std.)
+                Schnelle Bestätigungen (innerhalb 2 Std.)
               </h3>
               <div className="flex items-end gap-md">
                 <span className="font-display text-h1 text-kore-ink">
                   {dashboard.fastAckRate}%
                 </span>
                 <span className="text-small text-kore-mid mb-xs">
-                  innerhalb von 2 Stunden bestaetigt
+                  innerhalb von 2 Stunden bestätigt
                 </span>
               </div>
               <div className="mt-md h-3 bg-kore-bg rounded-sm overflow-hidden">
@@ -196,12 +196,12 @@ export function DashboardPage() {
           <div className="bg-kore-white border border-kore-border p-lg">
             <h3 className="font-display text-body font-medium text-kore-ink mb-md flex items-center gap-sm">
               <AlertTriangle size={16} className="text-amber-500" />
-              Unbestaetigte Uebergaben ({dashboard.unacknowledged?.length ?? 0})
+              Unbestätigte Übergaben ({dashboard.unacknowledged?.length ?? 0})
             </h3>
 
             {!dashboard.unacknowledged?.length ? (
               <p className="text-body text-kore-mid text-center py-lg">
-                Alle Uebergaben wurden bestaetigt.
+                Alle Übergaben wurden bestätigt.
               </p>
             ) : (
               <div className="space-y-sm">

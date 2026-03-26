@@ -230,7 +230,7 @@ export function CountPage() {
                 disabled={completeMut.isPending}
                 className="flex items-center gap-sm px-md py-sm text-small bg-kore-ink text-kore-white hover:bg-kore-brass transition-colors"
               >
-                <CheckCircle2 size={14} /> Abschliessen
+                <CheckCircle2 size={14} /> Abschließen
               </button>
             </>
           )}

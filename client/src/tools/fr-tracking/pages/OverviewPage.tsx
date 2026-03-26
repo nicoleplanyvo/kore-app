@@ -108,7 +108,7 @@ export function OverviewPage() {
 
           {total > 30 && (
             <div className="flex justify-center gap-md mt-xl">
-              <button onClick={() => setPage(Math.max(1, page - 1))} disabled={page <= 1} className="px-md py-sm border border-kore-border text-small disabled:opacity-40 hover:bg-kore-bg transition-colors">Zurueck</button>
+              <button onClick={() => setPage(Math.max(1, page - 1))} disabled={page <= 1} className="px-md py-sm border border-kore-border text-small disabled:opacity-40 hover:bg-kore-bg transition-colors">Zurück</button>
               <span className="text-small text-kore-mid self-center">Seite {page} von {Math.ceil(total / 30)}</span>
               <button onClick={() => setPage(page + 1)} disabled={page * 30 >= total} className="px-md py-sm border border-kore-border text-small disabled:opacity-40 hover:bg-kore-bg transition-colors">Weiter</button>
             </div>

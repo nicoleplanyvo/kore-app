@@ -6,16 +6,16 @@ export function DashboardPage() {
   const { data: dashboard, isLoading } = useVmComplianceDashboard();
 
   if (isLoading) return <div className="p-xl text-body text-kore-mid">Lade Dashboard...</div>;
-  if (!dashboard) return <div className="p-xl text-body text-kore-mid">Keine Daten verfuegbar.</div>;
+  if (!dashboard) return <div className="p-xl text-body text-kore-mid">Keine Daten verfügbar.</div>;
 
   return (
     <div className="p-xl max-w-5xl">
       <Link to="/app/tools/vm-compliance" className="flex items-center gap-sm text-small text-kore-mid hover:text-kore-ink mb-xl">
-        <ArrowLeft size={16} /> Zurueck
+        <ArrowLeft size={16} /> Zurück
       </Link>
 
       <h1 className="font-display text-h1 text-kore-ink mb-sm">VM Compliance Dashboard</h1>
-      <p className="text-body text-kore-mid mb-2xl">Gesamtuebersicht der Visual-Merchandising-Compliance</p>
+      <p className="text-body text-kore-mid mb-2xl">Gesamtübersicht der Visual-Merchandising-Compliance</p>
 
       {/* KPI Tiles */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-xl mb-2xl">

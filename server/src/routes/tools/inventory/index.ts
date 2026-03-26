@@ -268,7 +268,7 @@ inventoryRouter.post('/counts/:id/items/batch', async (req, res) => {
     }>;
 
     if (!Array.isArray(items) || items.length === 0) {
-      return res.status(400).json({ error: 'Keine Positionen uebergeben.' });
+      return res.status(400).json({ error: 'Keine Positionen übergeben.' });
     }
 
     const results: Array<{ sku: string; success: boolean; error?: string; needsRecount?: boolean }> = [];

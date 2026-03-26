@@ -36,7 +36,7 @@ export function DashboardPage() {
             <BarChart3 size={24} /> Pulse Survey Dashboard
           </h1>
           <p className="text-body text-kore-mid mt-xs">
-            Gesamtuebersicht aller Mitarbeiterbefragungen.
+            Gesamtübersicht aller Mitarbeiterbefragungen.
           </p>
         </div>
       </div>
@@ -135,7 +135,7 @@ export function DashboardPage() {
             to="/tools/pulse-survey"
             className="flex items-center gap-xs px-lg py-sm bg-kore-ink text-kore-white text-small hover:opacity-90"
           >
-            <TrendingUp size={16} /> Zur Uebersicht
+            <TrendingUp size={16} /> Zur Übersicht
           </Link>
         </div>
       )}

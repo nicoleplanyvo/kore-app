@@ -12,7 +12,7 @@ export function DashboardPage() {
   const { data, isLoading } = useChallengeDashboard();
 
   if (isLoading) return <div className="p-xl text-body text-kore-mid">Lade Dashboard...</div>;
-  if (!data) return <div className="p-xl text-body text-kore-mid">Dashboard nicht verfuegbar.</div>;
+  if (!data) return <div className="p-xl text-body text-kore-mid">Dashboard nicht verfügbar.</div>;
 
   return (
     <div className="p-xl max-w-5xl">
@@ -21,7 +21,7 @@ export function DashboardPage() {
         <Link to="/tools/challenges" className="text-kore-mid hover:text-kore-ink transition-colors"><ArrowLeft size={20} /></Link>
         <div>
           <h1 className="font-display text-h1 text-kore-ink">Challenge Dashboard</h1>
-          <p className="text-body text-kore-mid mt-xs">Ueberblick ueber alle Wettbewerbe und Ihre Erfolge</p>
+          <p className="text-body text-kore-mid mt-xs">Überblick über alle Wettbewerbe und Ihre Erfolge</p>
         </div>
       </div>
 

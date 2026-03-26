@@ -8,7 +8,7 @@ appraisalsRouter.use(authenticate, requireToolAccess('coaching.appraisals'));
 
 /* ──────────────────────────────────────────
    Rating-Skala
-   5 = Uebertrifft Erwartungen
+   5 = Übertrifft Erwartungen
    4 = Erreicht voll
    3 = Erreicht
    2 = Teilweise erreicht

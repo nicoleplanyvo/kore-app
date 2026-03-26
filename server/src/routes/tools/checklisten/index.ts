@@ -385,7 +385,7 @@ checklistenRouter.put('/checklists/:id/items/:itemId', async (req, res) => {
       include: { section: { select: { templateId: true } } },
     });
     if (!item || item.section.templateId !== session.templateId) {
-      return res.status(404).json({ error: 'Pruefpunkt nicht gefunden.' });
+      return res.status(404).json({ error: 'Prüfpunkt nicht gefunden.' });
     }
 
     // Toggle: check existing entry

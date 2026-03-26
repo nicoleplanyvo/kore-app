@@ -214,7 +214,7 @@ budgetTrackerRouter.post('/targets', async (req, res) => {
       minTarget: target.cogs,
     });
   } catch (err: any) {
-    if (err.code === 'P2002') return res.status(409).json({ error: 'Ziel fuer diese Periode existiert bereits.' });
+    if (err.code === 'P2002') return res.status(409).json({ error: 'Ziel für diese Periode existiert bereits.' });
     console.error(err); res.status(500).json({ error: 'Interner Serverfehler.' });
   }
 });
@@ -520,7 +520,7 @@ budgetTrackerRouter.get('/forecast', async (req, res) => {
       alerts.push({ type: 'danger', message: `Hochrechnung (${Math.round(projection).toLocaleString('de-DE')} EUR) liegt unter Mindestziel (${Math.round(minTarget).toLocaleString('de-DE')} EUR).` });
     }
     if (projectedAchievement > 100) {
-      alerts.push({ type: 'success', message: `Zielerreichung voraussichtlich ${projectedAchievement.toFixed(1)}% — Uebererfuellung erwartet.` });
+      alerts.push({ type: 'success', message: `Zielerreichung voraussichtlich ${projectedAchievement.toFixed(1)}% — Übererfüllung erwartet.` });
     }
 
     res.json({

@@ -7,7 +7,7 @@ import {
 } from '../../../hooks/useClienteling';
 
 const TYPE_LABELS: Record<string, string> = { BERATUNG: 'Beratung', STYLE_BERATUNG: 'Style-Beratung', VIP_EVENT: 'VIP-Event', PERSONAL_SHOPPING: 'Personal Shopping', ANPROBE: 'Anprobe', SONSTIGES: 'Sonstiges' };
-const STATUS_LABELS: Record<string, string> = { GEPLANT: 'Geplant', BESTAETIGT: 'Bestaetigt', ABGESCHLOSSEN: 'Abgeschlossen', ABGESAGT: 'Abgesagt' };
+const STATUS_LABELS: Record<string, string> = { GEPLANT: 'Geplant', BESTAETIGT: 'Bestätigt', ABGESCHLOSSEN: 'Abgeschlossen', ABGESAGT: 'Abgesagt' };
 const STATUS_COLORS: Record<string, string> = { GEPLANT: 'bg-blue-100 text-blue-700', BESTAETIGT: 'bg-emerald-100 text-emerald-700', ABGESCHLOSSEN: 'bg-gray-100 text-gray-600', ABGESAGT: 'bg-red-100 text-red-700' };
 
 export function AppointmentsPage() {
@@ -88,7 +88,7 @@ export function AppointmentsPage() {
             <div>
               <label className="block text-small text-kore-mid mb-xs">Store *</label>
               <select value={form.storeId} onChange={e => setForm({ ...form, storeId: e.target.value })} className="w-full border border-kore-border px-md py-sm text-body" required>
-                <option value="">-- Waehlen --</option>
+                <option value="">-- Wählen --</option>
                 {(stores ?? []).map((s: any) => <option key={s.id} value={s.id}>{s.name}</option>)}
               </select>
             </div>
@@ -183,10 +183,10 @@ export function AppointmentsPage() {
                       </div>
                       <div className="flex items-center gap-xs ml-md">
                         {a.status === 'GEPLANT' && (
-                          <button onClick={() => handleStatusChange(a.id, 'BESTAETIGT')} className="px-sm py-xs text-small bg-emerald-50 text-emerald-700 hover:bg-emerald-100 transition-colors">Bestaetigen</button>
+                          <button onClick={() => handleStatusChange(a.id, 'BESTAETIGT')} className="px-sm py-xs text-small bg-emerald-50 text-emerald-700 hover:bg-emerald-100 transition-colors">Bestätigen</button>
                         )}
                         {a.status === 'BESTAETIGT' && (
-                          <button onClick={() => handleStatusChange(a.id, 'ABGESCHLOSSEN')} className="px-sm py-xs text-small bg-gray-50 text-gray-700 hover:bg-gray-100 transition-colors">Abschliessen</button>
+                          <button onClick={() => handleStatusChange(a.id, 'ABGESCHLOSSEN')} className="px-sm py-xs text-small bg-gray-50 text-gray-700 hover:bg-gray-100 transition-colors">Abschließen</button>
                         )}
                         {(a.status === 'GEPLANT' || a.status === 'BESTAETIGT') && (
                           <button onClick={() => handleStatusChange(a.id, 'ABGESAGT')} className="px-sm py-xs text-small bg-red-50 text-red-600 hover:bg-red-100 transition-colors">Absagen</button>

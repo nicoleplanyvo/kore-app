@@ -153,7 +153,7 @@ function AccuracyTrendChart({ data }: { data: { period: string; forecast: number
       return { period: d.period, accuracy: Math.round(acc * 100) / 100 };
     });
 
-  if (points.length < 2) return <div className="text-small text-kore-mid py-lg text-center">Nicht genug Daten fuer Trendlinie</div>;
+  if (points.length < 2) return <div className="text-small text-kore-mid py-lg text-center">Nicht genug Daten für Trendlinie</div>;
 
   const chartWidth = Math.max(400, points.length * 40 + 80);
   const chartHeight = 160;
@@ -306,7 +306,7 @@ export function DashboardPage() {
             <BarChart3 size={24} /> Forecast Dashboard
           </h1>
           <p className="text-body text-kore-mid mt-xs">
-            Genauigkeit, Trends und Vergleiche im Ueberblick.
+            Genauigkeit, Trends und Vergleiche im Überblick.
           </p>
         </div>
         <button

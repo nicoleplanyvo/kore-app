@@ -46,7 +46,7 @@ export function BriefingDetailPage() {
           disabled={markRead.isPending}
           className="flex items-center gap-xs px-md py-sm bg-emerald-600 text-kore-white text-small hover:opacity-90 disabled:opacity-50"
         >
-          <CheckCircle size={16} /> {markRead.isPending ? 'Wird bestaetigt...' : 'Gelesen bestaetigen'}
+          <CheckCircle size={16} /> {markRead.isPending ? 'Wird bestätigt...' : 'Gelesen bestätigen'}
         </button>
       </div>
 
@@ -90,7 +90,7 @@ export function BriefingDetailPage() {
             <UserCheck size={18} className="text-emerald-600" /> Gelesen ({acks.length})
           </h2>
           {acks.length === 0 ? (
-            <p className="text-body text-kore-mid">Noch keine Bestaetigungen.</p>
+            <p className="text-body text-kore-mid">Noch keine Bestätigungen.</p>
           ) : (
             <div className="bg-kore-white border border-kore-border divide-y divide-kore-border">
               {acks.map((a: any) => (

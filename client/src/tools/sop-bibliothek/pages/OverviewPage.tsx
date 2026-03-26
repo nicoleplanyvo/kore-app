@@ -164,7 +164,7 @@ export function OverviewPage() {
                   disabled={page <= 1}
                   className="px-md py-xs border border-kore-border text-small hover:bg-kore-bg disabled:opacity-40 transition-colors"
                 >
-                  Zurueck
+                  Zurück
                 </button>
                 <button
                   onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
