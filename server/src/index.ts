@@ -164,7 +164,7 @@ app.get('/health', (_req, res) => {
 if (isProduction) {
   const clientDist = path.resolve(__dirname, '../../client/dist');
   app.use(express.static(clientDist));
-  app.get('*', (req, res, next) => {
+  app.get('/{*splat}', (req, res, next) => {
     if (req.path.startsWith('/api/') || req.path === '/health') return next();
     res.sendFile(path.join(clientDist, 'index.html'));
   });
