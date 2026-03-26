@@ -81,6 +81,7 @@ model User {
   ordersCreated        CustomerOrder[]       @relation("OrderCreator")
   orderStatusUpdates   OrderStatusUpdate[]   @relation("OrderStatusUpdater")
   metrixConfigs        MetrixConfig[]        @relation("MetrixConfigCreator")
+  createdInvoices      Invoice[]             @relation("InvoiceCreator")
 
   @@index([tenantId])
 }
@@ -137,6 +138,7 @@ model Tenant {
   teamMessages    TeamMessage[]
   newsletters     Newsletter[]
   floorFrequencyLogs FloorFrequencyLog[]
+  invoices        Invoice[]
 }
 
 model Region {
@@ -2014,4 +2016,47 @@ model MetrixScore {
   @@unique([entryId, kpiId])
   @@index([entryId])
   @@index([kpiId])
+}
+
+// === Billing / Invoicing ===
+
+model Invoice {
+  id          String    @id @default(cuid())
+  tenantId    String
+  tenant      Tenant    @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  createdById String
+  createdBy   User      @relation("InvoiceCreator", fields: [createdById], references: [id])
+  number      String    @unique
+  type        String    // INVOICE | QUOTE
+  status      String    @default("DRAFT") // DRAFT | SENT | PAID | OVERDUE | ACCEPTED | CANCELED
+  issueDate   DateTime
+  dueDate     DateTime?
+  subtotal    Int       @default(0)
+  taxRate     Float     @default(0.19)
+  taxAmount   Int       @default(0)
+  total       Int       @default(0)
+  notes       String?
+  sentAt      DateTime?
+  paidAt      DateTime?
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  items       InvoiceItem[]
+
+  @@index([tenantId])
+  @@index([createdById])
+  @@index([status])
+  @@index([type])
+}
+
+model InvoiceItem {
+  id          String  @id @default(cuid())
+  invoiceId   String
+  invoice     Invoice @relation(fields: [invoiceId], references: [id], onDelete: Cascade)
+  description String
+  quantity    Int
+  unitPrice   Int
+  total       Int
+
+  @@index([invoiceId])
 }

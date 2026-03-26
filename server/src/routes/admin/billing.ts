@@ -1,8 +1,28 @@
 import { Router, type Router as RouterType } from 'express';
 import prisma from '../../lib/prisma.js';
 import { authenticate, requireMinRole } from '../../middleware/auth.js';
-import { generateInvoiceNumber } from '../../lib/invoice-number.js';
 import { generateInvoicePdf } from '../../lib/invoice-pdf.js';
+
+/** Generate a sequential invoice/quote number like RE-2026-00042 or AN-2026-00001 */
+async function generateInvoiceNumber(type: string): Promise<string> {
+  const prefix = type === 'INVOICE' ? 'RE' : 'AN';
+  const year = new Date().getFullYear();
+  const pattern = `${prefix}-${year}-`;
+
+  const last = await prisma.invoice.findFirst({
+    where: { number: { startsWith: pattern } },
+    orderBy: { number: 'desc' },
+    select: { number: true },
+  });
+
+  let seq = 1;
+  if (last) {
+    const parts = last.number.split('-');
+    seq = parseInt(parts[parts.length - 1]!, 10) + 1;
+  }
+
+  return `${pattern}${String(seq).padStart(5, '0')}`;
+}
 
 export const adminBillingRouter: RouterType = Router();
 adminBillingRouter.use(authenticate, requireMinRole('kore_admin'));
