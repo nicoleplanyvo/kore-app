@@ -35,6 +35,16 @@
 - Orphan pages: Beim Rebuild alter Tools alte Seiten löschen wenn Router sie nicht mehr referenziert
 - Git worktree lock: Bei >10 parallelen Agents git lock Fehler möglich — max 7 parallel
 
+## Lotta — AI-Assistentin (OpenClaw + Claude API)
+- Lotta ist Nicoles persönliche AI-Assistentin, läuft über OpenClaw + Claude API + WhatsApp
+- Lotta kann NICHT coden — Claude Code übernimmt alle Code-Aufgaben
+- Kommunikation: über WhatsApp Web via MCP Chrome Browser (mcp__Claude_in_Chrome__)
+- Chat: Nicoles Selbst-Chat "Nicole (du)" in WhatsApp Web — dort liest Lotta mit
+- Workflow: WhatsApp Web öffnen → Selbst-Chat suchen → Nachricht tippen → Senden
+- API (Fallback, wenn Nginx POST erlaubt): `https://kore-retail.de/lotta/api/message`
+- API direkt (Hetzner Firewall blockiert aktuell): `http://195.201.119.214:4444/api/message`
+- WhatsApp-Nummer: +4915901673286
+
 ## Sprache
 - UI-Sprache: Deutsch
 - Code/Variablen: Englisch
