@@ -33,10 +33,10 @@ echo ""
 echo "▸ Building client..."
 cd client && npm run build && cd ..
 
-# 6. Restart Passenger
+# 6. Restart PM2
 echo ""
-echo "▸ Restarting Passenger..."
-mkdir -p tmp && touch tmp/restart.txt
+echo "▸ Restarting PM2 kore-app..."
+pm2 restart kore-app || echo "⚠ PM2 restart failed — start manually with: pm2 start kore-app"
 
 echo ""
 echo "═══════════════════════════════════════"
