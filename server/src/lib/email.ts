@@ -1,35 +1,18 @@
 /**
- * E-Mail-Versand über Brevo SMTP (ehemals Sendinblue)
- * Nutzt nodemailer mit Brevo SMTP-Relay
+ * E-Mail-Versand über Brevo API (früher Sendinblue)
+ * https://api.brevo.com/v3/smtp/email
  */
 
-import nodemailer from 'nodemailer';
-
-const SMTP_HOST = process.env['SMTP_HOST'] ?? 'smtp-relay.brevo.com';
-const SMTP_PORT = Number(process.env['SMTP_PORT'] ?? '587');
-const SMTP_USER = process.env['SMTP_USER'] ?? '';
-const SMTP_PASS = process.env['SMTP_PASS'] ?? '';
+const BREVO_API_KEY = process.env['BREVO_API_KEY'] ?? 'REDACTED_ROTATED_KEY';
+if (!BREVO_API_KEY) {
+  console.warn('⚠ BREVO_API_KEY nicht gesetzt — E-Mails werden nur geloggt.');
+}
 
 const FROM = process.env['FROM_EMAIL'] ?? 'noreply@kore-retail.de';
 const NOTIFY = process.env['NOTIFICATION_EMAIL'] ?? 'info@kore-retail.de';
 
-const hasSmtp = !!(SMTP_USER && SMTP_PASS);
-
-if (!hasSmtp) {
-  console.warn('SMTP_USER / SMTP_PASS nicht gesetzt — E-Mails werden nur geloggt.');
-}
-
-const transporter = hasSmtp
-  ? nodemailer.createTransport({
-      host: SMTP_HOST,
-      port: SMTP_PORT,
-      secure: SMTP_PORT === 465,
-      auth: { user: SMTP_USER, pass: SMTP_PASS },
-    })
-  : null;
-
 // ──────────────────────────────────────────────
-// Send
+// Brevo Send
 // ──────────────────────────────────────────────
 
 interface EmailPayload {
@@ -47,7 +30,7 @@ interface SendResult {
 }
 
 export async function sendEmail(payload: EmailPayload): Promise<SendResult> {
-  if (!transporter) {
+  if (!BREVO_API_KEY) {
     console.log('[DEV] E-Mail (nur geloggt):', {
       from: payload.from,
       to: payload.to,
@@ -57,23 +40,46 @@ export async function sendEmail(payload: EmailPayload): Promise<SendResult> {
   }
 
   try {
-    const info = await transporter.sendMail({
-      from: payload.from,
-      to: Array.isArray(payload.to) ? payload.to.join(', ') : payload.to,
+    // Brevo Format
+    const recipients = Array.isArray(payload.to) 
+      ? payload.to.map(email => ({ email }))
+      : [{ email: payload.to }];
+
+    const sender = { email: FROM, name: 'KORE' };
+
+    const brevoPayload = {
+      sender,
+      to: recipients,
       subject: payload.subject,
-      html: payload.html,
-      replyTo: payload.reply_to,
+      htmlContent: payload.html,
+      ...(payload.reply_to ? { replyTo: { email: payload.reply_to } } : {}),
+    };
+
+    const res = await fetch('https://api.brevo.com/v3/smtp/email', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'api-key': BREVO_API_KEY,
+      },
+      body: JSON.stringify(brevoPayload),
     });
 
-    return { success: true, messageId: info.messageId };
+    if (!res.ok) {
+      const body = await res.text();
+      console.error('Brevo error:', res.status, body);
+      return { success: false, error: `Brevo ${res.status}: ${body}` };
+    }
+
+    const data = (await res.json()) as { messageId?: string };
+    return { success: true, messageId: data.messageId };
   } catch (err) {
-    console.error('SMTP send error:', err);
+    console.error('Brevo fetch error:', err);
     return { success: false, error: String(err) };
   }
 }
 
 // ──────────────────────────────────────────────
-// E-Mail-Templates
+// E-Mail-Templates (KORE App)
 // ──────────────────────────────────────────────
 
 function baseLayout(content: string): string {
@@ -115,6 +121,58 @@ function baseLayout(content: string): string {
 }
 
 // ──────────────────────────────────────────────
+// Benutzer-Registrierung
+// ──────────────────────────────────────────────
+
+export function userInviteEmail(data: {
+  name: string;
+  email: string;
+  companyName: string;
+  inviteLink: string;
+}): EmailPayload {
+  return {
+    from: FROM,
+    to: data.email,
+    subject: `Willkommen bei KORE — ${data.companyName}`,
+    html: baseLayout(`
+      <h2>Willkommen bei KORE, ${escapeHtml(data.name)}.</h2>
+      <p>Sie wurden zu KORE für <strong>${escapeHtml(data.companyName)}</strong> eingeladen.</p>
+      <div class="brass-line"></div>
+      <p>Klicken Sie auf den folgenden Link, um Ihr Konto zu aktivieren:</p>
+      <p><a href="${escapeHtml(data.inviteLink)}" style="background: #9E8460; color: white; padding: 12px 24px; text-decoration: none; border-radius: 4px; display: inline-block;">Konto aktivieren</a></p>
+      <p style="margin-top: 24px; color: #9E8460; font-style: italic;">
+        Bei Fragen erreichen Sie uns unter <a href="mailto:info@kore-retail.de">info@kore-retail.de</a><br/>
+        KORE — Retail Intelligence
+      </p>
+    `),
+  };
+}
+
+export function passwordResetEmail(data: {
+  name: string;
+  email: string;
+  resetLink: string;
+}): EmailPayload {
+  return {
+    from: FROM,
+    to: data.email,
+    subject: 'KORE — Passwort zurücksetzen',
+    html: baseLayout(`
+      <h2>Passwort zurücksetzen</h2>
+      <p>Hallo ${escapeHtml(data.name)},</p>
+      <p>Sie haben eine Anfrage zum Zurücksetzen Ihres KORE-Passworts gestellt.</p>
+      <div class="brass-line"></div>
+      <p>Klicken Sie auf den folgenden Link, um ein neues Passwort zu erstellen:</p>
+      <p><a href="${escapeHtml(data.resetLink)}" style="background: #9E8460; color: white; padding: 12px 24px; text-decoration: none; border-radius: 4px; display: inline-block;">Neues Passwort erstellen</a></p>
+      <p>Falls Sie diese Anfrage nicht gestellt haben, können Sie diese E-Mail ignorieren.</p>
+      <p style="margin-top: 24px; color: #9E8460; font-style: italic;">
+        KORE — Retail Intelligence
+      </p>
+    `),
+  };
+}
+
+// ──────────────────────────────────────────────
 // Kontaktformular
 // ──────────────────────────────────────────────
 
@@ -125,7 +183,7 @@ export function contactNotificationEmail(data: {
   message: string;
 }): EmailPayload {
   return {
-    from: `KORE <${FROM}>`,
+    from: FROM,
     to: NOTIFY,
     subject: `Neue KORE Kontaktanfrage: ${data.name}`,
     reply_to: data.email,
@@ -144,7 +202,7 @@ export function contactNotificationEmail(data: {
 
 export function contactConfirmationEmail(data: { name: string; email: string }): EmailPayload {
   return {
-    from: `KORE <${FROM}>`,
+    from: FROM,
     to: data.email,
     subject: 'Ihre Anfrage bei KORE',
     html: baseLayout(`
@@ -173,7 +231,7 @@ export function auditNotificationEmail(data: {
   challenge: string;
 }): EmailPayload {
   return {
-    from: `KORE <${FROM}>`,
+    from: FROM,
     to: NOTIFY,
     subject: `Neue KORE Audit-Anfrage: ${data.company}`,
     reply_to: data.email,
@@ -195,7 +253,7 @@ export function auditNotificationEmail(data: {
 
 export function auditConfirmationEmail(data: { name: string; email: string; company: string }): EmailPayload {
   return {
-    from: `KORE <${FROM}>`,
+    from: FROM,
     to: data.email,
     subject: 'Ihre Audit-Anfrage bei KORE',
     html: baseLayout(`
@@ -209,47 +267,6 @@ export function auditConfirmationEmail(data: { name: string; email: string; comp
         Nicole Muñoz Bonilla<br/>
         KORE — Retail Intelligence
       </p>
-    `),
-  };
-}
-
-// ──────────────────────────────────────────────
-// Blog-Freigabe
-// ──────────────────────────────────────────────
-
-export function blogApprovalEmail(data: {
-  title: string;
-  excerpt: string;
-  previewContent: string;
-  approveUrl: string;
-  rejectUrl: string;
-}): EmailPayload {
-  return {
-    from: `Lotta · KORE <${FROM}>`,
-    to: NOTIFY,
-    subject: `Blog-Vorschlag: ${data.title}`,
-    html: baseLayout(`
-      <h2>Neuer Blogbeitrag zur Freigabe</h2>
-      <div class="label">Titel</div>
-      <div class="field" style="font-family: 'Cormorant', Georgia, serif; font-size: 18px; font-weight: 600;">${escapeHtml(data.title)}</div>
-      ${data.excerpt ? `<div class="label">Zusammenfassung</div><div class="field">${escapeHtml(data.excerpt)}</div>` : ''}
-      <div class="label">Vorschau</div>
-      <div class="field" style="max-height: 300px; overflow: hidden;">${data.previewContent}</div>
-      <div class="brass-line"></div>
-      <table width="100%" cellpadding="0" cellspacing="0" style="margin-top: 24px;">
-        <tr>
-          <td align="center" style="padding: 8px;">
-            <a href="${data.approveUrl}" style="display: inline-block; padding: 14px 36px; background: #9E8460; color: #FFFFFF; font-size: 14px; font-weight: 500; text-transform: uppercase; letter-spacing: 1.5px; text-decoration: none;">
-              Freigeben
-            </a>
-          </td>
-          <td align="center" style="padding: 8px;">
-            <a href="${data.rejectUrl}" style="display: inline-block; padding: 14px 36px; border: 1px solid #9E8460; color: #9E8460; font-size: 14px; font-weight: 500; text-transform: uppercase; letter-spacing: 1.5px; text-decoration: none;">
-              Ablehnen
-            </a>
-          </td>
-        </tr>
-      </table>
     `),
   };
 }

@@ -91,6 +91,17 @@ adminBillingRouter.post('/', async (req, res) => {
     const taxAmount = Math.round(subtotal * taxRate);
     const total = subtotal + taxAmount;
 
+    // Get tenant info for customerName
+    const tenant = await prisma.tenant.findUnique({
+      where: { id: tenantId },
+      select: { name: true, contactName: true, contactEmail: true },
+    });
+
+    if (!tenant) {
+      res.status(400).json({ error: 'Tenant nicht gefunden.' });
+      return;
+    }
+
     const invoice = await prisma.invoice.create({
       data: {
         tenantId,
@@ -100,6 +111,8 @@ adminBillingRouter.post('/', async (req, res) => {
         status: 'DRAFT',
         issueDate: new Date(issueDate),
         dueDate: dueDate ? new Date(dueDate) : null,
+        customerName: tenant.name,
+        customerEmail: tenant.contactEmail,
         subtotal,
         taxRate,
         taxAmount,
@@ -443,6 +456,8 @@ adminBillingRouter.post('/generate', async (req, res) => {
           type: 'INVOICE',
           status: 'DRAFT',
           issueDate: new Date(),
+          customerName: tenant.name,
+          customerEmail: tenant.contactEmail,
           subtotal,
           taxRate,
           taxAmount,

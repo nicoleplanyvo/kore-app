@@ -1,5 +1,5 @@
 import { Router, type Router as RouterType } from 'express';
-import { contactFormSchema } from '@shared/validators';
+import { contactFormSchema } from '../shared/validators/index.js';
 import {
   sendEmail,
   contactNotificationEmail,

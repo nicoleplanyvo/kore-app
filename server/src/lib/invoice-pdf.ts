@@ -39,7 +39,7 @@ interface InvoiceForPdf {
     name: string;
     contactName?: string | null;
     contactEmail?: string | null;
-  };
+  } | null;
 }
 
 function formatCurrency(cents: number): string {
@@ -105,9 +105,9 @@ export async function generateInvoicePdf(invoice: InvoiceForPdf): Promise<Buffer
       {
         stack: [
           { text: 'Empfänger:', fontSize: 8, color: '#999', margin: [0, 0, 0, 4] },
-          { text: invoice.tenant.name, fontSize: 11, bold: true },
-          ...(invoice.tenant.contactName ? [{ text: invoice.tenant.contactName, fontSize: 10 }] : []),
-          ...(invoice.tenant.contactEmail ? [{ text: invoice.tenant.contactEmail, fontSize: 9, color: '#666' }] : []),
+          { text: invoice.tenant?.name || 'Unbekannt', fontSize: 11, bold: true },
+          ...(invoice.tenant?.contactName ? [{ text: invoice.tenant.contactName, fontSize: 10 }] : []),
+          ...(invoice.tenant?.contactEmail ? [{ text: invoice.tenant.contactEmail, fontSize: 9, color: '#666' }] : []),
         ],
         margin: [0, 0, 0, 25],
       } as Content,
