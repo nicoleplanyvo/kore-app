@@ -214,6 +214,47 @@ export function auditConfirmationEmail(data: { name: string; email: string; comp
 }
 
 // ──────────────────────────────────────────────
+// Blog-Freigabe
+// ──────────────────────────────────────────────
+
+export function blogApprovalEmail(data: {
+  title: string;
+  excerpt: string;
+  previewContent: string;
+  approveUrl: string;
+  rejectUrl: string;
+}): EmailPayload {
+  return {
+    from: `Lotta · KORE <${FROM}>`,
+    to: NOTIFY,
+    subject: `Blog-Vorschlag: ${data.title}`,
+    html: baseLayout(`
+      <h2>Neuer Blogbeitrag zur Freigabe</h2>
+      <div class="label">Titel</div>
+      <div class="field" style="font-family: 'Cormorant', Georgia, serif; font-size: 18px; font-weight: 600;">${escapeHtml(data.title)}</div>
+      ${data.excerpt ? `<div class="label">Zusammenfassung</div><div class="field">${escapeHtml(data.excerpt)}</div>` : ''}
+      <div class="label">Vorschau</div>
+      <div class="field" style="max-height: 300px; overflow: hidden;">${data.previewContent}</div>
+      <div class="brass-line"></div>
+      <table width="100%" cellpadding="0" cellspacing="0" style="margin-top: 24px;">
+        <tr>
+          <td align="center" style="padding: 8px;">
+            <a href="${data.approveUrl}" style="display: inline-block; padding: 14px 36px; background: #9E8460; color: #FFFFFF; font-size: 14px; font-weight: 500; text-transform: uppercase; letter-spacing: 1.5px; text-decoration: none;">
+              Freigeben
+            </a>
+          </td>
+          <td align="center" style="padding: 8px;">
+            <a href="${data.rejectUrl}" style="display: inline-block; padding: 14px 36px; border: 1px solid #9E8460; color: #9E8460; font-size: 14px; font-weight: 500; text-transform: uppercase; letter-spacing: 1.5px; text-decoration: none;">
+              Ablehnen
+            </a>
+          </td>
+        </tr>
+      </table>
+    `),
+  };
+}
+
+// ──────────────────────────────────────────────
 // Helpers
 // ──────────────────────────────────────────────
 

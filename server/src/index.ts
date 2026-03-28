@@ -55,6 +55,7 @@ import { rmDashboardRouter } from './routes/tools/rm-dashboard/index.js';
 import { metrixRouter } from './routes/tools/metrix/index.js';
 import { toolsRouter } from './routes/tools/index.js';
 import { myDayRouter } from './routes/tools/my-day/index.js';
+import { blogRouter } from './routes/blog.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -97,6 +98,9 @@ app.use('/api/', apiLimiter);
 // Website-Formulare (öffentlich)
 app.use('/api/contact', contactRouter);
 app.use('/api/audit', auditRouter);
+
+// Blog (öffentlich + Lotta API)
+app.use('/api/blog', blogRouter);
 
 // Auth (mit strengerem Rate-Limit)
 app.use('/api/auth', authLimiter, authRouter);

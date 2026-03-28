@@ -2060,3 +2060,19 @@ model InvoiceItem {
 
   @@index([invoiceId])
 }
+
+// ─── Blog ─────────────────────────────────────────
+model BlogPost {
+  id            String    @id @default(cuid())
+  title         String
+  slug          String    @unique
+  excerpt       String?
+  content       String
+  coverImageUrl String?
+  author        String    @default("Lotta")
+  status        String    @default("DRAFT")
+  approvalToken String    @unique
+  publishedAt   DateTime?
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+}
