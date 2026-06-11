@@ -3,6 +3,7 @@ import prisma from '../../../lib/prisma.js';
 import { authenticate } from '../../../middleware/auth.js';
 import { requireToolAccess } from '../../../middleware/requireToolAccess.js';
 import { vmSubmissionCreateSchema, vmReviewSchema } from '@shared/validators';
+import { vmSpotChecksRouter } from './spot-checks.js';
 import multer from 'multer';
 import path from 'path';
 import fs from 'fs';
@@ -19,6 +20,9 @@ const upload = multer({
 
 export const vmComplianceRouter: RouterType = Router();
 vmComplianceRouter.use(authenticate, requireToolAccess('standards.vm_foto_compliance'));
+
+// Spot-Checks: unangekündigte Ad-hoc-Foto-Anfragen
+vmComplianceRouter.use('/spot-checks', vmSpotChecksRouter);
 
 // GET /stores
 vmComplianceRouter.get('/stores', async (req, res) => {

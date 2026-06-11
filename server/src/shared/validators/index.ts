@@ -314,6 +314,48 @@ export const vmReviewSchema = z.object({
 });
 
 // ============================================================
+// Spot-Checks — Ad-hoc-Foto-Anfragen (Validators)
+// ============================================================
+
+export const photoRequestCreateSchema = z.object({
+  title: z.string().min(3).max(120),
+  instructions: z.string().max(2000).optional(),
+  category: z.string().max(60).optional(),
+  deadline: z.string().min(1),
+  storeIds: z.array(z.string().min(1)).min(1),
+});
+
+export const photoRequestRespondSchema = z.object({
+  storeId: z.string().min(1),
+  comment: z.string().max(1000).optional(),
+});
+
+export const photoRequestReviewSchema = z.object({
+  status: z.enum(['APPROVED', 'REJECTED']),
+  reviewNote: z.string().max(1000).optional(),
+});
+
+// ============================================================
+// Follow-up-Maßnahmen aus Store-Visits (Validators)
+// ============================================================
+
+export const followUpCreateSchema = z.object({
+  sessionId: z.string().min(1),
+  responseId: z.string().min(1).optional(),
+  description: z.string().min(3).max(1000),
+  assignedTo: z.string().min(1).optional(),
+  dueDate: z.string().min(1).optional(),
+});
+
+export const followUpUpdateSchema = z.object({
+  status: z.enum(['OPEN', 'IN_PROGRESS', 'DONE', 'CANCELLED']).optional(),
+  description: z.string().min(3).max(1000).optional(),
+  assignedTo: z.string().min(1).nullable().optional(),
+  dueDate: z.string().min(1).nullable().optional(),
+  resolution: z.string().max(1000).optional(),
+});
+
+// ============================================================
 // Store Standards — Validators
 // ============================================================
 

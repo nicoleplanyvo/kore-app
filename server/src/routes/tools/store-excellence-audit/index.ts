@@ -6,6 +6,7 @@ import { seaTemplatesRouter } from './templates.js';
 import { seaSessionsRouter } from './sessions.js';
 import { seaResponsesRouter } from './responses.js';
 import { seaReportsRouter } from './reports.js';
+import { seaFollowUpsRouter } from './follow-ups.js';
 
 export const storeExcellenceAuditRouter: RouterType = Router();
 
@@ -42,5 +43,6 @@ storeExcellenceAuditRouter.get('/stores', async (req, res) => {
 // Sub-Router mounten
 storeExcellenceAuditRouter.use('/templates', seaTemplatesRouter);
 storeExcellenceAuditRouter.use('/sessions', seaSessionsRouter);
+storeExcellenceAuditRouter.use('/follow-ups', seaFollowUpsRouter);
 storeExcellenceAuditRouter.use('/', seaResponsesRouter);
 storeExcellenceAuditRouter.use('/reports', seaReportsRouter);

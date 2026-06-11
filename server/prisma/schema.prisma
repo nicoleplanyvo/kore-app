@@ -81,6 +81,11 @@ model User {
   ordersCreated        CustomerOrder[]       @relation("OrderCreator")
   orderStatusUpdates   OrderStatusUpdate[]   @relation("OrderStatusUpdater")
   metrixConfigs        MetrixConfig[]        @relation("MetrixConfigCreator")
+  photoRequestsCreated PhotoRequest[]        @relation("PhotoRequestCreator")
+  photoRequestSubmissions PhotoRequestTarget[] @relation("PhotoRequestSubmitter")
+  photoRequestReviews  PhotoRequestTarget[]  @relation("PhotoRequestReviewer")
+  followUpsAssigned    FollowUpAction[]      @relation("FollowUpAssignee")
+  followUpsCreated     FollowUpAction[]      @relation("FollowUpCreator")
 
   @@index([tenantId])
 }
@@ -138,6 +143,8 @@ model Tenant {
   newsletters     Newsletter[]
   floorFrequencyLogs FloorFrequencyLog[]
   invoices          Invoice[]
+  photoRequests     PhotoRequest[]
+  followUpActions   FollowUpAction[]
 }
 
 model Region {
@@ -212,6 +219,8 @@ model Store {
   frRooms            FRRoom[]
   frSessions         FRSession[]
   metrixConfigs      MetrixConfig[]
+  photoRequestTargets PhotoRequestTarget[]
+  followUpActions    FollowUpAction[]
 
   @@index([tenantId])
   @@index([regionId])
@@ -392,6 +401,7 @@ model AuditSession {
   updatedAt     DateTime  @updatedAt
 
   responses AuditResponse[]
+  followUps FollowUpAction[]
 
   @@index([tenantId])
   @@index([storeId])
@@ -412,7 +422,39 @@ model AuditResponse {
   createdAt    DateTime       @default(now())
   updatedAt    DateTime       @updatedAt
 
+  followUps FollowUpAction[]
+
   @@unique([sessionId, criterionId])
+  @@index([sessionId])
+}
+
+// Follow-up-Maßnahmen aus Store-Visits — Kreislauf Visit → Maßnahme → Wirkung.
+// Kennzahlen bewusst nur auf Store-Ebene auswerten (Mitbestimmung beim Kunden).
+model FollowUpAction {
+  id             String         @id @default(cuid())
+  tenantId       String
+  tenant         Tenant         @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  storeId        String
+  store          Store          @relation(fields: [storeId], references: [id], onDelete: Cascade)
+  sessionId      String
+  session        AuditSession   @relation(fields: [sessionId], references: [id], onDelete: Cascade)
+  responseId     String?
+  response       AuditResponse? @relation(fields: [responseId], references: [id], onDelete: SetNull)
+  description    String
+  assignedTo     String?
+  assignee       User?          @relation("FollowUpAssignee", fields: [assignedTo], references: [id])
+  dueDate        DateTime?
+  status         String         @default("OPEN") // OPEN, IN_PROGRESS, DONE, CANCELLED
+  resolution     String?
+  proofPhotoPath String?
+  createdBy      String
+  creator        User           @relation("FollowUpCreator", fields: [createdBy], references: [id])
+  createdAt      DateTime       @default(now())
+  updatedAt      DateTime       @updatedAt
+  resolvedAt     DateTime?
+
+  @@index([tenantId])
+  @@index([storeId, status])
   @@index([sessionId])
 }
 
@@ -2064,4 +2106,53 @@ model InvoiceItem {
   createdAt   DateTime @default(now())
 
   @@index([invoiceId])
+}
+
+// ============================================================
+// Spot-Checks — Unangekündigte Ad-hoc-Foto-Anfragen (VM Compliance)
+// ============================================================
+
+model PhotoRequest {
+  id             String    @id @default(cuid())
+  tenantId       String
+  tenant         Tenant    @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  title          String
+  instructions   String?
+  category       String?   // z.B. "Schaufenster", "Eingang", "Kasse"
+  referencePhoto String?
+  deadline       DateTime
+  status         String    @default("ACTIVE") // ACTIVE, CLOSED, CANCELLED
+  createdBy      String
+  creator        User      @relation("PhotoRequestCreator", fields: [createdBy], references: [id])
+  createdAt      DateTime  @default(now())
+  updatedAt      DateTime  @updatedAt
+  closedAt       DateTime?
+
+  targets PhotoRequestTarget[]
+
+  @@index([tenantId, status])
+  @@index([createdBy])
+}
+
+model PhotoRequestTarget {
+  id          String       @id @default(cuid())
+  requestId   String
+  request     PhotoRequest @relation(fields: [requestId], references: [id], onDelete: Cascade)
+  storeId     String
+  store       Store        @relation(fields: [storeId], references: [id], onDelete: Cascade)
+  status      String       @default("PENDING") // PENDING, SUBMITTED, APPROVED, REJECTED
+  photoPath   String?
+  comment     String?
+  submittedBy String?
+  submitter   User?        @relation("PhotoRequestSubmitter", fields: [submittedBy], references: [id])
+  submittedAt DateTime?
+  reviewedBy  String?
+  reviewer    User?        @relation("PhotoRequestReviewer", fields: [reviewedBy], references: [id])
+  reviewNote  String?
+  reviewedAt  DateTime?
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime     @updatedAt
+
+  @@unique([requestId, storeId])
+  @@index([storeId, status])
 }
