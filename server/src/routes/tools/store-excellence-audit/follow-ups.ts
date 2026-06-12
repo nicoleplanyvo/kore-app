@@ -1,19 +1,9 @@
 import { Router, type Router as RouterType } from 'express';
 import prisma from '../../../lib/prisma.js';
 import { followUpCreateSchema, followUpUpdateSchema } from '@shared/validators';
-import multer from 'multer';
-import path from 'path';
-import fs from 'fs';
+import { makeImageUpload } from '../../../lib/upload.js';
 
-const uploadDir = path.resolve('data/uploads/follow-ups');
-if (!fs.existsSync(uploadDir)) fs.mkdirSync(uploadDir, { recursive: true });
-const upload = multer({
-  storage: multer.diskStorage({
-    destination: uploadDir,
-    filename: (_r, file, cb) => cb(null, `${Date.now()}-${file.originalname}`),
-  }),
-  limits: { fileSize: 10 * 1024 * 1024 },
-});
+const upload = makeImageUpload('follow-ups');
 
 export const seaFollowUpsRouter: RouterType = Router();
 

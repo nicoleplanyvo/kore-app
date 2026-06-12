@@ -6,19 +6,9 @@ import {
   photoRequestRespondSchema,
   photoRequestReviewSchema,
 } from '@shared/validators';
-import multer from 'multer';
-import path from 'path';
-import fs from 'fs';
+import { makeImageUpload } from '../../../lib/upload.js';
 
-const uploadDir = path.resolve('data/uploads/spot-checks');
-if (!fs.existsSync(uploadDir)) fs.mkdirSync(uploadDir, { recursive: true });
-const upload = multer({
-  storage: multer.diskStorage({
-    destination: uploadDir,
-    filename: (_r, file, cb) => cb(null, `${Date.now()}-${file.originalname}`),
-  }),
-  limits: { fileSize: 10 * 1024 * 1024 },
-});
+const upload = makeImageUpload('spot-checks');
 
 export const vmSpotChecksRouter: RouterType = Router();
 
