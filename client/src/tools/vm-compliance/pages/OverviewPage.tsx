@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { Camera, Plus, BarChart3, Eye } from 'lucide-react';
+import { Camera, Plus, BarChart3, Eye, Zap } from 'lucide-react';
 import { useVmComplianceChecks, useVmComplianceStores } from '../../../hooks/useVmCompliance';
 
 const STATUS_LABELS: Record<string, string> = { PENDING: 'Offen', APPROVED: 'Bewertet', REJECTED: 'Abgelehnt' };
@@ -23,6 +23,9 @@ export function OverviewPage() {
           <p className="text-body text-kore-mid mt-xs">Visual-Merchandising-Compliance-Checks verwalten und bewerten</p>
         </div>
         <div className="flex gap-md">
+          <Link to="spot-checks" className="flex items-center gap-sm border border-kore-border text-kore-ink px-lg py-md-sm text-small font-medium uppercase tracking-widest hover:bg-kore-bg transition-colors">
+            <Zap size={16} /> Spot-Checks
+          </Link>
           <Link to="dashboard" className="flex items-center gap-sm border border-kore-border text-kore-ink px-lg py-md-sm text-small font-medium uppercase tracking-widest hover:bg-kore-bg transition-colors">
             <BarChart3 size={16} /> Dashboard
           </Link>

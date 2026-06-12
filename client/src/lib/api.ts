@@ -73,13 +73,14 @@ export { API_URL };
 export async function apiUpload<T = unknown>(
   path: string,
   formData: FormData,
+  method: 'POST' | 'PUT' = 'POST',
 ): Promise<T> {
   const url = `${API_URL}${path}`;
   const headers: Record<string, string> = {};
   if (accessToken) headers['Authorization'] = `Bearer ${accessToken}`;
 
   let res = await fetch(url, {
-    method: 'POST',
+    method,
     headers,
     body: formData,
     credentials: 'include',
@@ -90,7 +91,7 @@ export async function apiUpload<T = unknown>(
     if (newToken) {
       headers['Authorization'] = `Bearer ${newToken}`;
       res = await fetch(url, {
-        method: 'POST',
+        method,
         headers,
         body: formData,
         credentials: 'include',
@@ -104,4 +105,22 @@ export async function apiUpload<T = unknown>(
   }
 
   return res.json();
+}
+
+/** Lädt ein Auth-geschütztes Upload-Bild (z. B. "/uploads/spot-checks/x.jpg") als Objekt-URL */
+export async function apiBlobUrl(uploadPath: string): Promise<string> {
+  const url = `${API_URL}/api${uploadPath}`;
+  const headers: Record<string, string> = {};
+  if (accessToken) headers['Authorization'] = `Bearer ${accessToken}`;
+
+  let res = await fetch(url, { headers, credentials: 'include' });
+  if (res.status === 401 && accessToken) {
+    const newToken = await refreshAccessToken();
+    if (newToken) {
+      headers['Authorization'] = `Bearer ${newToken}`;
+      res = await fetch(url, { headers, credentials: 'include' });
+    }
+  }
+  if (!res.ok) throw new Error(`Bild konnte nicht geladen werden (HTTP ${res.status})`);
+  return URL.createObjectURL(await res.blob());
 }

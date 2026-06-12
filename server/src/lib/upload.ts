@@ -63,7 +63,8 @@ const IMAGE_EXTENSIONS: Record<string, string> = {
  * MIME-Allowlist nur für Bilder, 10-MB-Limit.
  */
 export function makeImageUpload(subdir: string) {
-  const dir = path.resolve('data/uploads', subdir);
+  // WICHTIG: gleiche Basis wie der Auth-geschützte Static-Mount `/api/uploads` (index.ts)
+  const dir = path.resolve(UPLOAD_DIR, subdir);
   if (!fsSync.existsSync(dir)) fsSync.mkdirSync(dir, { recursive: true });
 
   return multer({
