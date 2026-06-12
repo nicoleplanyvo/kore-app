@@ -4,6 +4,7 @@ import { AuditDetailPage } from './pages/AuditDetailPage';
 import { CreateAuditPage } from './pages/CreateAuditPage';
 import { TemplatesPage } from './pages/TemplatesPage';
 import { DashboardPage } from './pages/DashboardPage';
+import { FollowUpsPage } from './pages/FollowUpsPage';
 
 export function StoreExcellenceAuditRoutes() {
   return (
@@ -13,6 +14,7 @@ export function StoreExcellenceAuditRoutes() {
       <Route path="audits/:id" element={<AuditDetailPage />} />
       <Route path="templates" element={<TemplatesPage />} />
       <Route path="dashboard" element={<DashboardPage />} />
+      <Route path="follow-ups" element={<FollowUpsPage />} />
     </Routes>
   );
 }

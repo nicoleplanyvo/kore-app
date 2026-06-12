@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { Plus, ClipboardCheck, TrendingUp, TrendingDown, Minus, List, BarChart3, Settings } from 'lucide-react';
+import { Plus, ClipboardCheck, TrendingUp, TrendingDown, Minus, List, BarChart3, Settings, ClipboardList } from 'lucide-react';
 import { useAuditSessions, useAuditStores, useAuditSummary } from '../../../hooks/useAudit';
 
 const STATUS_LABELS: Record<string, string> = {
@@ -51,6 +51,9 @@ export function OverviewPage() {
         <div className="flex gap-md">
           <Link to="templates" className="flex items-center gap-sm border border-kore-border px-lg py-md-sm text-small font-medium uppercase tracking-widest hover:bg-kore-bg transition-colors">
             <Settings size={16} /> Templates
+          </Link>
+          <Link to="follow-ups" className="flex items-center gap-sm border border-kore-border px-lg py-md-sm text-small font-medium uppercase tracking-widest hover:bg-kore-bg transition-colors">
+            <ClipboardList size={16} /> Follow-ups
           </Link>
           <Link to="dashboard" className="flex items-center gap-sm border border-kore-border px-lg py-md-sm text-small font-medium uppercase tracking-widest hover:bg-kore-bg transition-colors">
             <BarChart3 size={16} /> Dashboard

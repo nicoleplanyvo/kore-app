@@ -1,7 +1,8 @@
 import { useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { ArrowLeft, CheckCircle, XCircle, Send, Trash2 } from 'lucide-react';
+import { ArrowLeft, CheckCircle, XCircle, Send, Trash2, ClipboardList } from 'lucide-react';
 import { useAuditSession, useUpsertAuditResponse, useCompleteAuditSession, useCancelAuditSession } from '../../../hooks/useAudit';
+import { useOpenFollowUps, useCreateFollowUp, useUpdateFollowUp, useFollowUpsList } from '../../../hooks/useFollowUps';
 
 const STATUS_LABELS: Record<string, string> = {
   DRAFT: 'Entwurf',
@@ -19,6 +20,10 @@ export function AuditDetailPage() {
   const cancelMutation = useCancelAuditSession();
 
   const [expandedCategory, setExpandedCategory] = useState<string | null>(null);
+  const { data: openFollowUps } = useOpenFollowUps(session?.storeId);
+  const { data: sessionFollowUps } = useFollowUpsList({ sessionId: id });
+  const createFollowUp = useCreateFollowUp();
+  const updateFollowUp = useUpdateFollowUp();
 
   if (isLoading) return <div className="p-xl text-body text-kore-mid">Lade Audit...</div>;
   if (!session) return <div className="p-xl text-body text-kore-mid">Audit nicht gefunden.</div>;
@@ -26,6 +31,8 @@ export function AuditDetailPage() {
   const isEditable = session.status === 'IN_PROGRESS' || session.status === 'DRAFT';
   const categories = session.template?.categories ?? [];
   const responses = session.responses ?? [];
+
+  const previousOpenFollowUps = (openFollowUps ?? []).filter((f: any) => f.sessionId !== session.id);
 
   const getResponse = (criterionId: string) =>
     responses.find((r: any) => r.criterionId === criterionId);
@@ -111,6 +118,35 @@ export function AuditDetailPage() {
         </div>
       )}
 
+      {/* Offene Follow-ups aus früheren Visits */}
+      {isEditable && previousOpenFollowUps.length > 0 && (
+        <div className="border border-kore-brass bg-kore-white p-lg mb-xl">
+          <h3 className="font-display text-h3 text-kore-ink mb-md flex items-center gap-sm">
+            <ClipboardList size={18} className="text-kore-brass" /> Offen seit letztem Besuch
+          </h3>
+          <div className="space-y-sm">
+            {previousOpenFollowUps.map((f: any) => (
+              <div key={f.id} className="flex items-center justify-between gap-md border-b border-kore-border last:border-0 pb-sm">
+                <div className="min-w-0">
+                  <p className="text-small text-kore-ink">{f.description}</p>
+                  <p className="text-caption text-kore-faint">
+                    {f.response?.criterion?.name ? `${f.response.criterion.name} · ` : ''}
+                    {f.dueDate ? `fällig ${new Date(f.dueDate).toLocaleDateString('de-DE')}` : 'ohne Frist'}
+                  </p>
+                </div>
+                <button
+                  onClick={() => updateFollowUp.mutate({ id: f.id, status: 'DONE' })}
+                  disabled={updateFollowUp.isPending}
+                  className="shrink-0 border border-kore-border px-md py-xs text-caption uppercase tracking-widest text-kore-mid hover:text-emerald-700 hover:border-emerald-600 transition-colors disabled:opacity-50"
+                >
+                  Erledigt
+                </button>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+
       {/* Score Summary (completed) */}
       {session.status === 'COMPLETED' && session.overallScore != null && (
         <div className="bg-kore-white border border-kore-border p-xl mb-xl text-center">
@@ -158,6 +194,9 @@ export function AuditDetailPage() {
                         onPassFail={(passed) => handlePassFail(crit.id, passed)}
                         onScore={(score) => handleScore(crit.id, score)}
                         onComment={(comment) => handleComment(crit.id, comment)}
+                        onFollowUp={(description, dueDate) =>
+                          createFollowUp.mutate({ sessionId: session.id, responseId: resp?.id, description, dueDate: dueDate || undefined })
+                        }
                       />
                     );
                   })}
@@ -167,6 +206,22 @@ export function AuditDetailPage() {
           );
         })}
       </div>
+
+      {/* In diesem Visit angelegte Maßnahmen */}
+      {(sessionFollowUps?.data ?? []).length > 0 && (
+        <div className="bg-kore-white border border-kore-border p-lg mt-xl">
+          <h3 className="text-body font-medium text-kore-ink mb-sm">Maßnahmen aus diesem Visit</h3>
+          <div className="space-y-xs">
+            {(sessionFollowUps?.data ?? []).map((f: any) => (
+              <p key={f.id} className="text-small text-kore-mid">
+                {f.description}
+                {f.response?.criterion?.name ? ` (${f.response.criterion.name})` : ''}
+                {f.dueDate ? ` — fällig ${new Date(f.dueDate).toLocaleDateString('de-DE')}` : ''}
+              </p>
+            ))}
+          </div>
+        </div>
+      )}
 
       {/* Notes */}
       {session.notes && (
@@ -186,6 +241,7 @@ function CriterionRow({
   onPassFail,
   onScore,
   onComment,
+  onFollowUp,
 }: {
   criterion: any;
   response: any;
@@ -193,9 +249,13 @@ function CriterionRow({
   onPassFail: (passed: boolean) => void;
   onScore: (score: number) => void;
   onComment: (comment: string) => void;
+  onFollowUp: (description: string, dueDate?: string) => void;
 }) {
   const [comment, setComment] = useState(response?.comment ?? '');
   const [showComment, setShowComment] = useState(!!response?.comment);
+  const [showFollowUp, setShowFollowUp] = useState(false);
+  const [fuDescription, setFuDescription] = useState('');
+  const [fuDueDate, setFuDueDate] = useState('');
 
   return (
     <div className="px-lg py-md border-b border-kore-border last:border-0">
@@ -251,6 +311,14 @@ function CriterionRow({
           >
             {showComment ? 'Kommentar' : 'Komm.'}
           </button>
+          {isEditable && (
+            <button
+              onClick={() => setShowFollowUp(!showFollowUp)}
+              className="text-caption text-kore-brass hover:text-kore-ink transition-colors"
+            >
+              Maßnahme
+            </button>
+          )}
         </div>
       </div>
 
@@ -265,6 +333,35 @@ function CriterionRow({
             disabled={!isEditable}
             className="w-full border border-kore-border px-md py-xs text-small bg-kore-white focus:outline-none focus:border-kore-brass disabled:opacity-50 resize-none"
           />
+        </div>
+      )}
+
+      {showFollowUp && (
+        <div className="mt-sm flex gap-sm flex-wrap items-center">
+          <input
+            value={fuDescription}
+            onChange={(e) => setFuDescription(e.target.value)}
+            placeholder={`Maßnahme zu "${criterion.name}"...`}
+            className="flex-1 min-w-48 border border-kore-border px-md py-xs text-small bg-kore-white focus:outline-none focus:border-kore-brass"
+          />
+          <input
+            type="date"
+            value={fuDueDate}
+            onChange={(e) => setFuDueDate(e.target.value)}
+            className="border border-kore-border px-md py-xs text-small bg-kore-white"
+          />
+          <button
+            onClick={() => {
+              if (!fuDescription.trim()) return;
+              onFollowUp(fuDescription.trim(), fuDueDate ? new Date(`${fuDueDate}T18:00:00`).toISOString() : undefined);
+              setFuDescription('');
+              setFuDueDate('');
+              setShowFollowUp(false);
+            }}
+            className="bg-kore-ink text-kore-white px-md py-xs text-caption uppercase tracking-widest hover:bg-kore-brass transition-colors"
+          >
+            Anlegen
+          </button>
         </div>
       )}
     </div>
