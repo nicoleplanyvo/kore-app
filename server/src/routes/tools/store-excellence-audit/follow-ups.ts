@@ -1,7 +1,7 @@
 import { Router, type Router as RouterType } from 'express';
 import prisma from '../../../lib/prisma.js';
 import { followUpCreateSchema, followUpUpdateSchema } from '@shared/validators';
-import { makeImageUpload } from '../../../lib/upload.js';
+import { makeImageUpload, singleImage } from '../../../lib/upload.js';
 
 const upload = makeImageUpload('follow-ups');
 
@@ -195,7 +195,7 @@ seaFollowUpsRouter.get('/metrics', async (req, res) => {
 });
 
 // PUT /:id  — Aktualisieren (Status, Zuweisung, Erledigung — optional mit Nachweis-Foto)
-seaFollowUpsRouter.put('/:id', upload.single('proofPhoto'), async (req, res) => {
+seaFollowUpsRouter.put('/:id', singleImage(upload, 'proofPhoto'), async (req, res) => {
   try {
     const tenantId = (req as any).tenantId as string;
     const toolStoreIds = (req as any).toolStoreIds as string[] | 'all';

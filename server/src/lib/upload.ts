@@ -1,4 +1,5 @@
 import multer from 'multer';
+import type { RequestHandler } from 'express';
 import path from 'path';
 import fs from 'fs/promises';
 import fsSync from 'fs';
@@ -38,11 +39,13 @@ export function createToolUpload(toolSlug: string) {
   return multer({
     storage,
     limits: { fileSize: MAX_FILE_SIZE },
-    fileFilter: (_req, file, cb) => {
+    fileFilter: (req, file, cb) => {
       if (ALLOWED_MIMETYPES.includes(file.mimetype)) {
         cb(null, true);
       } else {
-        cb(new Error('Nur JPEG, PNG und WebP Dateien sind erlaubt.'));
+        // still ablehnen statt werfen (multer 2.x/busboy crasht sonst den Prozess)
+        (req as any).fileRejectedReason = 'Nur JPEG, PNG und WebP Dateien sind erlaubt.';
+        cb(null, false);
       }
     },
   });
@@ -75,12 +78,41 @@ export function makeImageUpload(subdir: string) {
         cb(null, `${Date.now()}-${crypto.randomUUID()}.${ext}`);
       },
     }),
-    fileFilter: (_req, file, cb) => {
-      if (IMAGE_EXTENSIONS[file.mimetype]) cb(null, true);
-      else cb(new Error('Nur Bilddateien sind erlaubt (JPEG, PNG, WebP, HEIC).'));
+    fileFilter: (req, file, cb) => {
+      if (IMAGE_EXTENSIONS[file.mimetype]) { cb(null, true); return; }
+      // WICHTIG: NICHT cb(new Error()) — das wirft in multer 2.x/busboy synchron
+      // und crasht den Prozess (DoS). Stattdessen still ablehnen + Grund auf req.
+      (req as any).fileRejectedReason = 'Nur Bilddateien sind erlaubt (JPEG, PNG, WebP, HEIC).';
+      cb(null, false);
     },
     limits: { fileSize: MAX_FILE_SIZE },
   });
+}
+
+/**
+ * Wrappt eine Multer-single()-Middleware so, dass Upload-Fehler (zu groß,
+ * falscher MIME-Typ) als sauberes HTTP 400 mit Klartext-Meldung zurückkommen
+ * statt als ungefangener 500. Wichtig für IT-/Security-Reviews.
+ */
+export function singleImage(uploader: multer.Multer, field: string): RequestHandler {
+  const mw = uploader.single(field);
+  return (req, res, next) => {
+    mw(req, res, (err: unknown) => {
+      if (err) {
+        if (err instanceof multer.MulterError) {
+          const msg = err.code === 'LIMIT_FILE_SIZE'
+            ? 'Datei zu groß (max. 10 MB).'
+            : 'Datei-Upload fehlgeschlagen.';
+          return res.status(400).json({ error: msg });
+        }
+        return res.status(400).json({ error: (err as Error).message || 'Ungültige Datei.' });
+      }
+      // Vom fileFilter still abgelehnte Datei (falscher Typ) → sauberes 400
+      const reason = (req as any).fileRejectedReason as string | undefined;
+      if (reason) return res.status(400).json({ error: reason });
+      return next();
+    });
+  };
 }
 
 /** Gibt den absoluten Pfad zu einer Upload-Datei zurück */

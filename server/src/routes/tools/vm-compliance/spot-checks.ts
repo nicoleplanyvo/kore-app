@@ -6,7 +6,7 @@ import {
   photoRequestRespondSchema,
   photoRequestReviewSchema,
 } from '@shared/validators';
-import { makeImageUpload } from '../../../lib/upload.js';
+import { makeImageUpload, singleImage } from '../../../lib/upload.js';
 
 const upload = makeImageUpload('spot-checks');
 
@@ -24,7 +24,7 @@ function effectiveStatus(target: { status: string }, deadline: Date): string {
 }
 
 // POST /  — Neue Spot-Check-Anfrage (optional mit Referenzfoto)
-vmSpotChecksRouter.post('/', upload.single('referencePhoto'), async (req, res) => {
+vmSpotChecksRouter.post('/', singleImage(upload, 'referencePhoto'), async (req, res) => {
   try {
     const tenantId = (req as any).tenantId as string;
     const userId = req.user!.sub;
@@ -248,7 +248,7 @@ vmSpotChecksRouter.get('/:id', async (req, res) => {
 });
 
 // POST /:id/respond  — Store reicht Foto ein (auch nach Ablehnung erneut möglich)
-vmSpotChecksRouter.post('/:id/respond', upload.single('photo'), async (req, res) => {
+vmSpotChecksRouter.post('/:id/respond', singleImage(upload, 'photo'), async (req, res) => {
   try {
     const tenantId = (req as any).tenantId as string;
     const toolStoreIds = (req as any).toolStoreIds as string[] | 'all';
