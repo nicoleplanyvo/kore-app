@@ -17,12 +17,12 @@ export function OverviewPage() {
 
   return (
     <div className="p-xl max-w-5xl">
-      <div className="flex items-center justify-between mb-2xl">
+      <div className="flex flex-col gap-lg sm:flex-row sm:items-center sm:justify-between mb-2xl">
         <div>
           <h1 className="font-display text-h1 text-kore-ink">VM Compliance</h1>
           <p className="text-body text-kore-mid mt-xs">Visual-Merchandising-Compliance-Checks verwalten und bewerten</p>
         </div>
-        <div className="flex gap-md">
+        <div className="flex flex-wrap gap-md">
           <Link to="spot-checks" className="flex items-center gap-sm border border-kore-border text-kore-ink px-lg py-md-sm text-small font-medium uppercase tracking-widest hover:bg-kore-bg transition-colors">
             <Zap size={16} /> Spot-Checks
           </Link>

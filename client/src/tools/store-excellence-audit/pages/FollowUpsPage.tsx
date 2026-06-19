@@ -56,9 +56,12 @@ export function FollowUpsPage() {
 
       {(metrics ?? []).length > 0 && (
         <>
-          <h2 className="font-display text-h3 text-kore-ink mb-lg">Erledigung je Store</h2>
+          <div className="flex items-baseline justify-between mb-lg gap-md">
+            <h2 className="font-display text-h3 text-kore-ink">Erledigung je Store</h2>
+            <span className="text-caption text-kore-faint sm:hidden shrink-0">horizontal wischen →</span>
+          </div>
           <div className="bg-kore-white border border-kore-border overflow-x-auto">
-            <table className="w-full text-small">
+            <table className="w-full min-w-[640px] text-small">
               <thead>
                 <tr className="border-b border-kore-border text-left text-kore-mid">
                   <th className="px-lg py-md font-medium">Store</th>

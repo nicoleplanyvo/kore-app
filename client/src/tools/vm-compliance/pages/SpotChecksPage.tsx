@@ -29,13 +29,13 @@ export function SpotChecksPage() {
         <ArrowLeft size={16} /> VM Compliance
       </Link>
 
-      <div className="flex items-center justify-between mb-2xl">
+      <div className="flex flex-col gap-lg sm:flex-row sm:items-center sm:justify-between mb-2xl">
         <div>
           <h1 className="font-display text-h1 text-kore-ink">Spot-Checks</h1>
           <p className="text-body text-kore-mid mt-xs">Kurzfristige Foto-Anfragen — Umsetzung auf der Fläche sofort sichtbar machen</p>
         </div>
         {isManager && (
-          <Link to="new" className="flex items-center gap-sm bg-kore-ink text-kore-white px-lg py-md-sm text-small font-medium uppercase tracking-widest hover:bg-kore-brass transition-colors">
+          <Link to="new" className="flex items-center justify-center gap-sm bg-kore-ink text-kore-white px-lg py-md-sm text-small font-medium uppercase tracking-widest hover:bg-kore-brass transition-colors shrink-0">
             <Plus size={16} /> Neue Anfrage
           </Link>
         )}
@@ -54,12 +54,12 @@ export function SpotChecksPage() {
                 <Link
                   key={t.id}
                   to={`${t.request.id}/respond?store=${t.storeId}`}
-                  className="flex items-center justify-between bg-kore-white border border-kore-border p-lg hover:border-kore-brass transition-colors"
+                  className="flex flex-col gap-md sm:flex-row sm:items-center sm:justify-between bg-kore-white border border-kore-border p-lg hover:border-kore-brass transition-colors"
                 >
                   <div className="flex items-center gap-lg min-w-0">
                     <Camera size={20} className="text-kore-brass shrink-0" />
                     <div className="min-w-0">
-                      <p className="text-body text-kore-ink truncate">{t.request.title}</p>
+                      <p className="text-body text-kore-ink sm:truncate">{t.request.title}</p>
                       <p className="text-small text-kore-mid">{t.store.name} · von {t.request.creator?.name}</p>
                     </div>
                   </div>
@@ -97,9 +97,9 @@ export function SpotChecksPage() {
                 const submitted = targets.filter((t: any) => t.status !== 'PENDING' && t.status !== 'OVERDUE').length;
                 const approved = targets.filter((t: any) => t.status === 'APPROVED').length;
                 return (
-                  <Link key={r.id} to={r.id} className="flex items-center justify-between bg-kore-white border border-kore-border p-lg hover:border-kore-brass transition-colors">
+                  <Link key={r.id} to={r.id} className="flex flex-col gap-sm sm:flex-row sm:items-center sm:justify-between bg-kore-white border border-kore-border p-lg hover:border-kore-brass transition-colors">
                     <div className="min-w-0">
-                      <p className="text-body text-kore-ink truncate">{r.title}</p>
+                      <p className="text-body text-kore-ink sm:truncate">{r.title}</p>
                       <p className="text-small text-kore-mid">
                         {targets.length} Store{targets.length === 1 ? '' : 's'} · {submitted} eingereicht · {approved} freigegeben
                         {r.category ? ` · ${r.category}` : ''}
@@ -127,9 +127,12 @@ export function SpotChecksPage() {
 
           {(metrics ?? []).length > 0 && (
             <>
-              <h2 className="font-display text-h3 text-kore-ink mb-lg">Kennzahlen je Store</h2>
+              <div className="flex items-baseline justify-between mb-lg gap-md">
+                <h2 className="font-display text-h3 text-kore-ink">Kennzahlen je Store</h2>
+                <span className="text-caption text-kore-faint sm:hidden shrink-0">horizontal wischen →</span>
+              </div>
               <div className="bg-kore-white border border-kore-border overflow-x-auto">
-                <table className="w-full text-small">
+                <table className="w-full min-w-[640px] text-small">
                   <thead>
                     <tr className="border-b border-kore-border text-left text-kore-mid">
                       <th className="px-lg py-md font-medium">Store</th>
