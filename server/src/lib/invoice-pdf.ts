@@ -1,6 +1,15 @@
 // @ts-expect-error — pdfmake/src/Printer has no type declarations
-import PdfPrinter from 'pdfmake/src/Printer.js';
+import PdfPrinterImport from 'pdfmake/src/Printer.js';
+// @ts-expect-error — kein Typ
+import virtualfsImport from 'pdfmake/src/virtual-fs.js';
+// @ts-expect-error — kein Typ
+import URLResolverImport from 'pdfmake/src/URLResolver.js';
 import type { TDocumentDefinitions, Content, TableCell } from 'pdfmake/interfaces';
+
+// pdfmake 0.3.x: Printer(fonts, virtualfs, urlResolver) — vgl. pdfmake/src/base.js
+const PdfPrinter: any = (PdfPrinterImport as any)?.default ?? PdfPrinterImport;
+const virtualfs: any = (virtualfsImport as any)?.default ?? virtualfsImport;
+const URLResolver: any = (URLResolverImport as any)?.default ?? URLResolverImport;
 import path from 'path';
 import { fileURLToPath } from 'url';
 
@@ -52,7 +61,7 @@ function formatDate(date: Date | string): string {
 }
 
 export async function generateInvoicePdf(invoice: InvoiceForPdf): Promise<Buffer> {
-  const printer = new PdfPrinter(fonts);
+  const printer = new PdfPrinter(fonts, virtualfs, new URLResolver(virtualfs));
 
   const typeLabel = invoice.type === 'INVOICE' ? 'Rechnung' : 'Angebot';
 
@@ -193,8 +202,8 @@ export async function generateInvoicePdf(invoice: InvoiceForPdf): Promise<Buffer
     },
   };
 
+  const doc = await printer.createPdfKitDocument(docDefinition); // 0.3.x: async
   return new Promise<Buffer>((resolve, reject) => {
-    const doc = printer.createPdfKitDocument(docDefinition);
     const chunks: Uint8Array[] = [];
 
     doc.on('data', (chunk: Uint8Array) => chunks.push(chunk));

@@ -8,9 +8,10 @@ import rateLimit from 'express-rate-limit';
 import { contactRouter } from './routes/contact.js';
 import { auditRouter } from './routes/audit.js';
 import { authRouter } from './routes/auth.js';
-import { authenticate } from './middleware/auth.js';
+import { authenticate, requireMinRole } from './middleware/auth.js';
 import { startPhotoRetention } from './lib/retention.js';
 import { notificationsRouter } from './routes/notifications.js';
+import { reportingRouter } from './routes/reporting.js';
 import { adminTenantsRouter } from './routes/admin/tenants.js';
 import { adminToolsRouter } from './routes/admin/tools.js';
 import { adminStoresRouter } from './routes/admin/stores.js';
@@ -65,6 +66,9 @@ const __dirname = path.dirname(__filename);
 const app = express();
 const PORT = parseInt(process.env['PORT'] ?? '3001', 10);
 const NODE_ENV = process.env['NODE_ENV'] ?? 'development';
+
+// Hinter nginx: ersten Proxy vertrauen (korrekte Client-IP für Rate-Limiting/Logs)
+app.set('trust proxy', 1);
 const isProduction = NODE_ENV === 'production';
 
 // ── Security ──────────────────────────────────────
@@ -116,6 +120,9 @@ app.use('/api/blog', blogRouter);
 
 // Push-Notifications (native App) — authentifiziert
 app.use('/api/notifications', authenticate, notificationsRouter);
+
+// Pilot-Ergebnisbericht (PDF) — ab Regional Manager
+app.use('/api/reporting', authenticate, requireMinRole('regional_manager'), reportingRouter);
 
 // Auth (mit strengerem Rate-Limit)
 app.use('/api/auth', authLimiter, authRouter);
