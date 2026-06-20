@@ -17,14 +17,14 @@ export function TemplatesPage() {
         Zurück
       </Link>
 
-      <div className="flex items-center justify-between mb-2xl">
+      <div className="flex flex-col gap-lg sm:flex-row sm:items-center sm:justify-between mb-2xl">
         <div>
           <h1 className="font-display text-h1 text-kore-ink">Vorlagen</h1>
           <p className="text-body text-kore-mid mt-xs">Checklisten-Vorlagen verwalten und erstellen</p>
         </div>
         <button
           onClick={() => { setShowCreate(true); setEditingId(null); }}
-          className="flex items-center gap-sm bg-kore-ink text-kore-white px-lg py-md-sm text-small font-medium uppercase tracking-widest hover:bg-kore-brass transition-colors"
+          className="flex items-center justify-center gap-sm bg-kore-ink text-kore-white px-lg py-md-sm text-small font-medium uppercase tracking-widest hover:bg-kore-brass transition-colors shrink-0"
         >
           <Plus size={16} />
           Neue Vorlage
@@ -50,10 +50,10 @@ export function TemplatesPage() {
 
             return (
               <div key={t.id} className="bg-kore-white border border-kore-border">
-                <div className="flex items-center justify-between p-lg">
-                  <div className="flex items-center gap-md cursor-pointer flex-1" onClick={() => setExpandedId(isExpanded ? null : t.id)}>
+                <div className="flex flex-col gap-md sm:flex-row sm:items-center sm:justify-between p-lg">
+                  <div className="flex items-center gap-md cursor-pointer flex-1 min-w-0" onClick={() => setExpandedId(isExpanded ? null : t.id)}>
                     <FileText size={18} className="text-kore-brass flex-shrink-0" />
-                    <div>
+                    <div className="min-w-0">
                       <h3 className="font-display text-h4 text-kore-ink">
                         {t.name}
                         {t.isDefault && (
@@ -64,7 +64,7 @@ export function TemplatesPage() {
                     </div>
                   </div>
 
-                  <div className="flex items-center gap-md">
+                  <div className="flex flex-wrap items-center gap-md shrink-0">
                     <span className="text-small text-kore-mid">{totalItems} Punkte</span>
                     <span className="text-small text-kore-faint">v{t.version}</span>
                     {t._count?.sessions > 0 && (

@@ -15,7 +15,7 @@ export function DashboardPage() {
         Zurück
       </Link>
 
-      <div className="flex items-center justify-between mb-2xl">
+      <div className="flex flex-col gap-lg sm:flex-row sm:items-center sm:justify-between mb-2xl">
         <div>
           <h1 className="font-display text-h1 text-kore-ink">Dashboard</h1>
           <p className="text-body text-kore-mid mt-xs">Tagesfortschritt, überfällige Checklisten und Historie</p>
@@ -25,7 +25,7 @@ export function DashboardPage() {
           <select
             value={storeId}
             onChange={e => setStoreId(e.target.value)}
-            className="border border-kore-border px-lg py-md text-small bg-kore-white min-w-[200px]"
+            className="border border-kore-border px-lg py-md text-small bg-kore-white w-full sm:w-auto sm:min-w-[200px]"
           >
             <option value="">Alle Stores</option>
             {stores.map(s => (

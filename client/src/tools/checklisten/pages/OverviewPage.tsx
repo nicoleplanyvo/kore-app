@@ -14,12 +14,12 @@ export function OverviewPage() {
   return (
     <div className="p-xl max-w-5xl">
       {/* Header */}
-      <div className="flex items-center justify-between mb-2xl">
+      <div className="flex flex-col gap-lg sm:flex-row sm:items-center sm:justify-between mb-2xl">
         <div>
           <h1 className="font-display text-h1 text-kore-ink">Checklisten</h1>
           <p className="text-body text-kore-mid mt-xs">Heutige Checklisten und Fortschritt</p>
         </div>
-        <div className="flex items-center gap-md">
+        <div className="flex flex-wrap items-center gap-md">
           <Link
             to="/tools/checklisten/dashboard"
             className="flex items-center gap-sm border border-kore-border text-kore-ink px-lg py-md-sm text-small font-medium uppercase tracking-widest hover:bg-kore-bg transition-colors"
@@ -117,21 +117,21 @@ function ChecklistCard({ checklist, onToggle }: { checklist: any; onToggle: (v: 
         className="flex items-center justify-between p-lg cursor-pointer"
         onClick={() => setExpanded(!expanded)}
       >
-        <div className="flex items-center gap-md">
+        <div className="flex items-center gap-md min-w-0">
           {isComplete ? (
-            <CheckCircle2 size={20} className="text-emerald-600" />
+            <CheckCircle2 size={20} className="text-emerald-600 shrink-0" />
           ) : isOverdue ? (
-            <AlertTriangle size={20} className="text-red-500" />
+            <AlertTriangle size={20} className="text-red-500 shrink-0" />
           ) : (
-            <Clock size={20} className="text-kore-brass" />
+            <Clock size={20} className="text-kore-brass shrink-0" />
           )}
-          <div>
-            <h3 className="font-display text-h4 text-kore-ink">{checklist.template?.name || 'Checkliste'}</h3>
-            <p className="text-small text-kore-mid">{checklist.store?.name}{checklist.store?.city ? ` - ${checklist.store.city}` : ''}</p>
+          <div className="min-w-0">
+            <h3 className="font-display text-h4 text-kore-ink truncate">{checklist.template?.name || 'Checkliste'}</h3>
+            <p className="text-small text-kore-mid truncate">{checklist.store?.name}{checklist.store?.city ? ` - ${checklist.store.city}` : ''}</p>
           </div>
         </div>
 
-        <div className="flex items-center gap-lg">
+        <div className="flex items-center gap-lg shrink-0">
           <div className="text-right">
             <span className="text-small font-medium text-kore-ink">{checklist.checkedItems}/{checklist.totalItems}</span>
             <div className="w-24 bg-kore-bg h-1.5 mt-xs">
