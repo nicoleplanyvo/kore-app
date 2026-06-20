@@ -9,6 +9,7 @@ import { contactRouter } from './routes/contact.js';
 import { auditRouter } from './routes/audit.js';
 import { authRouter } from './routes/auth.js';
 import { authenticate } from './middleware/auth.js';
+import { startPhotoRetention } from './lib/retention.js';
 import { adminTenantsRouter } from './routes/admin/tenants.js';
 import { adminToolsRouter } from './routes/admin/tools.js';
 import { adminStoresRouter } from './routes/admin/stores.js';
@@ -188,4 +189,6 @@ if (isProduction) {
 app.listen(PORT, () => {
   console.log(`✓ KORE Server running on port ${PORT} (${NODE_ENV})`);
   console.log(`  SMTP: ${process.env['SMTP_USER'] ? 'configured (Brevo)' : 'not configured (dev mode — mails logged only)'}`);
+  // DSGVO-Foto-Retention (DSFA-Maßnahme): tägliche Löschung alter Store-Fotos
+  startPhotoRetention();
 });

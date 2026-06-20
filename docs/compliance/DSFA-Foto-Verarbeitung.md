@@ -37,7 +37,8 @@ Zusätzlich: VM-Compliance (geplante Foto-Einreichungen) und Follow-up-Nachweisf
 ## 4. Abhilfemaßnahmen (Zusammenfassung)
 1. **Store-Ebenen-Prinzip** für alle Kennzahlen — technisch umgesetzt und in der UI ausgewiesen.
 2. **„Keine Personen im Bild"** — Hinweis bei jeder Aufnahme; Aufnahme ist ablehnbar/wiederholbar.
-3. **Retention**: automatische Foto-Löschung nach definierter Frist (Vorschlag 90 Tage) — *umzusetzen*.
+3. **Retention**: automatische Foto-Löschung nach definierter Frist (Default 90 Tage, konfigurierbar
+   über RETENTION_DAYS) — **umgesetzt** (täglicher Lauf; Bilddatei + Pfad gelöscht, Datensatz bleibt).
 4. **Zugriffsschutz**: Authentifizierung, Rollen/Store-Scope, TLS, gehärtete Upload-Pipeline.
 5. **Mitbestimmung**: Empfehlung an den Verantwortlichen, vor produktivem Einsatz eine
    **Betriebsvereinbarung** abzuschließen (Zweckbindung, Store-Ebene, Fristen, keine Sanktionsautomatik).
@@ -50,7 +51,8 @@ Mitbestimmung; R4: Retention final). Eine vorherige Konsultation der Aufsichtsbe
 ist bei Umsetzung der Maßnahmen voraussichtlich nicht erforderlich — finale Bewertung durch den
 Datenschutzbeauftragten des Verantwortlichen.
 
-## 6. Offene technische Umsetzungspunkte (KORE)
-- [ ] Automatische Foto-Retention/Löschung (z. B. 90 Tage) implementieren — **noch offen**
-- [ ] Foto-Löschung in Backups nach Retention sicherstellen
-- [ ] E-Mail-Subprozessor auf EU vereinheitlichen
+## 6. Technische Umsetzungspunkte (KORE)
+- [x] Automatische Foto-Retention/Löschung (Default 90 Tage) implementiert
+- [x] E-Mail-Subprozessor auf EU (Brevo) vereinheitlicht, `resend` entfernt
+- [ ] Foto-Löschung in Backups nach Backup-Retention sicherstellen (mit Server-Migration)
+- [ ] Retention-Frist final mit dem Verantwortlichen abstimmen (90 Tage = Vorschlag)

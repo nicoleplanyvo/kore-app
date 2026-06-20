@@ -3,7 +3,9 @@
  * https://api.brevo.com/v3/smtp/email
  */
 
-const BREVO_API_KEY = process.env['BREVO_API_KEY'] ?? 'REDACTED_ROTATED_KEY';
+// WICHTIG: Kein hartcodierter Fallback-Key im Quellcode (Secret-Leak / Dior-Security).
+// Schlüssel ausschließlich aus der Umgebung; fehlt er, werden E-Mails nur geloggt.
+const BREVO_API_KEY = process.env['BREVO_API_KEY'] ?? '';
 if (!BREVO_API_KEY) {
   console.warn('⚠ BREVO_API_KEY nicht gesetzt — E-Mails werden nur geloggt.');
 }

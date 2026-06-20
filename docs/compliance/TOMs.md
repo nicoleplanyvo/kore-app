@@ -83,15 +83,24 @@
 ## 5. Auftragskontrolle
 - Subunternehmer/Subprozessoren nur mit AVV; aktuelle Liste:
   - **Hetzner Online GmbH** (Hosting, DE) — AVV vorhanden.
-  - **E-Mail-Versand**: EU-Anbieter (Brevo/Lettermint) — ⚠️ **offen**: im Code ist zusätzlich
-    `resend` (US-Anbieter) referenziert; vor Go-Live konsequent auf EU-Anbieter umstellen,
-    da andernfalls Widerspruch zum Versprechen „keine US-Cloud" und Drittlandtransfer.
+  - **E-Mail-Versand**: **Brevo** (Sendinblue, Frankreich/EU) über API — EU-konform. **[✓]**
+    Die ungenutzte Abhängigkeit `resend` (US-Anbieter) wurde aus dem Projekt **entfernt**. **[✓]**
 - Subprozessoren-Liste wird aktuell gehalten und dem Verantwortlichen zur Verfügung gestellt.
 
-## 6. Offene Punkte vor Dior-Freigabe (Zusammenfassung)
+## 6. Erledigt in dieser Iteration
+- ✅ **Foto-Retention** implementiert: automatische Löschung von Store-Fotos nach Frist
+  (RETENTION_DAYS, Default 90), täglicher Lauf; Datei + Pfad werden entfernt, der nicht
+  personenbezogene Datensatz bleibt als Audit-Spur (DSFA-Maßnahme R4). Siehe 1.5 / DSFA.
+- ✅ **E-Mail** auf Brevo (EU) vereinheitlicht, `resend` entfernt.
+- ✅ Hartcodierter E-Mail-API-Key aus dem Quellcode entfernt (nur noch aus Umgebung).
+  ⚠️ **Aktion erforderlich:** dieser Schlüssel muss bei Brevo **rotiert/invalidiert** werden,
+  da er in der Git-Historie liegt.
+- ✅ Upload-DoS behoben, CSP gehärtet (s. 2.2 / 2.1).
+
+## 7. Offene Punkte vor Dior-Freigabe
 1. Migration auf dedizierten Server abschließen (Punkte **[→ Migration]**)
 2. MFA für Admin-Rollen umsetzen
-3. E-Mail-Subprozessor auf EU vereinheitlichen (`resend` entfernen)
-4. Externen Penetrationstest beauftragen
-5. Dependency-Scanning automatisieren
+3. Externen Penetrationstest beauftragen
+4. Dependency-Scanning automatisieren
+5. Brevo-API-Key rotieren (s. o.)
 6. Dieses Dokument juristisch finalisieren und als Anlage zum AVV beifügen
