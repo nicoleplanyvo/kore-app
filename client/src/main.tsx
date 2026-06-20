@@ -6,7 +6,11 @@ import { queryClient } from './lib/queryClient';
 import { useAuthStore } from './stores/authStore';
 import { setAccessToken } from './lib/api';
 import { App } from './App';
+import { initNative } from './lib/native';
 import './index.css';
+
+// Native-Integration (Statusleiste/Splash) — im Web No-Op
+void initNative();
 
 function AuthInitializer({ children }: { children: React.ReactNode }) {
   const { setAuth, clearAuth, setLoading } = useAuthStore();
