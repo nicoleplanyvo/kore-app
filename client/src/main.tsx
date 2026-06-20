@@ -6,7 +6,7 @@ import { queryClient } from './lib/queryClient';
 import { useAuthStore } from './stores/authStore';
 import { setAccessToken } from './lib/api';
 import { App } from './App';
-import { initNative } from './lib/native';
+import { initNative, registerPushAndSyncToken } from './lib/native';
 import './index.css';
 
 // Native-Integration (Statusleiste/Splash) — im Web No-Op
@@ -26,6 +26,8 @@ function AuthInitializer({ children }: { children: React.ReactNode }) {
           const data = await res.json();
           setAccessToken(data.accessToken);
           setAuth(data.user, data.accessToken);
+          // Native: Push registrieren und Token ans Backend melden
+          void registerPushAndSyncToken();
         } else {
           clearAuth();
         }

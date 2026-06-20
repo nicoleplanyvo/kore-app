@@ -1,4 +1,5 @@
 import { Capacitor } from '@capacitor/core';
+import { api } from './api';
 
 /**
  * Native-Integration (nur in der Capacitor-App aktiv, im Web No-Op).
@@ -46,5 +47,19 @@ export async function registerPush(opts: {
   });
   await PushNotifications.addListener('pushNotificationActionPerformed', (action) => {
     opts.onOpen?.(action.notification.data ?? {});
+  });
+}
+
+/** Push registrieren und den Device-Token ans Backend melden (nach Login aufrufen). */
+export async function registerPushAndSyncToken(): Promise<void> {
+  if (!Capacitor.isNativePlatform()) return;
+  await registerPush({
+    onToken: (token) => {
+      const platform = Capacitor.getPlatform(); // 'ios' | 'android'
+      void api('/api/notifications/register-device', {
+        method: 'POST',
+        body: JSON.stringify({ token, platform }),
+      }).catch(() => { /* Backend evtl. noch ohne Push-Provider — unkritisch */ });
+    },
   });
 }

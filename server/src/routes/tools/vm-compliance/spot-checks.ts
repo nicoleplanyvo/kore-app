@@ -7,6 +7,7 @@ import {
   photoRequestReviewSchema,
 } from '@shared/validators';
 import { makeImageUpload, singleImage } from '../../../lib/upload.js';
+import { sendPushToStores } from '../../../lib/push.js';
 
 const upload = makeImageUpload('spot-checks');
 
@@ -76,6 +77,15 @@ vmSpotChecksRouter.post('/', singleImage(upload, 'referencePhoto'), async (req, 
       },
     });
     res.status(201).json(request);
+
+    // Push an die Ziel-Stores (fire-and-forget; blockiert die Antwort nicht)
+    void sendPushToStores(tenantId, parsed.data.storeIds, {
+      title: 'Neue Foto-Anfrage',
+      body: deadline
+        ? `${parsed.data.title} — bis ${deadline.toLocaleString('de-DE', { hour: '2-digit', minute: '2-digit' })} Uhr`
+        : parsed.data.title,
+      data: { type: 'spot-check', requestId: request.id },
+    });
   } catch (err) {
     console.error('Spot-check create error:', err);
     res.status(500).json({ error: 'Interner Serverfehler.' });

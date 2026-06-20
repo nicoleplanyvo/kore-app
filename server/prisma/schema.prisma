@@ -2156,3 +2156,20 @@ model PhotoRequestTarget {
   @@unique([requestId, storeId])
   @@index([storeId, status])
 }
+
+// ============================================================
+// Push-Notifications (native App)
+// ============================================================
+
+model DeviceToken {
+  id        String   @id @default(cuid())
+  tenantId  String
+  userId    String
+  token     String   @unique
+  platform  String   // ios | android | web
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([tenantId])
+  @@index([userId])
+}

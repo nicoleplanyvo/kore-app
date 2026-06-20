@@ -10,6 +10,7 @@ import { auditRouter } from './routes/audit.js';
 import { authRouter } from './routes/auth.js';
 import { authenticate } from './middleware/auth.js';
 import { startPhotoRetention } from './lib/retention.js';
+import { notificationsRouter } from './routes/notifications.js';
 import { adminTenantsRouter } from './routes/admin/tenants.js';
 import { adminToolsRouter } from './routes/admin/tools.js';
 import { adminStoresRouter } from './routes/admin/stores.js';
@@ -112,6 +113,9 @@ app.use('/api/audit', auditRouter);
 
 // Blog (öffentlich + Lotta API)
 app.use('/api/blog', blogRouter);
+
+// Push-Notifications (native App) — authentifiziert
+app.use('/api/notifications', authenticate, notificationsRouter);
 
 // Auth (mit strengerem Rate-Limit)
 app.use('/api/auth', authLimiter, authRouter);
