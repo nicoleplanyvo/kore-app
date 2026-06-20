@@ -67,7 +67,17 @@ const isProduction = NODE_ENV === 'production';
 
 // ── Security ──────────────────────────────────────
 app.use(helmet({
-  contentSecurityPolicy: isProduction ? undefined : false,
+  // CSP in Produktion AN (Security-Review), aber blob: für Bilder erlauben —
+  // AuthImage lädt geschützte Uploads als Blob-Objekt-URL. Ohne blob: blockiert
+  // die Default-CSP (img-src 'self' data:) alle Foto-Vorschauen.
+  contentSecurityPolicy: isProduction
+    ? {
+        directives: {
+          ...helmet.contentSecurityPolicy.getDefaultDirectives(),
+          'img-src': ["'self'", 'data:', 'blob:'],
+        },
+      }
+    : false,
 }));
 
 // Rate Limiting: max 100 Requests pro 15 Minuten pro IP
