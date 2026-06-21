@@ -3,9 +3,11 @@ import { useNavigate, Link } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { loginSchema, type LoginInput } from '@shared/validators';
+import { Fingerprint } from 'lucide-react';
 import { Button, Input } from '@/components/ui';
 import { useAuthStore } from '../stores/authStore';
 import { api, setAccessToken } from '../lib/api';
+import { loginWithPasskey, isPasskeySupported } from '../lib/passkey';
 import type { AuthUser } from '@shared/types';
 import t from '../locales/de.json';
 
@@ -18,6 +20,27 @@ export function LoginPage() {
   const navigate = useNavigate();
   const setAuth = useAuthStore((s) => s.setAuth);
   const [serverError, setServerError] = useState('');
+  const [passkeyLoading, setPasskeyLoading] = useState(false);
+
+  const handlePasskeyLogin = async () => {
+    setServerError('');
+    setPasskeyLoading(true);
+    try {
+      setAccessToken(null);
+      const res = await loginWithPasskey();
+      setAuth(res.user, res.accessToken);
+      navigate('/app', { replace: true });
+    } catch (err) {
+      // Nutzer-Abbruch (NotAllowedError) nicht als Fehler anzeigen
+      if (err instanceof Error && err.name === 'NotAllowedError') {
+        // still
+      } else {
+        setServerError(err instanceof Error ? err.message : t.login.error);
+      }
+    } finally {
+      setPasskeyLoading(false);
+    }
+  };
 
   const {
     register,
@@ -92,6 +115,25 @@ export function LoginPage() {
           {isSubmitting ? t.common.loading : t.login.submit}
         </Button>
       </form>
+
+      {isPasskeySupported() && (
+        <>
+          <div className="flex items-center gap-md my-lg">
+            <div className="h-px flex-1 bg-kore-border" />
+            <span className="font-body text-small text-kore-faint">oder</span>
+            <div className="h-px flex-1 bg-kore-border" />
+          </div>
+          <button
+            type="button"
+            onClick={handlePasskeyLogin}
+            disabled={passkeyLoading}
+            className="w-full flex items-center justify-center gap-sm px-md py-[12px] rounded-md border border-kore-border text-kore-ink font-body text-small hover:bg-kore-cream transition-colors disabled:opacity-60"
+          >
+            <Fingerprint size={18} className="text-kore-brass" />
+            {passkeyLoading ? 'Anmeldung läuft…' : 'Mit Passkey anmelden'}
+          </button>
+        </>
+      )}
     </div>
   );
 }

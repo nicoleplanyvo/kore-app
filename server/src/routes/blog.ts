@@ -1,203 +1,201 @@
-import { Router } from 'express';
-import crypto from 'crypto';
-import prisma from '../lib/prisma.js';
-import { sendEmail, blogApprovalEmail } from '../lib/email.js';
+import { Router, Request, Response, NextFunction } from 'express';
+import fs from 'fs/promises';
+import path from 'path';
+import { fileURLToPath } from 'url';
 
-export const blogRouter = Router();
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
-const BLOG_API_KEY = process.env['BLOG_API_KEY'] ?? '';
-const PUBLIC_URL = process.env['PUBLIC_URL'] ?? 'https://app.kore-retail.de';
+const router = Router();
 
-// ── Middleware: API Key Check ────────────────
-function requireBlogApiKey(req: any, res: any, next: any) {
-  const key = req.headers['x-blog-api-key'];
-  if (!BLOG_API_KEY || !key || key !== BLOG_API_KEY) {
-    return res.status(401).json({ error: 'Ungültiger API-Key.' });
+// Types
+interface BlogPost {
+  id: string;
+  title: string;
+  slug: string;
+  excerpt: string;
+  content: string;
+  meta_description: string;
+  keywords: string[];
+  author: string;
+  date: string;
+  readingTime: string;
+  wordCount: number;
+  published: boolean;
+  createdAt: string;
+  updatedAt: string;
+}
+
+interface BlogDatabase {
+  posts: BlogPost[];
+}
+
+// Blog-Datenbank Pfad
+const BLOG_DB_PATH = path.join(process.cwd(), 'data', 'blog.json');
+
+// Blog-Datenbank laden/erstellen
+async function loadBlogDatabase(): Promise<BlogDatabase> {
+  try {
+    const data = await fs.readFile(BLOG_DB_PATH, 'utf-8');
+    return JSON.parse(data);
+  } catch (error) {
+    // Erstelle leere Datenbank falls nicht vorhanden
+    const emptyDb: BlogDatabase = { posts: [] };
+    await fs.mkdir(path.dirname(BLOG_DB_PATH), { recursive: true });
+    await fs.writeFile(BLOG_DB_PATH, JSON.stringify(emptyDb, null, 2));
+    return emptyDb;
   }
+}
+
+// Blog-Datenbank speichern
+async function saveBlogDatabase(data: BlogDatabase): Promise<void> {
+  await fs.writeFile(BLOG_DB_PATH, JSON.stringify(data, null, 2));
+}
+
+// Lotta API Key Check
+function checkLottaAuth(req: Request, res: Response, next: NextFunction) {
+  const apiKey = req.headers['x-api-key'] as string;
+  const expectedKey = process.env.LOTTA_API_KEY || 'lotta-blog-key-2026';
+  
+  if (apiKey !== expectedKey) {
+    return res.status(401).json({ error: 'Unauthorized: Invalid API key' });
+  }
+  
   next();
 }
 
-// ── POST /api/blog/posts — Lotta erstellt Draft ──
-blogRouter.post('/posts', requireBlogApiKey, async (req, res) => {
+// GET /api/blog/posts - Alle Posts abrufen
+router.get('/posts', async (req: Request, res: Response) => {
   try {
-    const { title, slug, excerpt, content, coverImageUrl, author } = req.body;
-
-    if (!title || !slug || !content) {
-      return res.status(400).json({ error: 'title, slug und content sind Pflichtfelder.' });
-    }
-
-    if (!/^[a-z0-9-]+$/.test(slug)) {
-      return res.status(400).json({ error: 'slug darf nur Kleinbuchstaben, Zahlen und Bindestriche enthalten.' });
-    }
-
-    const approvalToken = crypto.randomUUID();
-
-    const post = await prisma.blogPost.create({
-      data: {
-        title,
-        slug,
-        excerpt: excerpt ?? '',
-        content,
-        coverImageUrl: coverImageUrl ?? null,
-        author: author ?? 'Lotta',
-        approvalToken,
-      },
-    });
-
-    // Approval-Email an Nicole senden
-    const approveUrl = `${PUBLIC_URL}/api/blog/approve?token=${approvalToken}&action=approve`;
-    const rejectUrl = `${PUBLIC_URL}/api/blog/approve?token=${approvalToken}&action=reject`;
-
-    const emailResult = await sendEmail(
-      blogApprovalEmail({
-        title,
-        excerpt: excerpt ?? '',
-        previewContent: content.substring(0, 800),
-        approveUrl,
-        rejectUrl,
-      }),
-    );
-
-    console.log(`[blog] Draft erstellt: "${title}" (${post.id}), Email: ${emailResult.success ? 'gesendet' : emailResult.error}`);
-
-    res.status(201).json({ ...post, emailSent: emailResult.success });
-  } catch (err: any) {
-    if (err.code === 'P2002') {
-      return res.status(409).json({ error: 'Ein Post mit diesem Slug existiert bereits.' });
-    }
-    console.error('[blog] Fehler:', err);
-    res.status(500).json({ error: 'Interner Fehler.' });
+    const db = await loadBlogDatabase();
+    const posts = db.posts
+      .filter(p => p.published)
+      .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
+    res.json({ posts });
+  } catch (error) {
+    console.error('Blog GET error:', error);
+    res.status(500).json({ error: 'Failed to load blog posts' });
   }
 });
 
-// ── GET /api/blog/posts — Öffentliche Liste ──
-blogRouter.get('/posts', async (_req, res) => {
+// GET /api/blog/posts/:slug - Einzelnen Post abrufen
+router.get('/posts/:slug', async (req: Request, res: Response) => {
   try {
-    const page = Math.max(1, parseInt(_req.query.page as string) || 1);
-    const pageSize = Math.min(50, Math.max(1, parseInt(_req.query.pageSize as string) || 10));
-
-    const [data, total] = await Promise.all([
-      prisma.blogPost.findMany({
-        where: { status: 'PUBLISHED' },
-        orderBy: { publishedAt: 'desc' },
-        skip: (page - 1) * pageSize,
-        take: pageSize,
-        select: {
-          id: true,
-          title: true,
-          slug: true,
-          excerpt: true,
-          coverImageUrl: true,
-          author: true,
-          publishedAt: true,
-        },
-      }),
-      prisma.blogPost.count({ where: { status: 'PUBLISHED' } }),
-    ]);
-
-    res.json({ data, total, page, pageSize });
-  } catch (err) {
-    console.error('[blog] Liste-Fehler:', err);
-    res.status(500).json({ error: 'Interner Fehler.' });
-  }
-});
-
-// ── GET /api/blog/posts/:slug — Einzelner Post ──
-blogRouter.get('/posts/:slug', async (req, res) => {
-  try {
-    const post = await prisma.blogPost.findFirst({
-      where: { slug: req.params.slug, status: 'PUBLISHED' },
-      select: {
-        id: true,
-        title: true,
-        slug: true,
-        excerpt: true,
-        content: true,
-        coverImageUrl: true,
-        author: true,
-        publishedAt: true,
-      },
-    });
-
-    if (!post) return res.status(404).json({ error: 'Post nicht gefunden.' });
-    res.json(post);
-  } catch (err) {
-    console.error('[blog] Detail-Fehler:', err);
-    res.status(500).json({ error: 'Interner Fehler.' });
-  }
-});
-
-// ── GET /api/blog/approve — Freigabe/Ablehnung via Email-Link ──
-blogRouter.get('/approve', async (req, res) => {
-  const { token, action } = req.query;
-
-  if (!token || !action || !['approve', 'reject'].includes(action as string)) {
-    return res.status(400).send(approvalPage('Ungültiger Link', 'Dieser Link ist fehlerhaft.', false));
-  }
-
-  try {
-    const post = await prisma.blogPost.findFirst({
-      where: { approvalToken: token as string, status: 'DRAFT' },
-    });
-
+    const { slug } = req.params;
+    const db = await loadBlogDatabase();
+    const post = db.posts.find(p => p.slug === slug && p.published);
+    
     if (!post) {
-      return res.send(approvalPage('Link abgelaufen', 'Dieser Blogbeitrag wurde bereits bearbeitet oder der Link ist ungültig.', false));
+      return res.status(404).json({ error: 'Post not found' });
     }
-
-    if (action === 'approve') {
-      await prisma.blogPost.update({
-        where: { id: post.id },
-        data: {
-          status: 'PUBLISHED',
-          publishedAt: new Date(),
-          approvalToken: crypto.randomUUID(),
-        },
-      });
-      console.log(`[blog] Freigegeben: "${post.title}"`);
-      return res.send(approvalPage('Beitrag freigegeben!', `"${post.title}" ist jetzt live auf der Webseite.`, true));
-    } else {
-      await prisma.blogPost.update({
-        where: { id: post.id },
-        data: {
-          status: 'REJECTED',
-          approvalToken: crypto.randomUUID(),
-        },
-      });
-      console.log(`[blog] Abgelehnt: "${post.title}"`);
-      return res.send(approvalPage('Beitrag abgelehnt', `"${post.title}" wurde nicht veröffentlicht.`, false));
-    }
-  } catch (err) {
-    console.error('[blog] Approval-Fehler:', err);
-    res.status(500).send(approvalPage('Fehler', 'Ein Fehler ist aufgetreten. Bitte versuche es erneut.', false));
+    
+    res.json({ post });
+  } catch (error) {
+    console.error('Blog GET single error:', error);
+    res.status(500).json({ error: 'Failed to load blog post' });
   }
 });
 
-// ── HTML-Seite für Approval-Bestätigung ──
-function approvalPage(title: string, message: string, success: boolean): string {
-  return `<!DOCTYPE html>
-<html lang="de">
-<head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>KORE Blog — ${title}</title>
-  <style>
-    body { margin: 0; padding: 0; background: #F7F4EF; font-family: 'Jost', sans-serif; color: #1C1A17; display: flex; align-items: center; justify-content: center; min-height: 100vh; }
-    .card { max-width: 460px; padding: 48px 40px; text-align: center; }
-    .icon { font-size: 48px; margin-bottom: 16px; }
-    h1 { font-family: 'Cormorant', Georgia, serif; font-size: 28px; font-weight: 400; margin: 0 0 12px; }
-    p { font-size: 15px; line-height: 1.6; color: #524E46; }
-    .line { width: 48px; height: 2px; background: #9E8460; margin: 24px auto; }
-    a { color: #9E8460; text-decoration: none; }
-  </style>
-</head>
-<body>
-  <div class="card">
-    <div class="icon">${success ? '&#10003;' : '&#128203;'}</div>
-    <h1>${title}</h1>
-    <div class="line"></div>
-    <p>${message}</p>
-    <p style="margin-top: 32px;"><a href="/">Zurueck zu KORE</a></p>
-  </div>
-</body>
-</html>`;
-}
+// POST /api/blog/posts - Neuen Post erstellen (Lotta only)
+router.post('/posts', checkLottaAuth, async (req: Request, res: Response) => {
+  try {
+    const { title, slug, excerpt, content, meta_description, keywords, author, date, readingTime, wordCount } = req.body;
+    
+    // Validierung
+    if (!title || !slug || !content) {
+      return res.status(400).json({ error: 'Title, slug and content are required' });
+    }
+    
+    const db = await loadBlogDatabase();
+    
+    // Prüfe ob slug bereits existiert
+    if (db.posts.find(p => p.slug === slug)) {
+      return res.status(409).json({ error: 'Slug already exists' });
+    }
+    
+    // Neuen Post erstellen
+    const newPost: BlogPost = {
+      id: Date.now().toString(),
+      title,
+      slug,
+      excerpt: excerpt || '',
+      content,
+      meta_description: meta_description || '',
+      keywords: keywords || [],
+      author: author || 'KORE Team',
+      date: date || new Date().toISOString().split('T')[0],
+      readingTime: readingTime || '5 Minuten',
+      wordCount: wordCount || 0,
+      published: true,
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString()
+    };
+    
+    db.posts.push(newPost);
+    await saveBlogDatabase(db);
+    
+    console.log(`✓ Blog post created: ${title} (${slug})`);
+    res.status(201).json({ post: newPost, message: 'Blog post created successfully' });
+    
+  } catch (error) {
+    console.error('Blog POST error:', error);
+    res.status(500).json({ error: 'Failed to create blog post' });
+  }
+});
+
+// PUT /api/blog/posts/:slug - Post aktualisieren (Lotta only)
+router.put('/posts/:slug', checkLottaAuth, async (req: Request, res: Response) => {
+  try {
+    const { slug } = req.params;
+    const updates = req.body;
+    
+    const db = await loadBlogDatabase();
+    const postIndex = db.posts.findIndex(p => p.slug === slug);
+    
+    if (postIndex === -1) {
+      return res.status(404).json({ error: 'Post not found' });
+    }
+    
+    // Post aktualisieren
+    db.posts[postIndex] = {
+      ...db.posts[postIndex],
+      ...updates,
+      updatedAt: new Date().toISOString()
+    };
+    
+    await saveBlogDatabase(db);
+    
+    console.log(`✓ Blog post updated: ${slug}`);
+    res.json({ post: db.posts[postIndex], message: 'Blog post updated successfully' });
+    
+  } catch (error) {
+    console.error('Blog PUT error:', error);
+    res.status(500).json({ error: 'Failed to update blog post' });
+  }
+});
+
+// DELETE /api/blog/posts/:slug - Post löschen (Lotta only)
+router.delete('/posts/:slug', checkLottaAuth, async (req: Request, res: Response) => {
+  try {
+    const { slug } = req.params;
+    
+    const db = await loadBlogDatabase();
+    const postIndex = db.posts.findIndex(p => p.slug === slug);
+    
+    if (postIndex === -1) {
+      return res.status(404).json({ error: 'Post not found' });
+    }
+    
+    const deletedPost = db.posts.splice(postIndex, 1)[0];
+    await saveBlogDatabase(db);
+    
+    console.log(`✓ Blog post deleted: ${slug}`);
+    res.json({ post: deletedPost, message: 'Blog post deleted successfully' });
+    
+  } catch (error) {
+    console.error('Blog DELETE error:', error);
+    res.status(500).json({ error: 'Failed to delete blog post' });
+  }
+});
+
+export { router as blogRouter };

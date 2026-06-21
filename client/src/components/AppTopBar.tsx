@@ -1,5 +1,6 @@
 import { User, Menu, Eye, X } from 'lucide-react';
 import { useAuthStore } from '../stores/authStore';
+import { RoleBadge } from './RoleBadge';
 import type { UserRole } from '@shared/types';
 
 const ROLE_LABELS: Record<string, string> = {
@@ -79,15 +80,39 @@ export function AppTopBar({ onMenuToggle }: AppTopBarProps) {
           </div>
         )}
 
-        <span className="font-body text-small text-kore-mid hidden sm:inline">
-          {ROLE_LABELS[effectiveRole || ''] || ''}
-        </span>
+        {/* User Info & Role Badge */}
+        <div className="flex items-center gap-sm">
+          {/* User Name & Role Badge */}
+          <div className="hidden md:flex flex-col items-end gap-[2px]">
+            <span className="font-body text-small text-kore-ink font-medium">
+              {user?.name?.split(' ')[0] || 'User'}
+            </span>
+            <RoleBadge 
+              role={effectiveRole as UserRole} 
+              size="small" 
+              variant="prominent"
+              showIcon={true}
+              showLabel={true}
+            />
+          </div>
 
-        {/* Avatar */}
-        <div className="w-[36px] h-[36px] rounded-full bg-gradient-to-br from-kore-brass-lt to-kore-brass flex items-center justify-center shadow-sm">
-          <span className="text-white font-body text-small font-medium">
-            {user?.name?.charAt(0)?.toUpperCase() || 'U'}
-          </span>
+          {/* Mobile Role Badge */}
+          <div className="md:hidden">
+            <RoleBadge 
+              role={effectiveRole as UserRole} 
+              size="small" 
+              variant="prominent"
+              showIcon={true}
+              showLabel={false}
+            />
+          </div>
+
+          {/* Avatar */}
+          <div className="w-[36px] h-[36px] rounded-full bg-gradient-to-br from-kore-brass-lt to-kore-brass flex items-center justify-center shadow-sm">
+            <span className="text-white font-body text-small font-medium">
+              {user?.name?.charAt(0)?.toUpperCase() || 'U'}
+            </span>
+          </div>
         </div>
       </div>
     </header>

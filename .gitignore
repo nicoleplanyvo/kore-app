@@ -7,17 +7,25 @@ dist/
 *.tsbuildinfo
 .DS_Store
 
-# Database
+# Database (root-verankerte UND verschachtelte Pfade, z. B. server/data/)
 data/*.db
 data/*.db-journal
 data/*.db-wal
+**/data/
+**/data/*.db
+**/data/*.db-journal
+**/data/*.db-wal
 
 # Prisma generated
 prisma/generated/
 
-# Uploads (user content)
+# Uploads (user content) — niemals committen (sensible Foto-/Store-Daten)
 uploads/*
 !uploads/.gitkeep
+**/uploads/
+
+# Generierte App-Icons (capacitor/assets)
+client/icons/
 
 # IDE
 .vscode/

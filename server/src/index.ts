@@ -8,6 +8,7 @@ import rateLimit from 'express-rate-limit';
 import { contactRouter } from './routes/contact.js';
 import { auditRouter } from './routes/audit.js';
 import { authRouter } from './routes/auth.js';
+import { passkeyRouter } from './routes/passkey.js';
 import { authenticate, requireMinRole } from './middleware/auth.js';
 import { startPhotoRetention } from './lib/retention.js';
 import { notificationsRouter } from './routes/notifications.js';
@@ -129,6 +130,7 @@ app.use('/api/notifications', authenticate, notificationsRouter);
 app.use('/api/reporting', authenticate, requireMinRole('regional_manager'), reportingRouter);
 
 // Auth (mit strengerem Rate-Limit)
+app.use('/api/auth/passkey', authLimiter, passkeyRouter);
 app.use('/api/auth', authLimiter, authRouter);
 
 // Admin

@@ -1,3 +1,4 @@
+import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import {
   ArrowRight,
@@ -9,6 +10,7 @@ import {
 import { useAuthStore } from '../stores/authStore';
 import { useEffectiveRole } from '../hooks/useEffectiveRole';
 import { useDashboardStats } from '../hooks/useDashboardData';
+import { WelcomeOverlay } from '../components/WelcomeOverlay';
 import { MyDayPage } from './MyDayPage';
 
 /* ── Rollen-Labels ── */
@@ -290,39 +292,71 @@ function AdminDashboard() {
 function RoleDashboard() {
   const { user } = useAuthStore();
   const { role } = useEffectiveRole();
-  const firstName = user?.name?.split(' ')[0] || 'User';
+  const [showWelcomeOverlay, setShowWelcomeOverlay] = useState(false);
+
+  // Check if this is potentially first login (simplified heuristic)
+  const isFirstLogin = !localStorage.getItem(`kore-welcome-seen-${user?.id}`);
+  
+  const handleWelcomeSeen = () => {
+    if (user?.id) {
+      localStorage.setItem(`kore-welcome-seen-${user.id}`, 'true');
+    }
+    setShowWelcomeOverlay(false);
+  };
+
+  // Show overlay on first login
+  useEffect(() => {
+    if (isFirstLogin) {
+      const timer = setTimeout(() => {
+        setShowWelcomeOverlay(true);
+      }, 500); // Delay to let dashboard load first
+      
+      return () => clearTimeout(timer);
+    }
+  }, [isFirstLogin]);
 
   return (
     <div>
-      {/* Header */}
-      <div className="mb-lg sm:mb-xl">
-        <h1 className="font-display text-h2 sm:text-h1 text-kore-ink">
-          Hallo, {firstName}
-        </h1>
-        <p className="font-body text-small text-kore-mid mt-xs">
-          {roleLabels[role] || role}
-        </p>
-        <p className="font-body text-caption text-kore-mid/60 mt-xs">
-          {roleSubtitles[role] || ''}
-        </p>
-      </div>
+      {/* Welcome Overlay */}
+      <WelcomeOverlay
+        isOpen={showWelcomeOverlay}
+        onClose={handleWelcomeSeen}
+        role={role}
+        userName={user?.name || 'User'}
+      />
 
       {/* Placeholder Panel */}
       <div className="bg-kore-white border border-kore-border p-2xl text-center">
         <FileText size={32} className="text-kore-mid/30 mx-auto mb-md" />
-        <p className="font-body text-body text-kore-ink">
-          Dein personalisiertes Dashboard wird bald verfügbar.
-        </p>
-        <p className="font-body text-small text-kore-mid mt-xs mb-lg">
-          In der Zwischenzeit findest du alle Werkzeuge in der Tool-Übersicht.
-        </p>
-        <Link
-          to="/tools"
-          className="inline-flex items-center gap-sm px-lg py-md bg-kore-ink text-kore-white font-body text-small hover:bg-kore-ink/90 transition-colors"
-        >
-          <span>Alle Tools anzeigen</span>
-          <ArrowRight size={16} />
-        </Link>
+        <div className="mb-lg">
+          <h2 className="font-display text-h3 text-kore-ink mb-xs">
+            Willkommen bei KORE
+          </h2>
+          <p className="font-body text-body text-kore-mid">
+            Dein personalisiertes Dashboard wird bald verfügbar.
+          </p>
+          <p className="font-body text-small text-kore-mid mt-xs">
+            In der Zwischenzeit findest du alle Werkzeuge in der Tool-Übersicht.
+          </p>
+        </div>
+        
+        <div className="flex flex-col sm:flex-row gap-sm justify-center">
+          {!localStorage.getItem(`kore-welcome-seen-${user?.id}`) && (
+            <button
+              onClick={() => setShowWelcomeOverlay(true)}
+              className="inline-flex items-center gap-sm px-lg py-md border border-kore-brass text-kore-brass font-body text-small hover:bg-kore-brass/5 transition-colors"
+            >
+              <span>Willkommens-Tour</span>
+            </button>
+          )}
+          <Link
+            to="/tools"
+            className="inline-flex items-center gap-sm px-lg py-md bg-kore-ink text-kore-white font-body text-small hover:bg-kore-ink/90 transition-colors"
+          >
+            <span>Alle Tools anzeigen</span>
+            <ArrowRight size={16} />
+          </Link>
+        </div>
       </div>
     </div>
   );

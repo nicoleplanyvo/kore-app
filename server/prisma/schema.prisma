@@ -88,6 +88,7 @@ model User {
   photoRequestReviews  PhotoRequestTarget[]  @relation("PhotoRequestReviewer")
   followUpsAssigned    FollowUpAction[]      @relation("FollowUpAssignee")
   followUpsCreated     FollowUpAction[]      @relation("FollowUpCreator")
+  passkeys             Passkey[]             @relation("UserPasskeys")
 
   @@index([tenantId])
 }
@@ -2173,5 +2174,23 @@ model DeviceToken {
   updatedAt DateTime @updatedAt
 
   @@index([tenantId])
+  @@index([userId])
+}
+
+/// WebAuthn-/Passkey-Credential (FIDO2). publicKey = COSE-Public-Key (Bytes).
+model Passkey {
+  id           String   @id @default(cuid())
+  credentialId String   @unique          // Base64URL der Credential-ID
+  publicKey    Bytes                      // COSE Public Key
+  counter      BigInt   @default(0)       // Signatur-Zähler (Clone-Erkennung)
+  transports   String?                    // JSON-Array, z. B. ["internal","hybrid"]
+  deviceType   String?                    // singleDevice | multiDevice
+  backedUp     Boolean  @default(false)
+  name         String?                    // benutzerfreundlicher Name
+  userId       String
+  user         User     @relation("UserPasskeys", fields: [userId], references: [id], onDelete: Cascade)
+  createdAt    DateTime @default(now())
+  lastUsedAt   DateTime?
+
   @@index([userId])
 }

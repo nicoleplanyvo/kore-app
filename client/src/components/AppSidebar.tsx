@@ -2,6 +2,7 @@ import { NavLink } from 'react-router-dom';
 import {
   LayoutDashboard, LogOut, X, Wrench,
   Users, Store, Settings, ShieldCheck, BarChart, Building2, CreditCard,
+  Fingerprint,
   type LucideIcon,
 } from 'lucide-react';
 import { useAuthStore } from '../stores/authStore';
@@ -215,6 +216,14 @@ export function AppSidebar({ open, onClose }: AppSidebarProps) {
               </div>
             </div>
           )}
+          <NavLink
+            to="/einstellungen/sicherheit"
+            onClick={onClose}
+            className="flex items-center gap-md-sm px-md py-[10px] text-kore-faint hover:text-kore-brass transition-colors duration-200 w-full font-body text-small rounded-md hover:bg-white/5"
+          >
+            <Fingerprint size={18} />
+            <span>Sicherheit &amp; Passkeys</span>
+          </NavLink>
           <button
             onClick={handleLogout}
             className="flex items-center gap-md-sm px-md py-[10px] text-kore-faint hover:text-kore-error transition-colors duration-200 w-full font-body text-small rounded-md hover:bg-white/5"

@@ -63,6 +63,7 @@ import TrackTraceRoutes from './tools/track-trace/index';
 import MultiStoreRoutes from './tools/multi-store/index';
 import RmDashboardRoutes from './tools/rm-dashboard/index';
 import { MyDayPage } from './pages/MyDayPage';
+import { SecurityPage } from './pages/SecurityPage';
 import MetrixRoutes from './tools/metrix/index';
 
 export function App() {
@@ -88,6 +89,9 @@ export function App() {
 
             {/* Alle Tools */}
             <Route path="/tools" element={<AllToolsPage />} />
+
+            {/* Konto — Sicherheit / Passkeys */}
+            <Route path="/einstellungen/sicherheit" element={<SecurityPage />} />
 
             {/* ═══ TOOLS ═══ */}
 

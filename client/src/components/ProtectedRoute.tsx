@@ -1,6 +1,7 @@
 import { Navigate, Outlet } from 'react-router-dom';
 import { useAuthStore } from '../stores/authStore';
 import { hasMinRole, type UserRole } from '@shared/types';
+import { ErrorMessage } from './ErrorMessage';
 
 interface ProtectedRouteProps {
   /** Erlaubte Rollen (exakt) */

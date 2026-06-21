@@ -1,3 +1,4 @@
+import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import {
   CheckCircle2,
@@ -14,10 +15,34 @@ import {
 } from 'lucide-react';
 import { useMyDay } from '../hooks/useMyDay';
 import { useAuthStore } from '../stores/authStore';
+import { WelcomeOverlay } from '../components/WelcomeOverlay';
 
 export function MyDayPage() {
   const { data, isLoading, error } = useMyDay();
   const user = useAuthStore((s) => s.user);
+  const [showWelcomeOverlay, setShowWelcomeOverlay] = useState(false);
+
+  // Check if this is potentially first login for Store Manager
+  const isStoreManager = user?.role === 'store_manager';
+  const isFirstLogin = isStoreManager && !localStorage.getItem(`kore-welcome-seen-${user?.id}`);
+  
+  const handleWelcomeSeen = () => {
+    if (user?.id) {
+      localStorage.setItem(`kore-welcome-seen-${user.id}`, 'true');
+    }
+    setShowWelcomeOverlay(false);
+  };
+
+  // Show overlay on first login
+  useEffect(() => {
+    if (isFirstLogin) {
+      const timer = setTimeout(() => {
+        setShowWelcomeOverlay(true);
+      }, 500);
+      
+      return () => clearTimeout(timer);
+    }
+  }, [isFirstLogin]);
 
   if (isLoading) {
     return (
@@ -54,6 +79,16 @@ export function MyDayPage() {
 
   return (
     <div className="max-w-6xl mx-auto">
+      {/* Welcome Overlay for Store Managers */}
+      {isStoreManager && (
+        <WelcomeOverlay
+          isOpen={showWelcomeOverlay}
+          onClose={handleWelcomeSeen}
+          role={user.role}
+          userName={user.name || 'User'}
+        />
+      )}
+
       {/* Header */}
       <div className="mb-xl animate-fade-in">
         <div className="flex items-center gap-sm mb-xs">
