@@ -124,3 +124,29 @@ export async function apiBlobUrl(uploadPath: string): Promise<string> {
   if (!res.ok) throw new Error(`Bild konnte nicht geladen werden (HTTP ${res.status})`);
   return URL.createObjectURL(await res.blob());
 }
+
+/** Lädt eine Auth-geschützte Datei (z. B. PDF) und stößt den Browser-Download an */
+export async function apiDownload(path: string, filename: string): Promise<void> {
+  const url = `${API_URL}${path}`;
+  const headers: Record<string, string> = {};
+  if (accessToken) headers['Authorization'] = `Bearer ${accessToken}`;
+
+  let res = await fetch(url, { headers, credentials: 'include' });
+  if (res.status === 401 && accessToken) {
+    const newToken = await refreshAccessToken();
+    if (newToken) {
+      headers['Authorization'] = `Bearer ${newToken}`;
+      res = await fetch(url, { headers, credentials: 'include' });
+    }
+  }
+  if (!res.ok) throw new Error(`Download fehlgeschlagen (HTTP ${res.status})`);
+
+  const objectUrl = URL.createObjectURL(await res.blob());
+  const a = document.createElement('a');
+  a.href = objectUrl;
+  a.download = filename;
+  document.body.appendChild(a);
+  a.click();
+  a.remove();
+  URL.revokeObjectURL(objectUrl);
+}

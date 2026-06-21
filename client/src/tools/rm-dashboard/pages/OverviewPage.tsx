@@ -18,7 +18,8 @@ import {
   ArrowDownRight,
 } from 'lucide-react';
 import { useRmSummary, useRmRanking, useRmAlerts } from '../../../hooks/useRmDashboard';
-import { api } from '../../../lib/api';
+import { api, apiDownload } from '../../../lib/api';
+import { FileText } from 'lucide-react';
 import type { RmExportRow } from '../../../hooks/useRmDashboard';
 
 type PeriodPreset = 'week' | 'month' | 'quarter' | 'year' | 'custom';
@@ -112,7 +113,13 @@ export function OverviewPage() {
             Executive-Überblick über alle Stores der Region.
           </p>
         </div>
-        <div className="flex gap-sm">
+        <div className="flex flex-wrap gap-sm">
+          <button
+            onClick={() => { void apiDownload('/api/reporting/pilot-report.pdf', `KORE-Pilot-Report-${new Date().toISOString().slice(0, 10)}.pdf`).catch((e) => alert(e.message)); }}
+            className="flex items-center gap-xs px-md py-sm bg-kore-ink text-kore-white text-small hover:bg-kore-brass transition-colors"
+          >
+            <FileText size={14} /> Pilot-Report (PDF)
+          </button>
           <button
             onClick={handleExport}
             className="flex items-center gap-xs px-md py-sm border border-kore-border text-small text-kore-mid hover:text-kore-ink transition-colors"
