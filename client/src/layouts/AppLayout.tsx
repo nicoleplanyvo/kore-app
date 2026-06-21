@@ -8,7 +8,7 @@ import {
   LayoutDashboard,
   Grid3X3,
   ClipboardCheck,
-  TrendingUp,
+  Camera,
   Menu as MenuIcon,
 } from 'lucide-react';
 
@@ -31,19 +31,19 @@ export function AppLayout() {
       <AppSidebar open={sidebarOpen} onClose={() => setSidebarOpen(false)} />
       <div className="flex-1 flex flex-col overflow-hidden min-w-0">
         <AppTopBar onMenuToggle={() => setSidebarOpen(true)} />
-        <main className="flex-1 overflow-y-auto pb-[80px] lg:pb-0">
+        <main className="flex-1 overflow-y-auto pb-nav-safe lg:pb-0">
           <div className="p-md sm:p-lg lg:p-xl max-w-[1400px] mx-auto animate-fade-in">
             <Outlet />
           </div>
         </main>
 
         {/* Mobile Bottom Navigation */}
-        <nav className="lg:hidden fixed bottom-0 left-0 right-0 bg-kore-white border-t border-kore-border shadow-bottom z-40">
-          <div className="flex items-center justify-around h-[64px] px-sm safe-area-bottom">
+        <nav className="lg:hidden fixed bottom-0 left-0 right-0 bg-kore-white border-t border-kore-border shadow-bottom z-40 safe-area-bottom">
+          <div className="flex items-center justify-around h-[64px] px-sm">
             <BottomTab to="/" icon={LayoutDashboard} label="Home" exact />
             <BottomTab to="/tools" icon={Grid3X3} label="Tools" />
-            <BottomTab to="/tools/checklisten" icon={ClipboardCheck} label="Checks" />
-            <BottomTab to="/tools/kpi" icon={TrendingUp} label="KPIs" />
+            <BottomTab to="/tools/vm-compliance" icon={Camera} label="VM" />
+            <BottomTab to="/tools/sea" icon={ClipboardCheck} label="Audit" />
             <button
               onClick={() => setSidebarOpen(true)}
               className="flex flex-col items-center justify-center gap-[2px] min-w-[56px] py-sm text-kore-faint"

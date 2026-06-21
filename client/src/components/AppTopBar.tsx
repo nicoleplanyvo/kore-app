@@ -31,7 +31,8 @@ export function AppTopBar({ onMenuToggle }: AppTopBarProps) {
   const effectiveRole = viewAsRole || user?.role;
 
   return (
-    <header className="h-[56px] bg-kore-white border-b border-kore-border/60 flex items-center justify-between px-md sm:px-xl flex-shrink-0 relative z-10">
+    <header className="bg-kore-white border-b border-kore-border/60 flex-shrink-0 relative z-10 safe-area-top">
+      <div className="h-[56px] flex items-center justify-between px-md sm:px-xl">
       {/* Left: Hamburger (desktop only, mobile uses bottom nav) */}
       <button
         onClick={onMenuToggle}
@@ -114,6 +115,7 @@ export function AppTopBar({ onMenuToggle }: AppTopBarProps) {
             </span>
           </div>
         </div>
+      </div>
       </div>
     </header>
   );

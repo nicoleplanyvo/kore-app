@@ -10,7 +10,8 @@ export async function initNative(): Promise<void> {
 
   try {
     const { StatusBar, Style } = await import('@capacitor/status-bar');
-    await StatusBar.setStyle({ style: Style.Light });
+    // Dunkler Statusleisten-Text (Uhr/Symbole) auf hellem KORE-Header
+    await StatusBar.setStyle({ style: Style.Dark });
     await StatusBar.setBackgroundColor({ color: '#F7F4EF' });
   } catch { /* StatusBar auf manchen Geräten n/a */ }
 

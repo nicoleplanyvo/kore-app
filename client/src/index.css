@@ -13,10 +13,18 @@
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     scroll-behavior: smooth;
+    /* Verhindert horizontales Wackeln/Ueberlauf in der nativen WebView */
+    width: 100%;
+    overflow-x: hidden;
   }
 
   body {
     @apply font-body font-normal text-kore-ink bg-kore-bg;
+    width: 100%;
+    max-width: 100%;
+    overflow-x: hidden;
+    /* Kein blaues Tap-Highlight in der App */
+    -webkit-tap-highlight-color: transparent;
   }
 
   ::selection {
@@ -26,6 +34,24 @@
 
   h1, h2, h3 {
     @apply font-display;
+  }
+}
+
+@layer utilities {
+  /* iOS/Android Safe-Area-Insets (Notch, Statusleiste, Home-Indicator) */
+  .safe-area-top {
+    padding-top: env(safe-area-inset-top);
+  }
+  .safe-area-bottom {
+    padding-bottom: env(safe-area-inset-bottom);
+  }
+  .safe-area-x {
+    padding-left: env(safe-area-inset-left);
+    padding-right: env(safe-area-inset-right);
+  }
+  /* Hoehe der unteren Navigation inkl. Home-Indicator-Inset */
+  .pb-nav-safe {
+    padding-bottom: calc(80px + env(safe-area-inset-bottom));
   }
 }
 
