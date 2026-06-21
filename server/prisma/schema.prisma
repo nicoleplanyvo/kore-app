@@ -13,6 +13,8 @@ model User {
   email        String    @unique
   name         String
   passwordHash String
+  resetTokenHash   String?   // SHA-256 des Passwort-Reset-Tokens
+  resetTokenExpiry DateTime?
   role         String    @default("learner")
   tenantId     String?
   tenant       Tenant?   @relation(fields: [tenantId], references: [id])

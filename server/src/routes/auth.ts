@@ -1,9 +1,15 @@
 import { Router, type Router as RouterType } from 'express';
 import bcrypt from 'bcryptjs';
+import crypto from 'crypto';
+import { z } from 'zod';
 import prisma from '../lib/prisma.js';
 import { signAccessToken, signRefreshToken, verifyRefreshToken } from '../lib/jwt.js';
 import { authenticate, requireRole } from '../middleware/auth.js';
 import { loginSchema } from '@shared/validators';
+import { sendEmail, passwordResetEmail } from '../lib/email.js';
+
+const APP_URL = process.env['APP_URL'] ?? 'https://app.kore-retail.de';
+const hashToken = (t: string) => crypto.createHash('sha256').update(t).digest('hex');
 
 export const authRouter: RouterType = Router();
 
@@ -90,6 +96,59 @@ authRouter.post('/login', async (req, res) => {
     res.json({ accessToken, user: authUser });
   } catch (err) {
     console.error('Auth login error:', err);
+    res.status(500).json({ error: 'Interner Serverfehler.' });
+  }
+});
+
+// POST /api/auth/forgot-password — Reset-Link per E-Mail anfordern
+authRouter.post('/forgot-password', async (req, res) => {
+  try {
+    const parsed = z.object({ email: z.string().email() }).safeParse(req.body);
+    // Immer 200 zurückgeben (keine Account-Enumeration)
+    if (!parsed.success) return res.json({ ok: true });
+
+    const user = await prisma.user.findUnique({ where: { email: parsed.data.email.toLowerCase() } });
+    if (user) {
+      const token = crypto.randomBytes(32).toString('hex');
+      await prisma.user.update({
+        where: { id: user.id },
+        data: { resetTokenHash: hashToken(token), resetTokenExpiry: new Date(Date.now() + 60 * 60 * 1000) }, // 1 Std.
+      });
+      const resetLink = `${APP_URL}/reset-password?token=${token}`;
+      await sendEmail(passwordResetEmail({ name: user.name, email: user.email, resetLink }));
+    }
+    res.json({ ok: true });
+  } catch (err) {
+    console.error('forgot-password error:', err);
+    res.json({ ok: true }); // bewusst kein 500 nach außen
+  }
+});
+
+// POST /api/auth/reset-password — neues Passwort mit Token setzen
+authRouter.post('/reset-password', async (req, res) => {
+  try {
+    const parsed = z.object({
+      token: z.string().min(10),
+      password: z.string().min(8, 'Mindestens 8 Zeichen.'),
+    }).safeParse(req.body);
+    if (!parsed.success) return res.status(400).json({ error: 'Ungültige Daten.', details: parsed.error.flatten() });
+
+    const user = await prisma.user.findFirst({
+      where: { resetTokenHash: hashToken(parsed.data.token), resetTokenExpiry: { gt: new Date() } },
+    });
+    if (!user) return res.status(400).json({ error: 'Link ungültig oder abgelaufen. Bitte neu anfordern.' });
+
+    await prisma.user.update({
+      where: { id: user.id },
+      data: {
+        passwordHash: await bcrypt.hash(parsed.data.password, 12),
+        resetTokenHash: null,
+        resetTokenExpiry: null,
+      },
+    });
+    res.json({ ok: true });
+  } catch (err) {
+    console.error('reset-password error:', err);
     res.status(500).json({ error: 'Interner Serverfehler.' });
   }
 });

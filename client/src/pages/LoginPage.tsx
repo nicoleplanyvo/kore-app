@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { loginSchema, type LoginInput } from '@shared/validators';
@@ -70,6 +70,12 @@ export function LoginPage() {
           {...register('password')}
           error={errors.password?.message}
         />
+
+        <div className="-mt-sm text-right">
+          <Link to="/forgot-password" className="font-body text-small text-kore-brass hover:text-kore-ink transition-colors">
+            Passwort vergessen?
+          </Link>
+        </div>
 
         {serverError && (
           <div className="flex items-center gap-sm px-md py-sm bg-red-50 rounded-md">
