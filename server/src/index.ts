@@ -81,6 +81,10 @@ app.use(helmet({
         directives: {
           ...helmet.contentSecurityPolicy.getDefaultDirectives(),
           'img-src': ["'self'", 'data:', 'blob:'],
+          // upgrade-insecure-requests entfernt: würde über http:// alle Ressourcen
+          // auf https hochstufen (scheitert ohne TLS → leere Seite). HTTP→HTTPS macht
+          // später nginx-Redirect + HSTS, sobald das Zertifikat steht.
+          'upgrade-insecure-requests': null,
         },
       }
     : false,
