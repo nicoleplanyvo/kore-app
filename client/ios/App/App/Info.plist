@@ -22,6 +22,16 @@
 	<string>$(MARKETING_VERSION)</string>
 	<key>CFBundleVersion</key>
 	<string>$(CURRENT_PROJECT_VERSION)</string>
+	<key>NSCameraUsageDescription</key>
+	<string>KORE benoetigt Zugriff auf die Kamera, um Store-Fotos fuer VM-Compliance, Spot-Checks und Audits aufzunehmen.</string>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>KORE benoetigt Zugriff auf Ihre Fotos, um vorhandene Aufnahmen als Compliance-Nachweis hochzuladen.</string>
+	<key>NSPhotoLibraryAddUsageDescription</key>
+	<string>KORE speichert aufgenommene Store-Fotos in Ihrer Fotomediathek.</string>
+	<key>NSFaceIDUsageDescription</key>
+	<string>KORE verwendet Face ID fuer die sichere, passwortlose Anmeldung per Passkey.</string>
+	<key>ITSAppUsesNonExemptEncryption</key>
+	<false/>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
 	<key>UILaunchStoryboardName</key>

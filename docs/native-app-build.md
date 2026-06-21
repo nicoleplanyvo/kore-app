@@ -1,51 +1,104 @@
-# Native App (Capacitor) — Build & TestFlight
+# KORE — Native iOS App: Build & TestFlight (Anleitung für den Mac)
 
-Stand: Juni 2026 · Capacitor 8 · iOS + Android · Code: `client/` (Feature-Branch `feature/dior-pilot`)
+Diese Anleitung bringt die KORE-App als native iOS-App in **TestFlight** (interner Test) —
+und später in den App Store. Alles, was **nicht** den Mac braucht, ist bereits vorbereitet
+(App-ID, Icons, Splash, Berechtigungen, Prod-API, CORS, Passkey-AASA). Auf dem Mac musst du
+nur noch signieren, archivieren und hochladen.
 
-## Was steht (auf dem Server eingerichtet)
-- Capacitor 8 initialisiert: `client/capacitor.config.ts` (appId `de.koreretail.app`, App „KORE")
-- Plattformen angelegt: `client/ios/` (Xcode-Projekt) + `client/android/` (Gradle-Projekt)
-- Plugins: Camera, Push Notifications, Splash Screen, Status Bar, App, Preferences
-- Web-Assets gebündelt; API-Aufrufe gehen an **https://app.kore-retail.de** (beim Build gesetzt
-  über `VITE_API_URL`, siehe `npm run build:native`)
-- Native-Helper `client/src/lib/native.ts`: Statusleiste/Splash im KORE-CI + Push-Registrierung
-  (im Web automatisch No-Op)
+**Stand der Vorbereitung (erledigt):**
+- Capacitor-Projekt + `ios/`-Ordner vorhanden, App-ID `de.koreretail.app`, Name „KORE"
+- App-Icon + Splash (cremefarben, Logo) generiert
+- Info.plist: Kamera-, Foto-, Face-ID-Berechtigungen + Export-Compliance gesetzt
+- Web-Bundle mit Prod-API `https://app.kore-retail.de` eingebacken und ins iOS-Projekt kopiert
+- Server-CORS für die native App (`capacitor://localhost`) aktiv
+- Passkey-AASA-Route am Server vorbereitet (wartet nur auf die Apple-Team-ID)
 
-## Build-Workflow
+---
+
+## 0. Voraussetzungen (einmalig)
+- **Mac mit Xcode** (aktuelle Version, aus dem Mac App Store)
+- **Apple Developer Program** Mitgliedschaft (hast du)
+- **Node.js** (gleiche Version wie hier, z. B. 20/22) + **CocoaPods**: `sudo gem install cocoapods` (falls Capacitor Pods statt SPM nutzt)
+- In Xcode einmal einloggen: **Xcode → Settings → Accounts → „+" → Apple-ID**
+
+## 1. Code auf den Mac holen
 ```bash
-cd client
-npm run sync:native     # = build:native (mit Prod-API-URL) + cap sync
-npx cap open ios        # öffnet Xcode  (nur auf macOS)
-npx cap open android    # öffnet Android Studio
+git clone git@github.com:nicoleplanyvo/kore-app.git
+cd kore-app
 ```
-> ⚠️ **iOS bauen/signieren geht nur auf einem Mac mit Xcode.** Android geht auch hier (Linux),
-> für den Store-Upload aber bequemer über Android Studio.
+(oder als ZIP von GitHub herunterladen)
 
-## Voraussetzung iOS / TestFlight (braucht Nicole + Apple-Account)
-1. **Xcode** auf dem Mac, in `client/ios/App` einmal `pod install`
-2. In Xcode: Team = Muñoz Bonilla GmbH, Signing automatisch, Bundle-ID `de.koreretail.app`
-3. **Push (APNs):** im Apple-Developer-Portal einen **APNs-Auth-Key (.p8)** erstellen → für den
-   Push-Versand vom Server hinterlegen; in Xcode die Capability **Push Notifications** + **Background Modes → Remote notifications** aktivieren
-4. Archive → Distribute → **App Store Connect / TestFlight** hochladen
-5. In App Store Connect interne/externe Tester (Dior) einladen
+## 2. Abhängigkeiten + nativen Build erzeugen
+```bash
+# Nur der Client wird gebraucht:
+cd client
+npm install
+npm run sync:native      # baut Web mit Prod-API + kopiert alles ins ios/-Projekt
+npx cap open ios         # oeffnet das Projekt in Xcode
+```
+> `sync:native` = Build mit `VITE_API_URL=https://app.kore-retail.de` + `cap sync`
+> (lädt auch die iOS-Pods/Swift-Packages — das geht nur auf dem Mac).
 
-## Voraussetzung Android (für Push)
-- **Firebase-Projekt** anlegen → `google-services.json` nach `client/android/app/`
-- FCM-Server-Key für den Push-Versand am Server hinterlegen
+## 3. In Xcode: Signing einrichten
+1. Links im Projektnavigator **„App"** anklicken → Ziel **„App"** → Tab **„Signing & Capabilities"**
+2. **„Automatically manage signing"** anhaken
+3. Bei **„Team"** dein Apple-Developer-Team auswählen
+4. **Bundle Identifier** muss `de.koreretail.app` sein (ist voreingestellt)
 
-## Noch offen (nächste Bausteine)
-- **Push-Backend:** Prisma-Model `DeviceToken` + Endpoint `POST /api/notifications/register-device`
-  + FCM/APNs-Versand; Trigger bei neuem Spot-Check / fälliger Checkliste. Braucht die Credentials
-  aus Schritt 3 (APNs .p8) bzw. Firebase.
-- **Token-Registrierung verdrahten:** `registerPush()` aus `native.ts` nach Login aufrufen und
-  Token an das Backend senden (TODO im Code markiert).
-- **App-Icons & Splash** im KORE-CI generieren (`@capacitor/assets`).
-- **Kamera:** der bestehende Foto-Upload (`<input capture>`) funktioniert nativ bereits; optional
-  auf das native Camera-Plugin umstellen für besseres UX.
-- **Voraussetzung App-Store-Freigabe:** HTTPS-API erreichbar → hängt am **DNS-Cutover**
-  (`app.kore-retail.de` → 167.233.135.200) + TLS. iOS (ATS) verlangt HTTPS.
+## 4. In Xcode: Capabilities hinzufügen
+Im selben Tab **„Signing & Capabilities"** oben auf **„+ Capability"**:
+1. **Push Notifications** hinzufügen (für die Spot-Check-/Audit-Benachrichtigungen)
+2. **Associated Domains** hinzufügen → Eintrag:
+   ```
+   webcredentials:app.kore-retail.de
+   ```
+   (→ ermöglicht passwortlosen Passkey-Login in der App, sobald die Team-ID am Server gesetzt ist — siehe Schritt 8)
 
-## Wichtig: Reihenfolge
-Die native App zeigt fest auf `https://app.kore-retail.de`. Sie wird erst sinnvoll testbar,
-**nachdem** der DNS-Cutover auf den neuen Server + TLS erfolgt ist (siehe server-migration-runbook).
-Bis dahin: Build-Setup steht, Apple-Account + APNs-Key + Firebase parallel vorbereiten.
+> Kamera/Foto/Face-ID-Berechtigungen sind bereits in der Info.plist — nichts weiter nötig.
+
+## 5. Version & Build-Nummer
+Im Tab **„General"**:
+- **Version** z. B. `1.0.0`
+- **Build** z. B. `1` (bei jedem neuen Upload um 1 erhöhen)
+
+## 6. Archivieren
+1. Oben in der Geräte-Auswahl **„Any iOS Device (arm64)"** wählen (nicht den Simulator)
+2. Menü **Product → Archive**
+3. Nach dem Build öffnet sich der **Organizer** mit dem Archiv
+
+## 7. Nach TestFlight hochladen
+1. Vorher in **App Store Connect** (appstoreconnect.apple.com) die App anlegen:
+   **Apps → „+" → Neue App** → Plattform iOS, Bundle-ID `de.koreretail.app`, Name „KORE"
+2. Im Xcode-Organizer **„Distribute App"** → **„App Store Connect"** → **„Upload"**
+3. Standard-Optionen bestätigen → **Upload**
+4. Nach dem Upload erscheint der Build nach einigen Minuten unter **TestFlight**
+5. Unter **TestFlight → Interne Tests** dich selbst (und Dior-Tester) als Tester hinzufügen
+6. Die **TestFlight-App** aufs iPhone laden → Einladung annehmen → KORE testen
+
+---
+
+## 8. Letzter Schritt für Passkeys in der App (brauche ich von dir)
+Damit der Passkey-Login **in der nativen App** funktioniert, braucht der Server deine
+**Apple-Team-ID** (10-stellig, z. B. `A1B2C3D4E5`):
+- Zu finden auf **developer.apple.com → Membership** bzw. App Store Connect → „Mitgliedschaft"
+
+Sobald du sie mir gibst, setze ich am Server `APPLE_TEAM_ID` und aktiviere die AASA-Datei
+(`https://app.kore-retail.de/.well-known/apple-app-site-association`). Dann nutzt die App
+dieselben Passkeys wie das Web.
+
+---
+
+## Bekannte Einschränkung (für später, kein Blocker fürs erste Testen)
+Die App ruft die API cross-origin (`capacitor://localhost` → `app.kore-retail.de`). Der
+**Refresh-Token** liegt als Cookie und wird im WebView cross-origin nicht zuverlässig
+mitgesendet — d. h. nach ~15 Min Inaktivität kann eine erneute Anmeldung nötig sein.
+Fix für Phase 2: Token nativ in `@capacitor/preferences` speichern + header-basierter
+Refresh, oder `CapacitorHttp` aktivieren (nativer HTTP-Layer mit Cookie-Handling).
+Fürs erste TestFlight-Demo ist die App voll nutzbar.
+
+## Updates ausspielen
+Nach Code-Änderungen am Mac:
+```bash
+cd client && npm run sync:native
+```
+dann in Xcode: Build-Nummer +1 → Archive → Upload. Fertig.

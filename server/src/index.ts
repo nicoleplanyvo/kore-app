@@ -3,6 +3,7 @@ import { fileURLToPath } from 'url';
 import express from 'express';
 import path from 'path';
 import cookieParser from 'cookie-parser';
+import cors from 'cors';
 import helmet from 'helmet';
 import rateLimit from 'express-rate-limit';
 import { contactRouter } from './routes/contact.js';
@@ -109,11 +110,57 @@ const authLimiter = rateLimit({
   message: { error: 'Zu viele Login-Versuche. Bitte warte 15 Minuten.' },
 });
 
+// ── CORS ──────────────────────────────────────────
+// Web-App laeuft same-origin (kein CORS noetig). Die NATIVE App (Capacitor)
+// laeuft im WebView unter capacitor://localhost bzw. https://localhost (Android)
+// und ruft die API cross-origin auf — dafuer diese Origins erlauben (mit Credentials
+// fuer Cookies/Authorization). Zusaetzliche Origins via CORS_EXTRA_ORIGINS (kommagetrennt).
+const NATIVE_ORIGINS = [
+  'capacitor://localhost',
+  'ionic://localhost',
+  'http://localhost',
+  'https://localhost',
+];
+const EXTRA_ORIGINS = (process.env['CORS_EXTRA_ORIGINS'] ?? '')
+  .split(',')
+  .map((s) => s.trim())
+  .filter(Boolean);
+const ALLOWED_ORIGINS = new Set([...NATIVE_ORIGINS, ...EXTRA_ORIGINS, 'https://app.kore-retail.de']);
+app.use(
+  cors({
+    origin: (origin, cb) => {
+      // Kein Origin-Header (same-origin, curl, Server-zu-Server) → erlauben
+      if (!origin) return cb(null, true);
+      if (ALLOWED_ORIGINS.has(origin)) return cb(null, true);
+      // Fremde Origin: ohne CORS-Header beantworten (Browser blockt dann)
+      return cb(null, false);
+    },
+    credentials: true,
+  }),
+);
+
 // ── Middleware ────────────────────────────────────
-// Same-Origin: kein CORS nötig (Client + API auf einer Domain)
 app.use(express.json({ limit: '10mb' }));
 app.use(cookieParser());
 app.use('/api/', apiLimiter);
+
+// Apple App Site Association — erlaubt der nativen iOS-App, dieselben Passkeys
+// wie das Web zu nutzen (webcredentials) + spaetere Universal Links (applinks).
+// Apple ruft diese Datei ueber HTTPS ohne Redirect ab, Content-Type application/json.
+// APPLE_TEAM_ID in der Prod-.env setzen (10-stellige Team-ID aus developer.apple.com).
+app.get('/.well-known/apple-app-site-association', (_req, res) => {
+  const teamId = process.env['APPLE_TEAM_ID'];
+  const bundleId = process.env['APPLE_BUNDLE_ID'] ?? 'de.koreretail.app';
+  if (!teamId) {
+    res.status(404).json({ error: 'AASA not configured (APPLE_TEAM_ID fehlt)' });
+    return;
+  }
+  const appID = `${teamId}.${bundleId}`;
+  res.type('application/json').json({
+    webcredentials: { apps: [appID] },
+    applinks: { details: [{ appIDs: [appID], components: [{ '/': '*' }] }] },
+  });
+});
 
 // ── API Routes ────────────────────────────────────
 // Website-Formulare (öffentlich)
