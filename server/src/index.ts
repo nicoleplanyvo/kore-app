@@ -23,6 +23,7 @@ import { adminReportingRouter } from './routes/admin/reporting.js';
 import { adminRegionsRouter } from './routes/admin/regions.js';
 import { adminDashboardRouter } from './routes/admin/dashboard.js';
 import { adminBillingRouter } from './routes/admin/billing.js';
+import { adminOnboardRouter } from './routes/admin/onboard.js';
 import { storeExcellenceAuditRouter } from './routes/tools/store-excellence-audit/index.js';
 import { checklistenRouter } from './routes/tools/checklisten/index.js';
 import { sopRouter } from './routes/tools/sop/index.js';
@@ -190,6 +191,7 @@ app.use('/api/admin/reporting', adminReportingRouter);
 app.use('/api/admin/regions', adminRegionsRouter);
 app.use('/api/admin/dashboard', adminDashboardRouter);
 app.use('/api/admin/billing', adminBillingRouter);
+app.use('/api/admin/onboard', adminOnboardRouter);
 
 // Tools
 app.use('/api/tools', toolsRouter);

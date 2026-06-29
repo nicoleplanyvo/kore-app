@@ -128,6 +128,44 @@ export const userCreateSchema = z.object({
   regionIds: z.array(z.string().min(1)).optional(),
 });
 
+/**
+ * Onboarding-Assistent: legt Mandant + Stores + Tool-Paket + Admin-User
+ * in einem atomaren Schritt an (nur kore_admin).
+ */
+export const onboardSchema = z.object({
+  tenant: z.object({
+    name: z.string().min(2, 'Firmenname muss mindestens 2 Zeichen haben').max(100),
+    slug: z
+      .string()
+      .min(2)
+      .max(50)
+      .regex(/^[a-z0-9-]+$/, 'Slug: nur Kleinbuchstaben, Zahlen, Bindestriche')
+      .optional()
+      .or(z.literal('')),
+    contactEmail: z.string().email('Bitte gültige E-Mail-Adresse eingeben').optional().or(z.literal('')),
+    contactName: z.string().max(100).optional().or(z.literal('')),
+    maxUsers: z.number().int().positive().max(10000).optional(),
+  }),
+  stores: z
+    .array(
+      z.object({
+        name: z.string().min(2, 'Store-Name muss mindestens 2 Zeichen haben').max(100),
+        city: z.string().max(100).optional().or(z.literal('')),
+      }),
+    )
+    .min(1, 'Mindestens einen Store anlegen'),
+  // Tool-Keys (z. B. 'standards.vm_foto_compliance') oder ['*'] für alle Tools
+  toolKeys: z.array(z.string().min(1)).min(1, 'Mindestens ein Tool auswählen'),
+  admin: z.object({
+    name: z.string().min(2, 'Name muss mindestens 2 Zeichen haben').max(100),
+    email: z.string().email('Bitte gültige E-Mail-Adresse eingeben'),
+    // Optional: wird generiert, wenn leer
+    password: z.string().min(8, 'Passwort muss mindestens 8 Zeichen haben').optional().or(z.literal('')),
+  }),
+});
+
+export type OnboardInput = z.infer<typeof onboardSchema>;
+
 export const userUpdateSchema = z.object({
   name: z.string().min(2).max(100).optional(),
   email: z.string().email().optional(),

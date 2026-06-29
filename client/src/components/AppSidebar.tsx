@@ -179,6 +179,10 @@ export function AppSidebar({ open, onClose }: AppSidebarProps) {
               </p>
               {hasMinRole(effectiveRole, 'kore_admin') && (
                 <>
+                  <NavLink to="/admin/onboarding" onClick={onClose} className={linkClasses}>
+                    <UserPlus size={18} />
+                    <span className="font-body text-small">Kunde anlegen</span>
+                  </NavLink>
                   <NavLink to="/admin/tenants" onClick={onClose} className={linkClasses}>
                     <Building2 size={18} />
                     <span className="font-body text-small">Kunden</span>

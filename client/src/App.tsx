@@ -24,6 +24,7 @@ import { UserDetailPage } from './pages/admin/UserDetailPage';
 import GdprPage from './pages/admin/GdprPage';
 import { ReportingPage } from './pages/admin/ReportingPage';
 import { BillingOverviewPage } from './pages/admin/BillingOverviewPage';
+import { OnboardingPage } from './pages/admin/OnboardingPage';
 import { InvoiceCreatePage } from './pages/admin/InvoiceCreatePage';
 import { InvoiceDetailPage } from './pages/admin/InvoiceDetailPage';
 
@@ -171,6 +172,7 @@ export function App() {
 
             {/* Nur kore_admin */}
             <Route element={<ProtectedRoute minRole="kore_admin" />}>
+              <Route path="/admin/onboarding" element={<OnboardingPage />} />
               <Route path="/admin/tenants" element={<TenantsListPage />} />
               <Route path="/admin/tenants/new" element={<TenantCreatePage />} />
               <Route path="/admin/tenants/:id" element={<TenantDetailPage />} />
