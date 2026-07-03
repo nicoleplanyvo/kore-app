@@ -102,3 +102,47 @@ Nach Code-Änderungen am Mac:
 cd client && npm run sync:native
 ```
 dann in Xcode: Build-Nummer +1 → Archive → Upload. Fertig.
+
+---
+
+## ⭐ Standard-Upload (ohne Xcode-Anmeldung!) — der zuverlässige Weg
+
+Die Xcode-Apple-ID-Sitzung läuft ständig ab („Unable to authenticate with App Store Connect").
+Deshalb laden wir Builds per **App-Store-Connect-API-Schlüssel** hoch — funktioniert immer:
+
+**Voraussetzung (einmalig, bereits erledigt):** API-Key `AuthKey_4VJP95L4QD.p8`
+liegt in `~/private_keys/` (Key-ID `4VJP95L4QD`, Issuer `4fe7fd8e-fd99-42b3-814a-dd7ebd5278da`).
+
+**Ablauf pro neuem Build:**
+1. Code aktualisieren + Web-Bundle bauen:
+   `cd ~/Desktop/kore-app && git pull && cd client && npm run sync:native`
+2. In Xcode: Build-Nummer +1 (General → Identity → Build) → `Product → Archive`
+3. Upload per Terminal (findet automatisch das neueste Archiv):
+
+```bash
+ARCHIVE=$(ls -dt ~/Library/Developer/Xcode/Archives/*/*.xcarchive | head -1) && echo "Archiv: $ARCHIVE"
+cat > /tmp/ExportOptions.plist <<'PLIST'
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+  <key>method</key><string>app-store-connect</string>
+  <key>teamID</key><string>33J7NYF75L</string>
+  <key>signingStyle</key><string>automatic</string>
+</dict>
+</plist>
+PLIST
+xcodebuild -exportArchive -archivePath "$ARCHIVE" -exportPath ~/Desktop/kore-upload \
+  -exportOptionsPlist /tmp/ExportOptions.plist -allowProvisioningUpdates \
+  -authenticationKeyID 4VJP95L4QD \
+  -authenticationKeyIssuerID 4fe7fd8e-fd99-42b3-814a-dd7ebd5278da \
+  -authenticationKeyPath ~/private_keys/AuthKey_4VJP95L4QD.p8 && \
+xcrun altool --upload-app -f ~/Desktop/kore-upload/*.ipa -t ios \
+  --apiKey 4VJP95L4QD --apiIssuer 4fe7fd8e-fd99-42b3-814a-dd7ebd5278da
+```
+
+Erfolg = `UPLOAD SUCCEEDED with no errors`. Build erscheint nach wenigen Minuten in TestFlight.
+
+**Wichtige Lehre (Build 2 vs. 3):** Vor jedem Build prüfen, dass `git pull` wirklich durchlief —
+lokale Xcode-Änderungen ggf. mit `git stash` parken und nach dem Pull mit `git stash pop` zurückholen.
+Verifikation: `grep -c safe-area-top client/src/index.css` muss `1` liefern.
