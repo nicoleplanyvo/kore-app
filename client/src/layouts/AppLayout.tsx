@@ -31,7 +31,7 @@ export function AppLayout() {
       <AppSidebar open={sidebarOpen} onClose={() => setSidebarOpen(false)} />
       <div className="flex-1 flex flex-col overflow-hidden min-w-0">
         <AppTopBar onMenuToggle={() => setSidebarOpen(true)} />
-        <main className="flex-1 overflow-y-auto pb-nav-safe lg:pb-0">
+        <main className="flex-1 overflow-y-auto overflow-x-hidden pb-nav-safe lg:pb-0">
           <div className="p-md sm:p-lg lg:p-xl max-w-[1400px] mx-auto animate-fade-in">
             <Outlet />
           </div>

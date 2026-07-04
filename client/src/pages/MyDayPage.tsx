@@ -12,14 +12,22 @@ import {
   Repeat,
   MapPin,
   Sparkles,
+  Camera,
+  ClipboardCheck,
 } from 'lucide-react';
 import { useMyDay } from '../hooks/useMyDay';
+import { useMyTools } from '../hooks/useMyTools';
 import { useAuthStore } from '../stores/authStore';
 import { WelcomeOverlay } from '../components/WelcomeOverlay';
 
 export function MyDayPage() {
   const { data, isLoading, error } = useMyDay();
+  const { data: myTools } = useMyTools();
   const user = useAuthStore((s) => s.user);
+
+  // Nur Karten zu tatsaechlich freigeschalteten Tools zeigen (Pilot-Scope)
+  const toolKeys = new Set((myTools ?? []).map((a) => a.tool?.key).filter(Boolean));
+  const has = (key: string) => toolKeys.has(key);
   const [showWelcomeOverlay, setShowWelcomeOverlay] = useState(false);
 
   // Check if this is potentially first login for Store Manager
@@ -110,7 +118,7 @@ export function MyDayPage() {
       </div>
 
       {/* KPI Karten */}
-      {data.kpiYesterday.storeCount > 0 && (
+      {has('performance.kpi_dashboard') && data.kpiYesterday.storeCount > 0 && (
         <div className="mb-xl animate-slide-up">
           <div className="flex items-center justify-between mb-md">
             <h2 className="font-body text-caption text-kore-mid uppercase">
@@ -135,7 +143,54 @@ export function MyDayPage() {
 
       {/* Hauptbereich */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-md">
+        {/* Hero: VM Compliance */}
+        {has('standards.vm_foto_compliance') && (
+          <DayCard
+            icon={<Camera size={20} />}
+            iconBg="bg-kore-brass/10 text-kore-brass"
+            title="VM Compliance"
+            link="/tools/vm-compliance"
+            delay={0}
+          >
+            <p className="text-small text-kore-mid mb-md">
+              Foto-Checks bewerten und unangekündigte Spot-Checks anfordern.
+            </p>
+            <div className="flex flex-wrap gap-sm">
+              <Link to="/tools/vm-compliance/spot-checks" className="inline-flex items-center gap-xs px-md py-sm border border-kore-border rounded-md text-small text-kore-ink hover:border-kore-brass transition-colors">
+                Spot-Checks <ArrowRight size={14} />
+              </Link>
+              <Link to="/tools/vm-compliance" className="inline-flex items-center gap-xs px-md py-sm border border-kore-border rounded-md text-small text-kore-ink hover:border-kore-brass transition-colors">
+                Checks <ArrowRight size={14} />
+              </Link>
+            </div>
+          </DayCard>
+        )}
+
+        {/* Hero: Store Excellence Audit */}
+        {has('standards.excellence_tracker') && (
+          <DayCard
+            icon={<ClipboardCheck size={20} />}
+            iconBg="bg-emerald-50 text-emerald-600"
+            title="Store Excellence Audit"
+            link="/tools/sea"
+            delay={25}
+          >
+            <p className="text-small text-kore-mid mb-md">
+              Audits durchführen, Scores vergleichen und Follow-ups verfolgen.
+            </p>
+            <div className="flex flex-wrap gap-sm">
+              <Link to="/tools/sea" className="inline-flex items-center gap-xs px-md py-sm border border-kore-border rounded-md text-small text-kore-ink hover:border-kore-brass transition-colors">
+                Audits <ArrowRight size={14} />
+              </Link>
+              <Link to="/tools/sea/follow-ups" className="inline-flex items-center gap-xs px-md py-sm border border-kore-border rounded-md text-small text-kore-ink hover:border-kore-brass transition-colors">
+                Follow-ups <ArrowRight size={14} />
+              </Link>
+            </div>
+          </DayCard>
+        )}
+
         {/* Checklisten */}
+        {has('standards.checklisten') && (
         <DayCard
           icon={<CheckCircle2 size={20} />}
           iconBg="bg-emerald-50 text-emerald-600"
@@ -177,8 +232,10 @@ export function MyDayPage() {
             <p className="text-small text-kore-faint">Keine Checklisten heute.</p>
           )}
         </DayCard>
+        )}
 
         {/* Schichten */}
+        {has('coaching.shift_planning') && (
         <DayCard
           icon={<Clock size={20} />}
           iconBg="bg-kore-brass/10 text-kore-brass"
@@ -207,8 +264,10 @@ export function MyDayPage() {
             <p className="text-small text-kore-faint">Keine Schichten geplant.</p>
           )}
         </DayCard>
+        )}
 
         {/* Offene Handovers */}
+        {has('komm.handover') && (
         <DayCard
           icon={<FileText size={20} />}
           iconBg="bg-orange-50 text-orange-600"
@@ -239,8 +298,10 @@ export function MyDayPage() {
             </div>
           )}
         </DayCard>
+        )}
 
         {/* Ungelesene Briefings */}
+        {has('komm.briefings') && (
         <DayCard
           icon={<MessageSquare size={20} />}
           iconBg="bg-blue-50 text-blue-600"
@@ -268,8 +329,10 @@ export function MyDayPage() {
             </div>
           )}
         </DayCard>
+        )}
 
         {/* Coaching */}
+        {has('coaching.one_on_one') && (
         <DayCard
           icon={<Users size={20} />}
           iconBg="bg-violet-50 text-violet-600"
@@ -299,9 +362,10 @@ export function MyDayPage() {
             <p className="text-small text-kore-faint">Keine Sessions geplant.</p>
           )}
         </DayCard>
+        )}
 
         {/* Live Floor */}
-        {data.floor && (
+        {has('floor.live_floor') && data.floor && (
           <DayCard
             icon={<MapPin size={20} />}
             iconBg="bg-indigo-50 text-indigo-600"

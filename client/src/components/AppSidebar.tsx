@@ -95,6 +95,7 @@ export function AppSidebar({ open, onClose }: AppSidebarProps) {
       {/* Sidebar */}
       <aside className={`
         fixed inset-y-0 left-0 z-50 w-[260px] bg-kore-ink flex flex-col
+        safe-area-top safe-area-bottom
         transform transition-transform duration-300 ease-out
         lg:relative lg:translate-x-0
         ${open ? 'translate-x-0' : '-translate-x-full'}
