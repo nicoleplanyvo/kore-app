@@ -146,3 +146,19 @@ Erfolg = `UPLOAD SUCCEEDED with no errors`. Build erscheint nach wenigen Minuten
 **Wichtige Lehre (Build 2 vs. 3):** Vor jedem Build prüfen, dass `git pull` wirklich durchlief —
 lokale Xcode-Änderungen ggf. mit `git stash` parken und nach dem Pull mit `git stash pop` zurückholen.
 Verifikation: `grep -c safe-area-top client/src/index.css` muss `1` liefern.
+
+---
+
+## ⚠️ Update 11.7.2026: altool defekt → Upload per Transporter-App
+
+Auf Nicoles Mac ist `xcrun altool` kaputt (Fehler: „Defaults.properties couldn't be opened" —
+die Datei fehlt komplett in der Xcode-Installation). **Neuer Standard-Ablauf pro Build:**
+
+1. Terminal: `cd ~/Desktop/kore-app && git pull && cd client && npm run sync:native`
+2. Xcode: Build-Nr +1 → Product → Archive
+3. Terminal: **nur den Export-Teil** des Upload-Blocks (bis einschl. `xcodebuild -exportArchive …`,
+   die `altool`-Zeile weglassen) → erzeugt `~/Desktop/kore-upload/App.ipa`
+4. **Transporter-App** (aus dem Mac App Store, Apple-ID-Login): `App.ipa` reinziehen → „Übermitteln"
+   → grüner Haken „Ausgeliefert" = fertig, Build erscheint in TestFlight.
+
+Build 4 (11.7., mit Layout-Fixes + MyDay-Scope + persistentem Login) wurde so ausgeliefert.
