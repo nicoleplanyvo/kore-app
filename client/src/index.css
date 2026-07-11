@@ -13,9 +13,11 @@
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     scroll-behavior: smooth;
-    /* Verhindert horizontales Wackeln/Ueberlauf in der nativen WebView */
+    /* Horizontales Scrollen komplett verbieten — 'clip' blockiert (anders als
+       'hidden') auch programmatisches Verschieben durch die iOS-Tastatur */
     width: 100%;
     overflow-x: hidden;
+    overflow-x: clip;
   }
 
   body {
@@ -23,8 +25,15 @@
     width: 100%;
     max-width: 100%;
     overflow-x: hidden;
+    overflow-x: clip;
     /* Kein blaues Tap-Highlight in der App */
     -webkit-tap-highlight-color: transparent;
+  }
+
+  #root {
+    width: 100%;
+    max-width: 100%;
+    overflow-x: clip;
   }
 
   ::selection {

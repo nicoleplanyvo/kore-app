@@ -19,6 +19,19 @@ export async function initNative(): Promise<void> {
     const { SplashScreen } = await import('@capacitor/splash-screen');
     await SplashScreen.hide();
   } catch { /* ignore */ }
+
+  // Watchdog: Die WKWebView-Tastatur-Vermeidung verschiebt das Fenster manchmal
+  // horizontal und setzt es nicht zurueck (Inhalt "haengt" links abgeschnitten).
+  // Wir zwingen scrollX konsequent auf 0 — vertikales Scrollen bleibt unberuehrt.
+  const resetX = () => {
+    if (window.scrollX !== 0) window.scrollTo(0, window.scrollY);
+    if (document.documentElement.scrollLeft !== 0) document.documentElement.scrollLeft = 0;
+    if (document.body.scrollLeft !== 0) document.body.scrollLeft = 0;
+  };
+  window.addEventListener('scroll', resetX, { passive: true });
+  window.addEventListener('focusout', () => setTimeout(resetX, 50));
+  window.addEventListener('orientationchange', () => setTimeout(resetX, 100));
+  setTimeout(resetX, 500);
 }
 
 /**
