@@ -93,6 +93,12 @@ authRouter.post('/login', async (req, res) => {
 
     const authUser = await buildAuthResponse(user.id);
 
+    // Native App (X-KORE-Native): Refresh-Token zusaetzlich im Body — Cookies sind
+    // im Capacitor-WebView cross-origin unzuverlaessig; der Client speichert nativ.
+    if (req.get('x-kore-native') === '1') {
+      res.json({ accessToken, refreshToken, user: authUser });
+      return;
+    }
     res.json({ accessToken, user: authUser });
   } catch (err) {
     console.error('Auth login error:', err);
@@ -156,7 +162,12 @@ authRouter.post('/reset-password', async (req, res) => {
 // POST /api/auth/refresh
 authRouter.post('/refresh', async (req, res) => {
   try {
-    const token = req.cookies?.['refreshToken'];
+    // Web: httpOnly-Cookie. Native App: Token im Body (X-KORE-Native).
+    const bodyToken =
+      typeof (req.body as { refreshToken?: unknown } | undefined)?.refreshToken === 'string'
+        ? ((req.body as { refreshToken: string }).refreshToken)
+        : undefined;
+    const token = req.cookies?.['refreshToken'] ?? bodyToken;
     if (!token) {
       res.status(401).json({ error: 'Kein Refresh-Token.' });
       return;
@@ -178,6 +189,12 @@ authRouter.post('/refresh', async (req, res) => {
 
     const authUser = await buildAuthResponse(user.id);
 
+    // Native: rotierten Refresh-Token mitliefern (rollierende 30-Tage-Session)
+    if (req.get('x-kore-native') === '1') {
+      const rotated = signRefreshToken(user.id);
+      res.json({ accessToken, refreshToken: rotated, user: authUser });
+      return;
+    }
     res.json({ accessToken, user: authUser });
   } catch {
     res.status(401).json({ error: 'Refresh-Token ungültig oder abgelaufen.' });

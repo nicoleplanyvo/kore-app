@@ -4,7 +4,7 @@ import { BrowserRouter } from 'react-router-dom';
 import { QueryClientProvider } from '@tanstack/react-query';
 import { queryClient } from './lib/queryClient';
 import { useAuthStore } from './stores/authStore';
-import { setAccessToken } from './lib/api';
+import { setAccessToken, refreshSession } from './lib/api';
 import { App } from './App';
 import { initNative, registerPushAndSyncToken } from './lib/native';
 import './index.css';
@@ -17,21 +17,14 @@ function AuthInitializer({ children }: { children: React.ReactNode }) {
 
   useEffect(() => {
     async function initAuth() {
-      try {
-        const res = await fetch(
-          `${import.meta.env.VITE_API_URL || ''}/api/auth/refresh`,
-          { method: 'POST', credentials: 'include' }
-        );
-        if (res.ok) {
-          const data = await res.json();
-          setAccessToken(data.accessToken);
-          setAuth(data.user, data.accessToken);
-          // Native: Push registrieren und Token ans Backend melden
-          void registerPushAndSyncToken();
-        } else {
-          clearAuth();
-        }
-      } catch {
+      // refreshSession(): Web nutzt das Cookie, die native App den gespeicherten Token
+      const data = await refreshSession();
+      if (data) {
+        setAccessToken(data.accessToken);
+        setAuth(data.user, data.accessToken);
+        // Native: Push registrieren und Token ans Backend melden
+        void registerPushAndSyncToken();
+      } else {
         clearAuth();
       }
     }

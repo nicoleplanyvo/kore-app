@@ -1,4 +1,13 @@
+import { Capacitor } from '@capacitor/core';
+import { Preferences } from '@capacitor/preferences';
+import type { AuthUser } from '@shared/types';
+
 const API_URL = import.meta.env.VITE_API_URL || '';
+
+// Native App: Refresh-Token nativ speichern — Cookies sind im Capacitor-WebView
+// cross-origin unzuverlaessig. Web: httpOnly-Cookie wie gehabt (kein Token im JS).
+const IS_NATIVE = Capacitor.isNativePlatform();
+const REFRESH_KEY = 'kore_refresh_token';
 
 let accessToken: string | null = null;
 
@@ -10,19 +19,37 @@ export function getAccessToken() {
   return accessToken;
 }
 
-async function refreshAccessToken(): Promise<string | null> {
+async function storeRefreshToken(token: string | null): Promise<void> {
+  if (!IS_NATIVE) return;
   try {
-    const res = await fetch(`${API_URL}/api/auth/refresh`, {
-      method: 'POST',
-      credentials: 'include',
-    });
+    if (token) await Preferences.set({ key: REFRESH_KEY, value: token });
+    else await Preferences.remove({ key: REFRESH_KEY });
+  } catch { /* Preferences n/a — ignorieren */ }
+}
+
+/** Session erneuern — Web: Cookie, Native: nativ gespeicherter Refresh-Token. */
+export async function refreshSession(): Promise<{ accessToken: string; user: AuthUser } | null> {
+  try {
+    const init: RequestInit = { method: 'POST', credentials: 'include' };
+    if (IS_NATIVE) {
+      const stored = await Preferences.get({ key: REFRESH_KEY });
+      init.headers = { 'Content-Type': 'application/json', 'X-KORE-Native': '1' };
+      init.body = JSON.stringify(stored.value ? { refreshToken: stored.value } : {});
+    }
+    const res = await fetch(`${API_URL}/api/auth/refresh`, init);
     if (!res.ok) return null;
     const data = await res.json();
     accessToken = data.accessToken;
-    return data.accessToken;
+    if (typeof data.refreshToken === 'string') void storeRefreshToken(data.refreshToken);
+    return data;
   } catch {
     return null;
   }
+}
+
+async function refreshAccessToken(): Promise<string | null> {
+  const session = await refreshSession();
+  return session?.accessToken ?? null;
 }
 
 export async function api<T = unknown>(
@@ -35,6 +62,8 @@ export async function api<T = unknown>(
     'Content-Type': 'application/json',
     ...(options.headers as Record<string, string>),
   };
+
+  if (IS_NATIVE) headers['X-KORE-Native'] = '1';
 
   if (accessToken) {
     headers['Authorization'] = `Bearer ${accessToken}`;
@@ -64,7 +93,13 @@ export async function api<T = unknown>(
     throw new Error(error.error || `HTTP ${res.status}`);
   }
 
-  return res.json();
+  const json = await res.json();
+  if (IS_NATIVE && json && typeof json === 'object') {
+    const j = json as { refreshToken?: string };
+    if (typeof j.refreshToken === 'string') void storeRefreshToken(j.refreshToken);
+    if (path === '/api/auth/logout') void storeRefreshToken(null);
+  }
+  return json as T;
 }
 
 export { API_URL };

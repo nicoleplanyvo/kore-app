@@ -47,7 +47,10 @@ async function buildAuthUser(userId: string) {
 }
 
 /** Access-Token ausstellen + Refresh-Cookie setzen (wie /api/auth/login). */
-function issueSession(res: Response, user: { id: string; tenantId: string | null; role: string }): string {
+function issueSession(
+  res: Response,
+  user: { id: string; tenantId: string | null; role: string },
+): { accessToken: string; refreshToken: string } {
   const accessToken = signAccessToken({ sub: user.id, tenantId: user.tenantId, role: user.role });
   const refreshToken = signRefreshToken(user.id);
   res.cookie('refreshToken', refreshToken, {
@@ -57,7 +60,7 @@ function issueSession(res: Response, user: { id: string; tenantId: string | null
     maxAge: 30 * 24 * 60 * 60 * 1000,
     path: '/api/auth',
   });
-  return accessToken;
+  return { accessToken, refreshToken };
 }
 
 // ─── Registrierung (eingeloggt) ───────────────────────────────────────────────
@@ -205,9 +208,14 @@ passkeyRouter.post('/auth/verify', async (req, res) => {
       res.status(403).json({ error: 'Konto ist deaktiviert.' });
       return;
     }
-    const accessToken = issueSession(res, user);
+    const { accessToken, refreshToken } = issueSession(res, user);
     clearChallenge(res);
     const authUser = await buildAuthUser(user.id);
+    // Native App: Refresh-Token im Body (siehe auth.ts /login)
+    if (req.get('x-kore-native') === '1') {
+      res.json({ accessToken, refreshToken, user: authUser });
+      return;
+    }
     res.json({ accessToken, user: authUser });
   } catch (err) {
     clearChallenge(res);
