@@ -41,14 +41,14 @@ export function OverviewPage() {
   return (
     <div className="p-xl max-w-6xl">
       {/* Header */}
-      <div className="flex items-center justify-between mb-2xl">
-        <div>
-          <h1 className="font-display text-h1 text-kore-ink">Store Excellence Audit</h1>
+      <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-lg mb-2xl">
+        <div className="min-w-0">
+          <h1 className="font-display text-h2 lg:text-h1 text-kore-ink">Store Excellence Audit</h1>
           <p className="text-body text-kore-mid mt-xs">
             Interne Audits durchführen, Scores vergleichen und Maßnahmen verfolgen
           </p>
         </div>
-        <div className="flex gap-md">
+        <div className="flex flex-wrap gap-sm shrink-0">
           <Link to="templates" className="flex items-center gap-sm border border-kore-border px-lg py-md-sm text-small font-medium uppercase tracking-widest hover:bg-kore-bg transition-colors">
             <Settings size={16} /> Templates
           </Link>
